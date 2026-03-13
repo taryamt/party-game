@@ -2,12 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Party Games</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div class="phase-overlay" id="phase-overlay"><div class="phase-label" id="phase-label"></div></div>
+<div class="orientation-banner" id="orientation-banner">📱 Portrait mode works best</div>
+<div class="answer-flash" id="answer-flash"></div>
 
 <canvas id="bg-particles"></canvas>
 <div id="breadcrumb" class="breadcrumb"></div>
@@ -275,8 +278,9 @@
 <div id="screen-imp-discuss" class="screen">
   <button class="btn outline back-btn" data-back="confirm" data-msg="End discussion and go back?">&#8592; Back</button>
   <h1>Discussion Time</h1>
+  <div class="round-badge" id="imp-discuss-round"></div>
   <h2>Who seems clueless?</h2>
-  <div class="subtitle">Talk, ask questions, describe things related to the word.<br>Figure out who doesn't know it!</div>
+  <div class="subtitle">Talk, ask questions, describe things related to the word.<br>Tap a name to mark them as "safe"</div>
   <div id="imp-discuss-timer" class="discuss-timer hidden"></div>
   <div class="timer-bar-track hidden" id="imp-discuss-bar-track"><div class="timer-bar" id="imp-discuss-bar" style="width:100%;"></div></div>
   <div id="imp-discuss-players" class="player-list"></div>

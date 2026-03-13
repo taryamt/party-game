@@ -4,7 +4,7 @@
    ══════════════════════════════ */
 const cvs = document.getElementById('bg-particles');
 const ctx = cvs.getContext('2d');
-let particles = [];
+let particles = [], particlesPaused = false, particleRaf = null;
 
 function resizeCanvas() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
 resizeCanvas();
@@ -12,7 +12,8 @@ window.addEventListener('resize', resizeCanvas);
 
 function initParticles() {
   particles = [];
-  for (let i = 0; i < 18; i++) {
+  const count = window.innerWidth < 600 ? 12 : 18;
+  for (let i = 0; i < count; i++) {
     particles.push({
       x: Math.random() * cvs.width, y: Math.random() * cvs.height,
       size: Math.random() * 4 + 2, speedX: (Math.random() - 0.5) * 0.3, speedY: (Math.random() - 0.5) * 0.2,
@@ -24,6 +25,7 @@ function initParticles() {
 initParticles();
 
 function drawParticles() {
+  if (particlesPaused) { particleRaf = null; return; }
   ctx.clearRect(0, 0, cvs.width, cvs.height);
   particles.forEach(p => {
     p.x += p.speedX; p.y += p.speedY;
@@ -37,8 +39,10 @@ function drawParticles() {
     }
   });
   ctx.globalAlpha = 1;
-  requestAnimationFrame(drawParticles);
+  particleRaf = requestAnimationFrame(drawParticles);
 }
+function pauseParticles() { particlesPaused = true; if (particleRaf) { cancelAnimationFrame(particleRaf); particleRaf = null; } }
+function resumeParticles() { if (particlesPaused) { particlesPaused = false; drawParticles(); } }
 drawParticles();
 
 /* ══════════════════════════════
@@ -46,6 +50,13 @@ drawParticles();
    ══════════════════════════════ */
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
+// DOM cache for frequently accessed elements
+const _domCache = {};
+function $c(selector) { if (!_domCache[selector]) _domCache[selector] = $(selector); return _domCache[selector]; }
+const _activeTimers = new Set();
+function safeInterval(fn, ms) { const id = setInterval(fn, ms); _activeTimers.add(id); return id; }
+function safeTimeout(fn, ms) { const id = setTimeout(() => { _activeTimers.delete(id); fn(); }, ms); _activeTimers.add(id); return id; }
+function clearAllTimers() { _activeTimers.forEach(id => { clearInterval(id); clearTimeout(id); }); _activeTimers.clear(); }
 const esc = s => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
 function shuffle(arr) { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function deepMerge(target, source) { for (const key of Object.keys(source)) { if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key]) && target[key] && typeof target[key] === 'object' && !Array.isArray(target[key])) { deepMerge(target[key], source[key]); } else { target[key] = source[key]; } } }
@@ -79,7 +90,8 @@ const gameState = {
 };
 
 const stateListeners = [];
-function updateState(changes) { deepMerge(gameState, changes); stateListeners.forEach(fn => fn(gameState, changes)); if (isMultiDevice && socket) sendMsg('host_update', { gameState: changes }); }
+function updateState(changes) { deepMerge(gameState, changes); stateListeners.forEach(fn => fn(gameState, changes)); }
+function syncToPlayers(changes) { if (isMultiDevice && socket) sendMsg('host_update', { gameState: changes }); }
 function onStateChange(fn) { stateListeners.push(fn); return () => { const i = stateListeners.indexOf(fn); if (i >= 0) stateListeners.splice(i, 1); }; }
 
 /* GameState class wrapper — provides structured API for future multi-device refactor */
@@ -199,6 +211,8 @@ function showScreen(id, direction) {
   const fab = $('#scoreboard-fab');
   if (fab.classList.contains('visible') || isGameScreen) fab.classList.toggle('visible', !isGameScreen && gameState.session.players.length > 0);
   updateBreadcrumb(id);
+  // Pause particles during active game screens for performance
+  if (isGameScreen) pauseParticles(); else resumeParticles();
 }
 
 function goBack() {
@@ -207,7 +221,17 @@ function goBack() {
   else goHome();
 }
 
-function goHome() { gameState.currentGame = null; screenHistory.length = 0; showScreen('screen-home'); const sub = $('#home-subtitle'); if (sub) sub.textContent = HOME_SUBTITLES[Math.floor(Math.random() * HOME_SUBTITLES.length)]; updatePlayersCard(); }
+function goHome() {
+  clearAllTimers();
+  gameState.currentGame = null; screenHistory.length = 0; showScreen('screen-home');
+  const sub = $('#home-subtitle'); if (sub) sub.textContent = HOME_SUBTITLES[Math.floor(Math.random() * HOME_SUBTITLES.length)];
+  updatePlayersCard(); releaseWakeLock();
+  // Clean up game-specific state
+  gameState.imposter.votes = {}; gameState.imposter.individualVotes = {};
+  gameState.trivia.answers = {}; gameState.hottake.choices = {};
+  // Remove floating elements
+  document.querySelectorAll('.floating-emoji, .points-float, .confetti-piece').forEach(el => el.remove());
+}
 function updatePlayersCard() { const desc = $('#players-card-desc'); if (!desc) return; const n = allPlayers().length; desc.textContent = n > 0 ? n + ' player' + (n !== 1 ? 's' : '') + ' ready' : 'Add or manage players'; }
 
 /* ══════════════════════════════
@@ -548,12 +572,43 @@ function launchConfetti() {
 }
 
 /* ══════════════════════════════
+   WAKE LOCK
+   ══════════════════════════════ */
+let wakeLock = null;
+async function requestWakeLock() { try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch {} }
+function releaseWakeLock() { if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; } }
+
+/* ══════════════════════════════
+   ORIENTATION NUDGE
+   ══════════════════════════════ */
+function checkOrientation() {
+  const banner = $('#orientation-banner');
+  if (!banner) return;
+  if (window.innerWidth > window.innerHeight && window.innerWidth < 900) {
+    banner.classList.add('visible');
+    safeTimeout(() => banner.classList.remove('visible'), 3000);
+  }
+}
+window.addEventListener('resize', checkOrientation);
+
+/* ══════════════════════════════
+   PHASE TRANSITION OVERLAY
+   ══════════════════════════════ */
+function showPhaseOverlay(text) {
+  const overlay = $('#phase-overlay'), label = $('#phase-label');
+  if (!overlay || !label) return;
+  label.textContent = text;
+  overlay.classList.add('visible');
+  safeTimeout(() => overlay.classList.remove('visible'), 800);
+}
+
+/* ══════════════════════════════
    FLAVOR TEXT
    ══════════════════════════════ */
-const HOME_SUBTITLES = ['Trust no one.', 'Friendships will be tested.', 'May the best bluffer win.', 'Who will crack first?', 'Party time!', 'Knowledge is power.', 'Pick your side wisely.', 'The truth always comes out... eventually.'];
+const HOME_SUBTITLES = ['Trust no one.', 'Friendships will be tested.', 'May the best bluffer win.', 'Who will crack first?', 'Party time!', 'Knowledge is power.', 'Pick your side wisely.', 'The truth always comes out... eventually.', 'Someone in this room is lying. Probably.', 'Warning: may cause trust issues.', 'Your friends are not who you think they are.', 'Side effects include: paranoia, laughter, and broken friendships.'];
 const RESULT_FLAVORS = {
-  imposterCaught: ['The crew prevails!', 'Busted!', 'Nothing gets past this group!', 'The truth always comes out!'],
-  imposterEscaped: ['The imposter walks free...', 'Better luck next time!', 'Fooled everyone!', 'The perfect crime.'],
+  imposterCaught: ['The crew prevails!', 'Busted!', 'Nothing gets past this group!', 'The truth always comes out!', 'Detective work at its finest!', 'That poker face needed work.', 'The lies crumbled under pressure!', 'Justice is served!', 'Not today, imposter!', 'Elementary, my dear Watson.'],
+  imposterEscaped: ['The imposter walks free...', 'Better luck next time!', 'Fooled everyone!', 'The perfect crime.', 'Oscar-worthy performance!', 'The greatest con of all time.', 'They never saw it coming.', 'Trust nobody — especially that one.', 'Living among you this whole time...', 'A masterclass in deception.'],
   triviaClose: ['That was a close one!', 'Photo finish!', 'Down to the wire!'],
   triviaLandslide: ['Absolute domination!', 'Not even close!', 'A true trivia master!'],
   htSplit: ['Perfectly balanced!', 'Great minds think... differently!', 'Split right down the middle!'],
@@ -638,6 +693,19 @@ function renderScoreboardWithTrends() {
 
 function snapshotScores() { previousScores = {}; allPlayers().forEach(p => { previousScores[p.id] = gameState.scores.byPlayer[p.id] || 0; }); }
 
+function checkWinCondition() {
+  const ptw = gameState.session.settings.global.pointsToWin;
+  if (!ptw || ptw <= 0) return false;
+  const winner = allPlayers().find(p => (gameState.scores.byPlayer[p.id] || 0) >= ptw);
+  if (winner) {
+    showToast('🏆 ' + winner.name + ' wins with ' + gameState.scores.byPlayer[winner.id] + ' points!', 'success');
+    playSound('fanfare'); launchConfetti();
+    safeTimeout(() => goHome(), 4000);
+    return true;
+  }
+  return false;
+}
+
 function showScoringInfo(game) {
   const s = gameState.session.settings;
   const rules = {
@@ -651,10 +719,15 @@ function showScoringInfo(game) {
 /* ══════════════════════════════
    PACK LOADING
    ══════════════════════════════ */
-async function loadPacks() { try { const r = await fetch('/api/packs'); gameState.packs = await r.json(); } catch { gameState.packs = {}; } }
+async function loadPacks() {
+  // Show shimmer placeholders while loading
+  document.querySelectorAll('.pack-cards').forEach(c => { c.innerHTML = '<div class="shimmer" style="height:60px;border-radius:12px;margin-bottom:8px"></div><div class="shimmer" style="height:60px;border-radius:12px;margin-bottom:8px"></div>'; });
+  try { const r = await fetch('/api/packs'); gameState.packs = await r.json(); } catch { gameState.packs = {}; }
+}
 
 function renderPackCards(containerId, gameType, btnId) {
   const container = $(containerId), btn = $(btnId), list = gameState.packs[gameType] || [];
+  if (!list.length) { container.innerHTML = '<div class="empty-state">No packs available. Create one in Content Manager!</div>'; btn.disabled = true; return () => null; }
   container.innerHTML = list.map((p, i) => '<div class="pack-card" data-idx="' + i + '" data-file="' + p.file + '"><span class="pack-card-emoji">' + p.emoji + '</span><div class="pack-card-info"><div class="pack-card-name">' + esc(p.pack) + '</div><div class="pack-card-count">' + p.count + ' ' + (gameType === 'imposter' ? 'words' : 'questions') + '</div></div></div>').join('');
   btn.disabled = true; let selectedFile = null;
   container.querySelectorAll('.pack-card').forEach(card => { card.addEventListener('click', () => { container.querySelectorAll('.pack-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected'); selectedFile = card.dataset.file; btn.disabled = false; }); });
@@ -673,7 +746,15 @@ function renderAllPackCards() {
   if ($('#alias-packs')) aliasGetFile = renderPackCards('#alias-packs', 'alias', '#btn-alias-start');
   if ($('#draw-packs')) drawGetFile = renderPackCards('#draw-packs', 'drawing', '#btn-draw-start');
 }
-async function fetchPack(gameType, file) { return (await fetch('/api/packs/' + gameType + '/' + file)).json(); }
+async function fetchPack(gameType, file) {
+  try {
+    const res = await fetch('/api/packs/' + gameType + '/' + file);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (!data || typeof data !== 'object') throw new Error('Invalid data');
+    return data;
+  } catch (e) { showToast('Failed to load pack — it may be corrupted', 'error'); throw e; }
+}
 
 /* ══════════════════════════════
    SESSION SETUP
@@ -692,7 +773,7 @@ function renderSessionChips() {
 
 function addSessionPlayer() { // MULTIPLAYER_HOOK: in remote mode, players join via socket, not this function
   const name = sessInput.value.trim(); sessError.classList.add('hidden');
-  if (!name) return;
+  if (!name) { const funnyErrors = ['You need a name! Even "The Imposter" works...', 'Ghosts don\'t play party games. Enter a name!', 'A name! We need a name! Any name!', 'Even "Player McPlayerface" counts. Try again.']; sessError.textContent = funnyErrors[Math.floor(Math.random() * funnyErrors.length)]; sessError.classList.remove('hidden'); return; }
   if (gameState.session.players.length >= 10) { sessError.textContent = 'Maximum 10 players'; sessError.classList.remove('hidden'); return; }
   if (gameState.session.players.some(p => p.name.toLowerCase() === name.toLowerCase())) { sessError.textContent = 'Name already taken'; sessError.classList.remove('hidden'); return; }
   const player = createPlayer(name); gameState.session.players.push(player); gameState.scores.byPlayer[player.id] = 0;
@@ -917,9 +998,19 @@ function handleServerMsg(data) {
       break;
     }
     case 'all_votes_in': {
-      // Server confirms all votes are in — show results
-      // (votes already tallied via individual player_vote messages)
-      if (gameState.currentGame === 'imposter') impShowResults();
+      // Server confirms all votes are in — dramatic countdown then reveal
+      if (gameState.currentGame === 'imposter') {
+        const el = $('#host-waiting-count');
+        if (el) {
+          let count = 3;
+          el.textContent = count + '...';
+          const iv = safeInterval(() => {
+            count--;
+            if (count > 0) el.textContent = count + '...';
+            else { clearInterval(iv); _activeTimers.delete(iv); impShowResults(); }
+          }, 1000);
+        } else impShowResults();
+      }
       break;
     }
     case 'chat_message': {
@@ -953,12 +1044,14 @@ function updateHostWaitingCount(game) {
   el.textContent = answered + '/' + total + ' answered';
 }
 
-function showToast(msg) {
-  const existing = document.querySelector('.toast-notification');
-  if (existing) existing.remove();
+function showToast(msg, type) {
+  const ICONS = { success: '✅ ', warning: '⚠️ ', error: '❌ ', info: 'ℹ️ ' };
+  // Stack toasts — limit to 3 visible
+  const existing = document.querySelectorAll('.toast-notification');
+  if (existing.length >= 3) existing[0].remove();
   const toast = document.createElement('div');
-  toast.className = 'toast-notification';
-  toast.textContent = msg;
+  toast.className = 'toast-notification' + (type ? ' ' + type : '');
+  toast.textContent = (type && ICONS[type] ? ICONS[type] : '') + msg;
   document.body.appendChild(toast);
   setTimeout(() => toast.classList.add('show'), 10);
   setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
@@ -1340,7 +1433,9 @@ function handleClueConfirmed(payload) {
 }
 $('#btn-imp-start').addEventListener('click', async () => {
   const file = impGetFile(); if (!file) return;
-  const data = await fetchPack('imposter', file), imp = gameState.imposter;
+  requestWakeLock(); checkOrientation();
+  const data = await fetchPack('imposter', file).catch(() => null); if (!data || !data.rounds || !data.rounds.length) return;
+  const imp = gameState.imposter;
   imp.rounds = shuffle(data.rounds); const round = imp.rounds[0]; imp.word = round.word; imp.hint = round.hint; imp.rounds.push(imp.rounds.shift()); imp.roundNum++;
   gameState.currentGame = 'imposter';
   const playerPool = nonHostPlayers(), count = gameState.session.settings.imposter.imposterCount, indices = [];
@@ -1392,7 +1487,7 @@ $('#btn-imp-show').addEventListener('click', () => {
   else { $('#imp-clue-icon').textContent = '🟢 Your word is:'; typewriterReveal($('#imp-clue-main'), imp.word.toUpperCase(), 80); $('#imp-clue-main').style.fontSize = ''; $('#imp-clue-sub').textContent = "Don't say it out loud!"; }
   requestAnimationFrame(() => display.classList.add('visible'));
   let rem = 5; const timer = $('#imp-clue-timer'); timer.textContent = rem;
-  const iv = setInterval(() => { rem--; timer.textContent = rem; if (rem <= 0) { clearInterval(iv); impShowHidden(); } }, 1000);
+  const iv = safeInterval(() => { rem--; timer.textContent = rem; if (rem <= 0) { clearInterval(iv); impShowHidden(); } }, 1000);
 });
 
 function impShowHidden() {
@@ -1413,13 +1508,16 @@ $('#btn-imp-next').addEventListener('click', () => {
 });
 
 function handleDiscussionTimer() {
+  showPhaseOverlay('🗣️ DISCUSSION');
+  const roundBadge = $('#imp-discuss-round');
+  if (roundBadge) roundBadge.textContent = 'Round ' + gameState.imposter.roundNum;
   const timerSec = gameState.session.settings.imposter.discussionTimer, timerEl = $('#imp-discuss-timer');
   const barTrack = $('#imp-discuss-bar-track'), bar = $('#imp-discuss-bar');
   if (timerSec > 0) {
     timerEl.classList.remove('hidden'); barTrack.classList.remove('hidden');
     let rem = timerSec; const fmt = s => Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
     timerEl.textContent = fmt(rem); bar.style.width = '100%'; bar.className = 'timer-bar';
-    const iv = setInterval(() => {
+    const iv = safeInterval(() => {
       rem--; timerEl.textContent = fmt(rem);
       const pct = (rem / timerSec) * 100; bar.style.width = pct + '%';
       if (pct < 25) bar.className = 'timer-bar danger';
@@ -1439,13 +1537,14 @@ $('#imp-discuss-players').addEventListener('click', e => {
 $('#imp-confidence-slider').addEventListener('input', e => { $('#imp-confidence-val').textContent = e.target.value; });
 
 $('#btn-imp-vote').addEventListener('click', () => {
+  showPhaseOverlay('🗳️ VOTING');
   gameState.imposter.voterIdx = 0;
   if (isMultiDevice && socket) { const np = nonHostPlayers(); sendMsg('host_update', { event: 'voting_open', players: np.map(p => ({ id: p.id, name: p.name })) }); showScreen('screen-imp-vote'); $('#imp-vote-label').textContent = '🗳️ Players are voting...'; $('#imp-vote-name').textContent = ''; $('#imp-vote-grid').innerHTML = '<div id="host-waiting-count" class="host-waiting">0/' + np.length + ' voted</div>'; return; }
   impShowVoter();
 });
 
 function impShowVoter() { // MULTIPLAYER_HOOK: in remote mode, voting happens on player devices via socket
-  showScreen('screen-imp-vote'); const imp = gameState.imposter, players = allPlayers(), voter = players[imp.voterIdx];
+  showScreen('screen-imp-vote'); const imp = gameState.imposter, players = nonHostPlayers(), voter = players[imp.voterIdx];
   $('#imp-vote-label').textContent = 'Waiting for'; $('#imp-vote-name').textContent = voter.name + "'s vote";
   const grid = $('#imp-vote-grid');
   grid.innerHTML = players.filter(p => p.id !== voter.id).map(p => '<button class="vote-btn" data-id="' + p.id + '">' + esc(p.name) + '</button>').join('');
@@ -1464,13 +1563,24 @@ function impShowResults() {
   emojiEl.classList.remove('dramatic-reveal'); textEl.classList.remove('dramatic-reveal');
   void emojiEl.offsetWidth; emojiEl.classList.add('dramatic-reveal'); textEl.classList.add('dramatic-reveal');
   $('#imp-res-imposter').textContent = 'The imposter' + (imposterPlayers.length > 1 ? 's were' : ' was') + ': ' + impNames;
-  $('#imp-res-word').textContent = 'The secret word was: ' + imp.word.toUpperCase();
+  const wordEl = $('#imp-res-word'); wordEl.textContent = '';
+  typewriterReveal(wordEl, 'The secret word was: ' + imp.word.toUpperCase(), 50);
   const tally = $('#imp-res-tally'); tally.innerHTML = '';
   const allEntries = players.map(p => [p, imp.votes[p.id] || 0]);
   allEntries.forEach(([p, count]) => { const isTop = count === maxV && count > 0, isImp = imp.imposterIndices.includes(players.indexOf(p)); const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name">' + esc(p.name) + (isImp ? ' 🔴' : '') + '</span><div class="result-bar-track"><div class="result-bar' + (isTop ? ' top' : '') + '" style="width:0%"></div></div><span class="result-count">' + count + '</span>'; tally.appendChild(row); });
+  // Show who voted for whom
+  const voteMap = Object.entries(imp.individualVotes).filter(([,t]) => t).map(([voterId, targetId]) => {
+    const voter = players.find(p => p.id === voterId), target = players.find(p => p.id === targetId);
+    return voter && target ? esc(voter.name) + ' → ' + esc(target.name) : '';
+  }).filter(Boolean);
+  if (voteMap.length > 0) {
+    const voteDiv = document.createElement('div'); voteDiv.className = 'vote-map'; voteDiv.style.cssText = 'margin:12px 0;font-size:0.85rem;opacity:0.7;text-align:center;';
+    voteDiv.innerHTML = voteMap.join(' &nbsp;|&nbsp; ');
+    tally.after(voteDiv);
+  }
   renderBreakdown('#imp-res-breakdown', breakdown); setupResultButtons('#btn-imp-home2', '#btn-imp-again', 'screen-imp-setup');
-  showScreen('screen-imp-results'); autoSave();
-  requestAnimationFrame(() => setTimeout(() => { tally.querySelectorAll('.result-bar').forEach((bar, i) => { const count = allEntries[i][1], pct = maxV > 0 ? (count / maxV) * 100 : 0; bar.style.width = pct > 0 ? Math.max(pct, 8) + '%' : '0%'; }); }, 100));
+  showScreen('screen-imp-results'); autoSave(); checkWinCondition();
+  requestAnimationFrame(() => { tally.querySelectorAll('.result-bar').forEach((bar, i) => { const count = allEntries[i][1], pct = maxV > 0 ? (count / maxV) * 100 : 0; safeTimeout(() => { bar.style.width = pct > 0 ? Math.max(pct, 8) + '%' : '0%'; }, 200 + i * 200); }); });
   if (isMultiDevice && socket) sendMsg('host_update', { event: 'round_result', data: { caught, breakdown, impNames, word: imp.word } });
 }
 
@@ -1483,6 +1593,7 @@ let trivTimerInterval = null;
 
 $('#btn-triv-start').addEventListener('click', async () => {
   const file = trivGetFile(); if (!file) return;
+  requestWakeLock(); checkOrientation();
   const data = await fetchPack('trivia', file), triv = gameState.trivia, qCount = gameState.session.settings.trivia.questionsPerRound;
   triv.questions = shuffle(data.questions).slice(0, qCount); triv.qIdx = 0; triv.answers = {}; triv.roundNum++;
   gameState.currentGame = 'trivia'; allPlayers().forEach(p => triv.answers[p.id] = []); gameState.scores.streaks = {};
@@ -1515,7 +1626,7 @@ function trivStartQuestion() {
       timerEl.classList.remove('hidden'); barTrack.classList.remove('hidden');
       let rem = settings.timeLimit; const total = settings.timeLimit;
       timerEl.textContent = rem + 's'; bar.style.width = '100%'; bar.className = 'timer-bar';
-      trivTimerInterval = setInterval(() => {
+      trivTimerInterval = safeInterval(() => {
         rem--; timerEl.textContent = rem + 's';
         const pct = (rem / total) * 100; bar.style.width = pct + '%';
         if (pct < 25) bar.className = 'timer-bar danger'; else if (pct < 50) bar.className = 'timer-bar warn';
@@ -1541,7 +1652,7 @@ $('#btn-triv-ready').addEventListener('click', () => {
     timerEl.classList.remove('hidden'); barTrack.classList.remove('hidden');
     let rem = settings.timeLimit; const total = settings.timeLimit;
     timerEl.textContent = rem + 's'; bar.style.width = '100%'; bar.className = 'timer-bar';
-    trivTimerInterval = setInterval(() => {
+    trivTimerInterval = safeInterval(() => {
       rem--; timerEl.textContent = rem + 's';
       const pct = (rem / total) * 100; bar.style.width = pct + '%';
       if (pct < 25) bar.className = 'timer-bar danger';
@@ -1585,6 +1696,9 @@ function trivRevealQuestion() {
     const pts = gameState.scores.byPlayer[p.id] || 0, color = playerColor(players.indexOf(p));
     return '<div class="mini-score-chip" style="background:' + color + '22;color:' + color + '">' + esc(p.name) + ' ' + pts + '</div>';
   }).join('');
+  // Flash correct answer
+  const flash = $('#answer-flash');
+  if (flash) { flash.textContent = '✓ ' + q.answers[correct]; flash.className = 'answer-flash correct visible'; safeTimeout(() => flash.classList.remove('visible'), 800); }
   showScreen('screen-triv-reveal'); $('#triv-reveal-answer').classList.add('card-flip'); setTimeout(() => $('#triv-reveal-answer').classList.remove('card-flip'), 600);
   // Check for lead change → confetti
   const leader = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0))[0];
@@ -1604,7 +1718,7 @@ function trivShowFinalResults() {
   const container = $('#triv-res-list'); container.innerHTML = ''; const maxPts = topPts || 1;
   sorted.forEach(p => { const pts = gameState.scores.byPlayer[p.id] || 0; const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name">' + esc(p.name) + '</span><div class="result-bar-track"><div class="result-bar' + (pts === topPts ? ' top' : '') + '" style="width:0%"></div></div><span class="result-count">' + pts + '</span>'; container.appendChild(row); });
   setupResultButtons('#btn-triv-home2', '#btn-triv-again', 'screen-triv-setup');
-  showScreen('screen-triv-results'); autoSave();
+  showScreen('screen-triv-results'); autoSave(); checkWinCondition();
   requestAnimationFrame(() => setTimeout(() => { container.querySelectorAll('.result-bar').forEach((bar, i) => { const pts = gameState.scores.byPlayer[sorted[i].id] || 0; bar.style.width = maxPts > 0 ? Math.max((pts / maxPts) * 100, 8) + '%' : '0%'; }); }, 100));
 }
 $('#btn-triv-again').addEventListener('click', () => showScreen('screen-triv-setup'));
@@ -1612,7 +1726,7 @@ $('#btn-triv-again').addEventListener('click', () => showScreen('screen-triv-set
 /* ════════════════════════════
    HOT TAKE GAME
    ════════════════════════════ */
-$('#btn-ht-start').addEventListener('click', async () => { const file = htGetFile(); if (!file) return; const data = await fetchPack('hottake', file); gameState.hottake.questions = shuffle(data.questions); gameState.hottake.roundNum++; gameState.hottake.htRoundCount = 0; gameState.currentGame = 'hottake'; htNextQuestion(); });
+$('#btn-ht-start').addEventListener('click', async () => { const file = htGetFile(); if (!file) return; requestWakeLock(); checkOrientation(); const data = await fetchPack('hottake', file); gameState.hottake.questions = shuffle(data.questions); gameState.hottake.roundNum++; gameState.hottake.htRoundCount = 0; gameState.currentGame = 'hottake'; htNextQuestion(); });
 
 function htNextQuestion() { // MULTIPLAYER_HOOK: broadcast question to all player devices
   const ht = gameState.hottake, q = ht.questions[0]; ht.questions.push(ht.questions.shift()); ht.question = q.question; ht.optA = q.optionA; ht.optB = q.optionB; ht.htRoundCount++; $('#ht-question-text').textContent = ht.question; $('#ht-preview-a').textContent = '🅰️ ' + ht.optA; $('#ht-preview-b').textContent = '🅱️ ' + ht.optB; showScreen('screen-ht-question'); }
@@ -1654,7 +1768,7 @@ function htPickChoice(choice) {
   $('#ht-chosen-label').textContent = choice === 'A' ? '🅰️ You picked:' : '🅱️ You picked:';
   $('#ht-chosen-text').textContent = choice === 'A' ? ht.optA : ht.optB;
   let rem = 3; const timer = $('#ht-chosen-timer'); timer.textContent = rem;
-  const iv = setInterval(() => { rem--; timer.textContent = rem; if (rem <= 0) { clearInterval(iv); htShowPassNext(); } }, 1000);
+  const iv = safeInterval(() => { rem--; timer.textContent = rem; if (rem <= 0) { clearInterval(iv); htShowPassNext(); } }, 1000);
 }
 
 $('#ht-btn-a').addEventListener('click', () => htPickChoice('A'));
@@ -1692,13 +1806,13 @@ function htShowResults() {
   else { const minSide = aP.length < bP.length ? ht.optA : ht.optB; const hasLoneWolf = (aP.length === 1 || bP.length === 1); $('#ht-res-points').textContent = 'Minority (' + minSide + ') gets +2 points each! ' + (hasLoneWolf ? randomFlavor('htLoneWolf') : ''); $('#ht-res-title').textContent = 'Results!'; }
   // Debate timer (if enabled via settings, default 0 = off)
   const debateEl = $('#ht-debate-timer'), debateSecs = cfg.debateTimer ?? 0;
-  if (debateSecs > 0) { debateEl.classList.remove('hidden'); let rem = debateSecs; debateEl.textContent = 'Debate: ' + rem + 's'; const dInt = setInterval(() => { rem--; debateEl.textContent = 'Debate: ' + rem + 's'; if (rem <= 0) { clearInterval(dInt); debateEl.textContent = 'Time!'; } }, 1000); }
+  if (debateSecs > 0) { debateEl.classList.remove('hidden'); let rem = debateSecs; debateEl.textContent = 'Debate: ' + rem + 's'; const dInt = safeInterval(() => { rem--; debateEl.textContent = 'Debate: ' + rem + 's'; if (rem <= 0) { clearInterval(dInt); debateEl.textContent = 'Time!'; } }, 1000); }
   else debateEl.classList.add('hidden');
   renderBreakdown('#ht-res-breakdown', breakdown); autoSave();
   const maxQ = gameState.session.settings.hottake.questionsPerRound, againBtn = $('#btn-ht-again');
   if (ht.htRoundCount >= maxQ) { againBtn.textContent = 'Finish'; againBtn.onclick = () => { if (isInPlaylist()) advancePlaylist(); else goHome(); }; }
   else { againBtn.textContent = 'New Question'; againBtn.onclick = () => htNextQuestion(); }
-  setupResultButtons('#btn-ht-home2', null, 'screen-ht-setup'); showScreen('screen-ht-results'); autoSave();
+  setupResultButtons('#btn-ht-home2', null, 'screen-ht-setup'); showScreen('screen-ht-results'); autoSave(); checkWinCondition();
 }
 
 /* ════════════════════════════

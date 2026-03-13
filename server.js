@@ -72,9 +72,9 @@ function getHostURL() {
   return "http://" + ip + ":" + PORT;
 }
 
-function sanitize(str, maxLen) {
+function sanitize(str, maxLen = 200) {
   if (typeof str !== "string") return "";
-  return str.replace(/<[^>]*>/g, "").trim().slice(0, maxLen || 20);
+  return str.replace(/[<>&"']/g, "").replace(/[\x00-\x1F\x7F]/g, "").replace(/\s+/g, " ").trim().slice(0, maxLen);
 }
 
 function uuid() {
@@ -112,6 +112,8 @@ app.get("/api/packs/:gameType/:file", (req, res) => {
 const VALID_TYPES = ["imposter", "trivia", "hottake", "mafia", "millionaire", "feud", "wavelength", "alias", "drawing"];
 
 function validatePack(gameType, data) {
+  try {
+  if (!data || typeof data !== "object") return "Invalid pack data";
   if (!data.pack || typeof data.pack !== "string") return "Pack name required";
   if (gameType === "imposter") {
     if (!Array.isArray(data.rounds) || data.rounds.length === 0) return "Rounds array required";
@@ -144,6 +146,9 @@ function validatePack(gameType, data) {
     if (data.scenarios && !Array.isArray(data.scenarios)) return "Scenarios must be an array";
   }
   return null;
+  } catch (e) {
+    return "Invalid pack data: validation failed";
+  }
 }
 
 app.post("/api/custom-packs", (req, res) => {
@@ -208,7 +213,9 @@ setInterval(() => {
   const now = Date.now();
   const maxAge = SESSION_CLEANUP_HOURS * 60 * 60 * 1000;
   for (const [code, room] of rooms) {
-    if (now - room.lastActivity > maxAge) {
+    const inactive = now - room.lastActivity > maxAge;
+    const allDisconnected = room.players.length > 0 && room.players.every(p => !p.isConnected);
+    if (inactive || allDisconnected) {
       io.to(code).emit("msg", { type: "room_expired", payload: { message: "Room expired due to inactivity" } });
       rooms.delete(code);
     }
@@ -619,6 +626,8 @@ io.on("connection", (socket) => {
         // Validate vote target is a valid player ID string
         if (payload.targetId && typeof payload.targetId !== 'string') return;
         if (payload.targetId && !room.players.some(p => p.id === payload.targetId)) return;
+        // Dedup: reject duplicate votes from same player in same round
+        if (room.roundVotes && room.roundVotes[currentPlayerId]) return;
         room.lastActivity = Date.now();
         sendToHost(room, "player_vote", {
           playerId: currentPlayerId,
@@ -721,6 +730,7 @@ io.on("connection", (socket) => {
       case "confirm_clue": {
         const room = getRoom(currentRoom);
         if (!room) return;
+        if (room.clueConfirmations.has(currentPlayerId)) return;
         sendToHost(room, "player_confirmed_clue", { playerId: currentPlayerId });
         // Server-side clue confirmation tracking
         room.clueConfirmations.add(currentPlayerId);
