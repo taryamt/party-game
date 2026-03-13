@@ -1,0 +1,26 @@
+{
+  "pack": "General",
+  "emoji": "🔥",
+  "questions": [
+    { "question": "Would you rather be able to fly or be invisible?", "optionA": "Fly", "optionB": "Be invisible" },
+    { "question": "Would you rather always be 10 minutes late or 20 minutes early?", "optionA": "10 min late", "optionB": "20 min early" },
+    { "question": "Would you rather have unlimited money or unlimited time?", "optionA": "Unlimited money", "optionB": "Unlimited time" },
+    { "question": "Would you rather live without music or without movies?", "optionA": "No music", "optionB": "No movies" },
+    { "question": "Would you rather know how you die or when you die?", "optionA": "Know how", "optionB": "Know when" },
+    { "question": "Would you rather always have to speak your mind or never speak again?", "optionA": "Always speak mind", "optionB": "Never speak" },
+    { "question": "Would you rather have a rewind button or a pause button for your life?", "optionA": "Rewind", "optionB": "Pause" },
+    { "question": "Would you rather be the funniest person in the room or the smartest?", "optionA": "Funniest", "optionB": "Smartest" },
+    { "question": "Would you rather live in the past or the future?", "optionA": "The past", "optionB": "The future" },
+    { "question": "Would you rather only eat sweet food or savory food forever?", "optionA": "Sweet only", "optionB": "Savory only" },
+    { "question": "Would you rather have no internet or no air conditioning/heating?", "optionA": "No internet", "optionB": "No AC/heat" },
+    { "question": "Would you rather be famous but broke or unknown but rich?", "optionA": "Famous & broke", "optionB": "Unknown & rich" },
+    { "question": "Would you rather fight 1 horse-sized duck or 100 duck-sized horses?", "optionA": "1 horse-sized duck", "optionB": "100 duck-sized horses" },
+    { "question": "Would you rather always be overdressed or underdressed?", "optionA": "Overdressed", "optionB": "Underdressed" },
+    { "question": "Would you rather have the ability to read minds or predict the future?", "optionA": "Read minds", "optionB": "Predict future" },
+    { "question": "Would you rather give up your phone or your bed for a month?", "optionA": "Give up phone", "optionB": "Give up bed" },
+    { "question": "Would you rather be able to talk to animals or speak every language?", "optionA": "Talk to animals", "optionB": "Speak all languages" },
+    { "question": "Would you rather have a personal chef or a personal driver?", "optionA": "Personal chef", "optionB": "Personal driver" },
+    { "question": "Would you rather relive your best day forever or never have a bad day again?", "optionA": "Relive best day", "optionB": "No bad days" },
+    { "question": "Would you rather have super strength or super speed?", "optionA": "Super strength", "optionB": "Super speed" }
+  ]
+}

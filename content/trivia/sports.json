@@ -1,0 +1,26 @@
+{
+  "pack": "Sports",
+  "emoji": "⚽",
+  "questions": [
+    { "question": "How many players are on a standard soccer team on the field?", "answers": ["9", "10", "11", "12"], "correct": 2 },
+    { "question": "In which sport is the term 'love' used to mean zero?", "answers": ["Badminton", "Tennis", "Squash", "Table Tennis"], "correct": 1 },
+    { "question": "Which country has won the most FIFA World Cup titles?", "answers": ["Germany", "Argentina", "Italy", "Brazil"], "correct": 3 },
+    { "question": "How many rings are on the Olympic flag?", "answers": ["4", "5", "6", "7"], "correct": 1 },
+    { "question": "What is the maximum score in a single frame of bowling?", "answers": ["10", "20", "30", "50"], "correct": 2 },
+    { "question": "In basketball, how many points is a shot from beyond the arc worth?", "answers": ["1", "2", "3", "4"], "correct": 2 },
+    { "question": "Which Grand Slam tennis tournament is played on clay courts?", "answers": ["Wimbledon", "US Open", "Australian Open", "French Open"], "correct": 3 },
+    { "question": "How long is a marathon in miles (approximately)?", "answers": ["24.2", "25.2", "26.2", "27.2"], "correct": 2 },
+    { "question": "In which sport would you perform a 'slam dunk'?", "answers": ["Volleyball", "Basketball", "Handball", "Water polo"], "correct": 1 },
+    { "question": "Which country invented the sport of cricket?", "answers": ["Australia", "India", "South Africa", "England"], "correct": 3 },
+    { "question": "What is the national sport of Japan?", "answers": ["Karate", "Judo", "Sumo", "Kendo"], "correct": 2 },
+    { "question": "How many holes are played in a standard round of golf?", "answers": ["9", "12", "18", "21"], "correct": 2 },
+    { "question": "Which boxer was known as 'The Greatest'?", "answers": ["Mike Tyson", "Floyd Mayweather", "Muhammad Ali", "Joe Louis"], "correct": 2 },
+    { "question": "In which year were the first modern Olympic Games held?", "answers": ["1892", "1896", "1900", "1904"], "correct": 1 },
+    { "question": "What sport uses the terms 'birdie' and 'eagle'?", "answers": ["Badminton", "Bowling", "Golf", "Archery"], "correct": 2 },
+    { "question": "Which Formula 1 driver holds the record for most World Championships?", "answers": ["Ayrton Senna", "Michael Schumacher", "Lewis Hamilton", "Sebastian Vettel"], "correct": 2 },
+    { "question": "How many periods are in a standard ice hockey game?", "answers": ["2", "3", "4", "5"], "correct": 1 },
+    { "question": "The Tour de France is a famous race in which sport?", "answers": ["Running", "Swimming", "Cycling", "Motor racing"], "correct": 2 },
+    { "question": "Which country dominates table tennis at the Olympic level?", "answers": ["Japan", "South Korea", "China", "Sweden"], "correct": 2 },
+    { "question": "What is the diameter of a basketball hoop in inches?", "answers": ["16", "18", "20", "22"], "correct": 1 }
+  ]
+}

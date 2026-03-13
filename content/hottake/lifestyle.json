@@ -1,0 +1,26 @@
+{
+  "pack": "Lifestyle",
+  "emoji": "🏠",
+  "questions": [
+    { "question": "Morning person or night owl?", "optionA": "Morning person", "optionB": "Night owl" },
+    { "question": "Would you rather live in the city or the countryside?", "optionA": "City", "optionB": "Countryside" },
+    { "question": "Dogs or cats?", "optionA": "Dogs", "optionB": "Cats" },
+    { "question": "Would you rather work from home forever or in an office forever?", "optionA": "Work from home", "optionB": "Office forever" },
+    { "question": "Beach vacation or mountain vacation?", "optionA": "Beach", "optionB": "Mountains" },
+    { "question": "Would you rather be too hot or too cold?", "optionA": "Too hot", "optionB": "Too cold" },
+    { "question": "Book or movie adaptation?", "optionA": "Book is better", "optionB": "Movie is better" },
+    { "question": "Would you rather have a messy creative mind or a tidy boring mind?", "optionA": "Messy creative", "optionB": "Tidy boring" },
+    { "question": "Would you rather always have to take the stairs or always have to wait for slow elevators?", "optionA": "Always stairs", "optionB": "Slow elevators" },
+    { "question": "Road trip or fly?", "optionA": "Road trip", "optionB": "Fly" },
+    { "question": "Would you rather have no social media or no streaming services?", "optionA": "No social media", "optionB": "No streaming" },
+    { "question": "Bath or shower?", "optionA": "Bath", "optionB": "Shower" },
+    { "question": "Would you rather be an only child or have 5 siblings?", "optionA": "Only child", "optionB": "5 siblings" },
+    { "question": "Window seat or aisle seat?", "optionA": "Window", "optionB": "Aisle" },
+    { "question": "Would you rather always wear formal clothes or always wear pajamas?", "optionA": "Always formal", "optionB": "Always pajamas" },
+    { "question": "Summer or winter?", "optionA": "Summer", "optionB": "Winter" },
+    { "question": "Would you rather have a personal assistant or a self-driving car?", "optionA": "Personal assistant", "optionB": "Self-driving car" },
+    { "question": "Would you rather move to a new country every year or never leave your hometown?", "optionA": "New country yearly", "optionB": "Never leave home" },
+    { "question": "Texting or phone calls?", "optionA": "Texting", "optionB": "Phone calls" },
+    { "question": "Would you rather have more time or more money?", "optionA": "More time", "optionB": "More money" }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "pack": "Classic Survey",
+  "emoji": "👨‍👩‍👧‍👦",
+  "questions": [
+    {
+      "question": "Name something you find in a kitchen",
+      "answers": [
+        { "text": "Refrigerator", "points": 35 },
+        { "text": "Stove", "points": 25 },
+        { "text": "Sink", "points": 20 },
+        { "text": "Microwave", "points": 12 },
+        { "text": "Toaster", "points": 8 }
+      ]
+    },
+    {
+      "question": "Name a reason someone might be late to work",
+      "answers": [
+        { "text": "Traffic", "points": 40 },
+        { "text": "Overslept", "points": 30 },
+        { "text": "Car trouble", "points": 15 },
+        { "text": "Kids", "points": 10 },
+        { "text": "Weather", "points": 5 }
+      ]
+    },
+    {
+      "question": "Name something people lose all the time",
+      "answers": [
+        { "text": "Keys", "points": 35 },
+        { "text": "Phone", "points": 25 },
+        { "text": "Wallet", "points": 20 },
+        { "text": "Remote control", "points": 12 },
+        { "text": "Socks", "points": 8 }
+      ]
+    },
+    {
+      "question": "Name an animal you might see at the zoo",
+      "answers": [
+        { "text": "Lion", "points": 30 },
+        { "text": "Elephant", "points": 25 },
+        { "text": "Monkey", "points": 20 },
+        { "text": "Giraffe", "points": 15 },
+        { "text": "Tiger", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name something people do on their birthday",
+      "answers": [
+        { "text": "Eat cake", "points": 35 },
+        { "text": "Open presents", "points": 25 },
+        { "text": "Have a party", "points": 20 },
+        { "text": "Go out to dinner", "points": 12 },
+        { "text": "Blow out candles", "points": 8 }
+      ]
+    },
+    {
+      "question": "Name a topping people put on pizza",
+      "answers": [
+        { "text": "Pepperoni", "points": 40 },
+        { "text": "Mushrooms", "points": 20 },
+        { "text": "Sausage", "points": 15 },
+        { "text": "Olives", "points": 13 },
+        { "text": "Peppers", "points": 12 }
+      ]
+    },
+    {
+      "question": "Name something you take to the beach",
+      "answers": [
+        { "text": "Towel", "points": 35 },
+        { "text": "Sunscreen", "points": 25 },
+        { "text": "Umbrella", "points": 18 },
+        { "text": "Cooler", "points": 12 },
+        { "text": "Beach chair", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name a holiday where people give gifts",
+      "answers": [
+        { "text": "Christmas", "points": 50 },
+        { "text": "Birthday", "points": 20 },
+        { "text": "Valentine's Day", "points": 15 },
+        { "text": "Mother's Day", "points": 10 },
+        { "text": "Easter", "points": 5 }
+      ]
+    },
+    {
+      "question": "Name something you would find in a classroom",
+      "answers": [
+        { "text": "Desk", "points": 30 },
+        { "text": "Whiteboard", "points": 25 },
+        { "text": "Books", "points": 20 },
+        { "text": "Teacher", "points": 15 },
+        { "text": "Clock", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name a reason people call in sick to work",
+      "answers": [
+        { "text": "Cold or flu", "points": 40 },
+        { "text": "Stomach bug", "points": 20 },
+        { "text": "Headache", "points": 15 },
+        { "text": "Mental health day", "points": 15 },
+        { "text": "Doctor appointment", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name something you associate with a cowboy",
+      "answers": [
+        { "text": "Hat", "points": 35 },
+        { "text": "Horse", "points": 25 },
+        { "text": "Boots", "points": 18 },
+        { "text": "Lasso", "points": 12 },
+        { "text": "Gun", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name something people collect",
+      "answers": [
+        { "text": "Stamps", "points": 30 },
+        { "text": "Coins", "points": 25 },
+        { "text": "Cards", "points": 20 },
+        { "text": "Action figures", "points": 15 },
+        { "text": "Vinyl records", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name a job kids say they want when they grow up",
+      "answers": [
+        { "text": "Doctor", "points": 30 },
+        { "text": "Firefighter", "points": 25 },
+        { "text": "Astronaut", "points": 20 },
+        { "text": "Teacher", "points": 15 },
+        { "text": "Athlete", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name something you do before going to bed",
+      "answers": [
+        { "text": "Brush teeth", "points": 35 },
+        { "text": "Read", "points": 20 },
+        { "text": "Watch TV", "points": 20 },
+        { "text": "Check phone", "points": 15 },
+        { "text": "Set alarm", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name something that runs on batteries",
+      "answers": [
+        { "text": "Remote control", "points": 35 },
+        { "text": "Flashlight", "points": 25 },
+        { "text": "Toy", "points": 18 },
+        { "text": "Clock", "points": 12 },
+        { "text": "Smoke detector", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name a type of sandwich",
+      "answers": [
+        { "text": "Peanut butter and jelly", "points": 30 },
+        { "text": "Ham and cheese", "points": 25 },
+        { "text": "BLT", "points": 20 },
+        { "text": "Turkey", "points": 15 },
+        { "text": "Grilled cheese", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name something that makes noise in the morning",
+      "answers": [
+        { "text": "Alarm clock", "points": 40 },
+        { "text": "Birds", "points": 25 },
+        { "text": "Traffic", "points": 15 },
+        { "text": "Coffee maker", "points": 12 },
+        { "text": "Neighbor", "points": 8 }
+      ]
+    },
+    {
+      "question": "Name something you might forget to bring on a trip",
+      "answers": [
+        { "text": "Toothbrush", "points": 30 },
+        { "text": "Phone charger", "points": 25 },
+        { "text": "Underwear", "points": 18 },
+        { "text": "Medication", "points": 15 },
+        { "text": "Passport", "points": 12 }
+      ]
+    },
+    {
+      "question": "Name a yellow fruit",
+      "answers": [
+        { "text": "Banana", "points": 50 },
+        { "text": "Lemon", "points": 25 },
+        { "text": "Pineapple", "points": 12 },
+        { "text": "Mango", "points": 8 },
+        { "text": "Starfruit", "points": 5 }
+      ]
+    },
+    {
+      "question": "Name something people are afraid of",
+      "answers": [
+        { "text": "Spiders", "points": 30 },
+        { "text": "Heights", "points": 25 },
+        { "text": "Snakes", "points": 20 },
+        { "text": "Public speaking", "points": 15 },
+        { "text": "The dark", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name a sport played with a ball",
+      "answers": [
+        { "text": "Football", "points": 30 },
+        { "text": "Basketball", "points": 25 },
+        { "text": "Baseball", "points": 20 },
+        { "text": "Soccer", "points": 15 },
+        { "text": "Tennis", "points": 10 }
+      ]
+    }
+  ]
+}

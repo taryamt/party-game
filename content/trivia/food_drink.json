@@ -1,0 +1,26 @@
+{
+  "pack": "Food & Drink",
+  "emoji": "🍽️",
+  "questions": [
+    { "question": "What is the main ingredient in guacamole?", "answers": ["Tomato", "Avocado", "Lime", "Jalapeño"], "correct": 1 },
+    { "question": "Which country is the origin of sushi?", "answers": ["China", "Korea", "Thailand", "Japan"], "correct": 3 },
+    { "question": "What type of pasta is shaped like little ears?", "answers": ["Farfalle", "Orecchiette", "Penne", "Rigatoni"], "correct": 1 },
+    { "question": "What is the most consumed beverage in the world after water?", "answers": ["Coffee", "Tea", "Beer", "Milk"], "correct": 1 },
+    { "question": "Saffron comes from which type of flower?", "answers": ["Rose", "Sunflower", "Crocus", "Lavender"], "correct": 2 },
+    { "question": "Which fruit is known as the 'king of fruits' in Southeast Asia?", "answers": ["Mango", "Jackfruit", "Durian", "Papaya"], "correct": 2 },
+    { "question": "What is the primary grain used to make sake?", "answers": ["Wheat", "Barley", "Rice", "Corn"], "correct": 2 },
+    { "question": "Which cheese is traditionally used on a Margherita pizza?", "answers": ["Cheddar", "Parmesan", "Mozzarella", "Provolone"], "correct": 2 },
+    { "question": "What gives bread its rise?", "answers": ["Baking soda", "Salt", "Sugar", "Yeast"], "correct": 3 },
+    { "question": "Which spice is the most expensive by weight?", "answers": ["Vanilla", "Saffron", "Cardamom", "Cinnamon"], "correct": 1 },
+    { "question": "Kimchi is a traditional fermented dish from which country?", "answers": ["Japan", "China", "South Korea", "Vietnam"], "correct": 2 },
+    { "question": "What type of nut is used to make marzipan?", "answers": ["Cashew", "Walnut", "Pistachio", "Almond"], "correct": 3 },
+    { "question": "Which country produces the most coffee in the world?", "answers": ["Colombia", "Ethiopia", "Vietnam", "Brazil"], "correct": 3 },
+    { "question": "What is the French term for a chef's tall white hat?", "answers": ["Chapeau", "Toque", "Béret", "Bonnet"], "correct": 1 },
+    { "question": "Which vitamin is abundant in citrus fruits?", "answers": ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin D"], "correct": 2 },
+    { "question": "What spirit is the base of a classic margarita?", "answers": ["Rum", "Vodka", "Gin", "Tequila"], "correct": 3 },
+    { "question": "Which region of France is famous for its sparkling wine?", "answers": ["Bordeaux", "Burgundy", "Champagne", "Provence"], "correct": 2 },
+    { "question": "Tofu is made from which bean?", "answers": ["Kidney bean", "Soybean", "Black bean", "Chickpea"], "correct": 1 },
+    { "question": "What is the name for Japanese horseradish?", "answers": ["Miso", "Wasabi", "Ponzu", "Dashi"], "correct": 1 },
+    { "question": "Which country is the world's largest producer of olive oil?", "answers": ["Italy", "Greece", "Spain", "Turkey"], "correct": 2 }
+  ]
+}

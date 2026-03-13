@@ -1,0 +1,31 @@
+{
+  "pack": "School & Work",
+  "emoji": "📝",
+  "questions": [
+    { "question": "Which is the better work setup?", "optionA": "Work from home", "optionB": "Work from the office" },
+    { "question": "Which is more stressful?", "optionA": "Group projects", "optionB": "Solo presentations" },
+    { "question": "Which study method is superior?", "optionA": "Cramming the night before", "optionB": "Studying a little bit each day" },
+    { "question": "Which boss is better to work for?", "optionA": "Hands-off boss who trusts you completely", "optionB": "Involved boss who mentors you closely" },
+    { "question": "Which is worse?", "optionA": "A meeting that could have been an email", "optionB": "An email chain that should have been a meeting" },
+    { "question": "Which is more important for career success?", "optionA": "Being really skilled at your job", "optionB": "Being great at networking" },
+    { "question": "Which school schedule is better?", "optionA": "Early start, done by 2 PM", "optionB": "Late start, done by 5 PM" },
+    { "question": "Which work perk matters more?", "optionA": "Higher salary", "optionB": "More vacation days" },
+    { "question": "Which is the better career path?", "optionA": "Passion job with okay pay", "optionB": "Okay job with great pay" },
+    { "question": "Which is worse on a Monday?", "optionA": "Back-to-back meetings all day", "optionB": "A huge pile of unread emails" },
+    { "question": "Which lunch break is better?", "optionA": "Eating at your desk to leave early", "optionB": "Taking a full break away from work" },
+    { "question": "Which coworker is harder to deal with?", "optionA": "One who takes credit for your work", "optionB": "One who never pulls their weight" },
+    { "question": "Which is the better note-taking method?", "optionA": "Handwritten notes", "optionB": "Typed digital notes" },
+    { "question": "Which homework policy is better?", "optionA": "Lots of small assignments", "optionB": "A few big projects" },
+    { "question": "Which is more valuable?", "optionA": "College degree", "optionB": "Real-world work experience" },
+    { "question": "Which workplace vibe is better?", "optionA": "Quiet focused environment", "optionB": "Social collaborative environment" },
+    { "question": "Which is the worse school day?", "optionA": "Pop quiz you didn't study for", "optionB": "Presentation you forgot about" },
+    { "question": "Which email sign-off is better?", "optionA": "Best regards", "optionB": "Thanks" },
+    { "question": "Which is more motivating?", "optionA": "Fear of failure", "optionB": "Desire for success" },
+    { "question": "Which is the better team structure?", "optionA": "Clear hierarchy with defined roles", "optionB": "Flat structure where everyone contributes equally" },
+    { "question": "Which is worse in a job interview?", "optionA": "Being overdressed", "optionB": "Being underdressed" },
+    { "question": "Which work communication is better?", "optionA": "Quick Slack messages throughout the day", "optionB": "One detailed email summary" },
+    { "question": "Which is more productive?", "optionA": "Strict daily schedule", "optionB": "Flexible work-when-inspired approach" },
+    { "question": "Which teacher style is better?", "optionA": "Strict but you learn a lot", "optionB": "Chill but you have to self-motivate" },
+    { "question": "Which is the better Friday?", "optionA": "Casual Friday with less work", "optionB": "Grind Friday to have a stress-free weekend" }
+  ]
+}

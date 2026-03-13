@@ -1,0 +1,26 @@
+{
+  "pack": "2000s Movies",
+  "emoji": "🎬",
+  "questions": [
+    { "question": "Which film won the Best Picture Oscar in 2004?", "answers": ["Lost in Translation", "The Lord of the Rings: The Return of the King", "Mystic River", "Master and Commander"], "correct": 1 },
+    { "question": "Who directed the movie 'Inception' (2010)?", "answers": ["Steven Spielberg", "Ridley Scott", "Christopher Nolan", "James Cameron"], "correct": 2 },
+    { "question": "In 'Finding Nemo' (2003), what type of fish is Nemo?", "answers": ["Blue tang", "Clownfish", "Goldfish", "Angelfish"], "correct": 1 },
+    { "question": "Which actor played Jack Sparrow in 'Pirates of the Caribbean'?", "answers": ["Orlando Bloom", "Johnny Depp", "Geoffrey Rush", "Javier Bardem"], "correct": 1 },
+    { "question": "What year was the first 'Iron Man' movie released?", "answers": ["2006", "2007", "2008", "2009"], "correct": 2 },
+    { "question": "Which animated film features a rat who dreams of becoming a chef in Paris?", "answers": ["Up", "Ratatouille", "WALL-E", "Monsters, Inc."], "correct": 1 },
+    { "question": "In 'The Dark Knight' (2008), who played the Joker?", "answers": ["Jack Nicholson", "Jared Leto", "Joaquin Phoenix", "Heath Ledger"], "correct": 3 },
+    { "question": "Which 2009 film became the highest-grossing movie of all time?", "answers": ["The Dark Knight", "Avatar", "Transformers", "Harry Potter and the Half-Blood Prince"], "correct": 1 },
+    { "question": "What is the name of the fictional country in 'Black Panther'?", "answers": ["Zamunda", "Wakanda", "Genovia", "Latveria"], "correct": 1 },
+    { "question": "Who directed 'Kill Bill: Volume 1' (2003)?", "answers": ["Martin Scorsese", "Quentin Tarantino", "Robert Rodriguez", "David Fincher"], "correct": 1 },
+    { "question": "Which 2001 film features a boy who can see dead people?", "answers": ["The Others", "The Ring", "The Sixth Sense", "Donnie Darko"], "correct": 2 },
+    { "question": "In 'Gladiator' (2000), who plays the main character Maximus?", "answers": ["Brad Pitt", "Russell Crowe", "Gerard Butler", "Eric Bana"], "correct": 1 },
+    { "question": "What is the subtitle of the second 'Lord of the Rings' film?", "answers": ["The Fellowship of the Ring", "The Two Towers", "The Return of the King", "The Desolation of Smaug"], "correct": 1 },
+    { "question": "Which Pixar film features a house lifted by thousands of balloons?", "answers": ["Inside Out", "Up", "Brave", "Coco"], "correct": 1 },
+    { "question": "Who played the lead role in 'Slumdog Millionaire' (2008)?", "answers": ["Riz Ahmed", "Dev Patel", "Irrfan Khan", "Anil Kapoor"], "correct": 1 },
+    { "question": "In 'The Matrix Reloaded' (2003), what is Neo's real name?", "answers": ["Thomas Anderson", "John Smith", "Daniel Reed", "Michael Cole"], "correct": 0 },
+    { "question": "Which 2007 Coen Brothers film won four Academy Awards?", "answers": ["Fargo", "True Grit", "No Country for Old Men", "Burn After Reading"], "correct": 2 },
+    { "question": "What is the name of the robot in 'WALL-E' (2008) that WALL-E falls in love with?", "answers": ["AVA", "EVE", "ANA", "ELA"], "correct": 1 },
+    { "question": "Which superhero film was released first: 'Spider-Man' or 'X-Men'?", "answers": ["Spider-Man (2002)", "X-Men (2000)", "They released the same year", "Neither is from the 2000s"], "correct": 1 },
+    { "question": "Who voiced Shrek in the 'Shrek' films?", "answers": ["Jack Black", "Mike Myers", "Eddie Murphy", "Adam Sandler"], "correct": 1 }
+  ]
+}

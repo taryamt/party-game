@@ -1,0 +1,31 @@
+{
+  "pack": "Technology",
+  "emoji": "💻",
+  "questions": [
+    { "question": "Which is better?", "optionA": "iPhone", "optionB": "Android" },
+    { "question": "Which is more important for a phone?", "optionA": "Amazing camera", "optionB": "Amazing battery life" },
+    { "question": "Which work setup is superior?", "optionA": "One ultrawide monitor", "optionB": "Dual monitors" },
+    { "question": "Which is more useful?", "optionA": "Smartwatch", "optionB": "Wireless earbuds" },
+    { "question": "Which is worse?", "optionA": "Slow internet", "optionB": "Low phone battery" },
+    { "question": "Which keyboard is better?", "optionA": "Mechanical keyboard", "optionB": "Quiet membrane keyboard" },
+    { "question": "Which is more trustworthy with your data?", "optionA": "Apple", "optionB": "Google" },
+    { "question": "Which social media era was better?", "optionA": "Early social media (2008-2014)", "optionB": "Modern social media" },
+    { "question": "Which is the better gaming platform?", "optionA": "PC", "optionB": "Console" },
+    { "question": "Which is more annoying?", "optionA": "Software update notifications", "optionB": "Cookie consent popups" },
+    { "question": "Which matters more in a laptop?", "optionA": "Lightweight and portable", "optionB": "Powerful with big screen" },
+    { "question": "Which is the better password strategy?", "optionA": "Password manager", "optionB": "Memorize a few strong passwords" },
+    { "question": "Which future tech is more exciting?", "optionA": "Self-driving cars everywhere", "optionB": "Fully immersive VR" },
+    { "question": "Which is more productive?", "optionA": "Working with music on", "optionB": "Working in silence" },
+    { "question": "Which is the better smart home device?", "optionA": "Smart speaker assistant", "optionB": "Smart lighting system" },
+    { "question": "Which messaging style is better?", "optionA": "Voice messages", "optionB": "Text messages" },
+    { "question": "Which is more concerning?", "optionA": "AI getting too smart", "optionB": "Too much screen time for kids" },
+    { "question": "Which is the better file sharing method?", "optionA": "Cloud storage links", "optionB": "AirDrop / nearby share" },
+    { "question": "Which notification setting is better?", "optionA": "All notifications on", "optionB": "Almost everything silenced" },
+    { "question": "Which is worse to forget at home?", "optionA": "Your phone", "optionB": "Your laptop" },
+    { "question": "Which is the better video call etiquette?", "optionA": "Camera always on", "optionB": "Camera off is fine" },
+    { "question": "Which streaming model is better?", "optionA": "One subscription with everything", "optionB": "Multiple cheaper specialized services" },
+    { "question": "Which is the better way to read?", "optionA": "E-reader / tablet", "optionB": "Physical books" },
+    { "question": "Which is more impressive tech?", "optionA": "Space exploration technology", "optionB": "Medical technology advances" },
+    { "question": "Which old tech do you miss most?", "optionA": "Phones with physical keyboards", "optionB": "Devices with headphone jacks" }
+  ]
+}

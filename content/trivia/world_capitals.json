@@ -1,0 +1,26 @@
+{
+  "pack": "World Capitals",
+  "emoji": "🌍",
+  "questions": [
+    { "question": "What is the capital of Australia?", "answers": ["Sydney", "Melbourne", "Canberra", "Brisbane"], "correct": 2 },
+    { "question": "What is the capital of Canada?", "answers": ["Toronto", "Vancouver", "Montreal", "Ottawa"], "correct": 3 },
+    { "question": "What is the capital of Brazil?", "answers": ["Rio de Janeiro", "Brasilia", "Sao Paulo", "Salvador"], "correct": 1 },
+    { "question": "What is the capital of Japan?", "answers": ["Osaka", "Kyoto", "Tokyo", "Yokohama"], "correct": 2 },
+    { "question": "What is the capital of Turkey?", "answers": ["Istanbul", "Ankara", "Izmir", "Antalya"], "correct": 1 },
+    { "question": "What is the capital of South Africa? (Legislative)", "answers": ["Johannesburg", "Pretoria", "Cape Town", "Durban"], "correct": 2 },
+    { "question": "What is the capital of New Zealand?", "answers": ["Auckland", "Christchurch", "Wellington", "Hamilton"], "correct": 2 },
+    { "question": "What is the capital of Egypt?", "answers": ["Alexandria", "Cairo", "Luxor", "Giza"], "correct": 1 },
+    { "question": "What is the capital of Switzerland?", "answers": ["Zurich", "Geneva", "Bern", "Basel"], "correct": 2 },
+    { "question": "What is the capital of India?", "answers": ["Mumbai", "Kolkata", "New Delhi", "Bangalore"], "correct": 2 },
+    { "question": "What is the capital of Morocco?", "answers": ["Casablanca", "Marrakech", "Rabat", "Fez"], "correct": 2 },
+    { "question": "What is the capital of Thailand?", "answers": ["Chiang Mai", "Phuket", "Bangkok", "Pattaya"], "correct": 2 },
+    { "question": "What is the capital of Nigeria?", "answers": ["Lagos", "Abuja", "Kano", "Port Harcourt"], "correct": 1 },
+    { "question": "What is the capital of South Korea?", "answers": ["Busan", "Seoul", "Incheon", "Daegu"], "correct": 1 },
+    { "question": "What is the capital of Vietnam?", "answers": ["Ho Chi Minh City", "Da Nang", "Hanoi", "Hue"], "correct": 2 },
+    { "question": "What is the capital of Myanmar?", "answers": ["Yangon", "Mandalay", "Naypyidaw", "Bagan"], "correct": 2 },
+    { "question": "What is the capital of Scotland?", "answers": ["Glasgow", "Edinburgh", "Aberdeen", "Dundee"], "correct": 1 },
+    { "question": "What is the capital of Pakistan?", "answers": ["Karachi", "Lahore", "Islamabad", "Peshawar"], "correct": 2 },
+    { "question": "What is the capital of Argentina?", "answers": ["Cordoba", "Rosario", "Mendoza", "Buenos Aires"], "correct": 3 },
+    { "question": "What is the capital of Poland?", "answers": ["Krakow", "Warsaw", "Gdansk", "Wroclaw"], "correct": 1 }
+  ]
+}

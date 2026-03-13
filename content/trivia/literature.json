@@ -1,0 +1,26 @@
+{
+  "pack": "Literature",
+  "emoji": "📚",
+  "questions": [
+    { "question": "Who wrote 'Romeo and Juliet'?", "answers": ["Christopher Marlowe", "William Shakespeare", "Ben Jonson", "John Milton"], "correct": 1 },
+    { "question": "In which language was 'Don Quixote' originally written?", "answers": ["Portuguese", "Italian", "French", "Spanish"], "correct": 3 },
+    { "question": "Who is the author of '1984'?", "answers": ["Aldous Huxley", "George Orwell", "Ray Bradbury", "H.G. Wells"], "correct": 1 },
+    { "question": "What is the name of the wizard school in Harry Potter?", "answers": ["Durmstrang", "Beauxbatons", "Hogwarts", "Ilvermorny"], "correct": 2 },
+    { "question": "Which novel begins with the line 'Call me Ishmael'?", "answers": ["Moby-Dick", "The Old Man and the Sea", "Treasure Island", "Robinson Crusoe"], "correct": 0 },
+    { "question": "Who wrote 'Pride and Prejudice'?", "answers": ["Charlotte Brontë", "Jane Austen", "Mary Shelley", "Emily Brontë"], "correct": 1 },
+    { "question": "What is the name of Sherlock Holmes's companion?", "answers": ["Dr. Watson", "Inspector Lestrade", "Mycroft Holmes", "Professor Moriarty"], "correct": 0 },
+    { "question": "Which author created the character of Hercule Poirot?", "answers": ["Arthur Conan Doyle", "Dorothy L. Sayers", "Agatha Christie", "P.D. James"], "correct": 2 },
+    { "question": "In 'The Lord of the Rings', what is the name of Frodo's home region?", "answers": ["Rivendell", "Rohan", "The Shire", "Gondor"], "correct": 2 },
+    { "question": "Who wrote 'The Great Gatsby'?", "answers": ["Ernest Hemingway", "F. Scott Fitzgerald", "John Steinbeck", "William Faulkner"], "correct": 1 },
+    { "question": "Which Greek epic poem tells the story of the Trojan War?", "answers": ["The Odyssey", "The Aeneid", "The Iliad", "Metamorphoses"], "correct": 2 },
+    { "question": "What is the pen name of Samuel Clemens?", "answers": ["O. Henry", "Mark Twain", "Lewis Carroll", "George Eliot"], "correct": 1 },
+    { "question": "Who wrote 'One Hundred Years of Solitude'?", "answers": ["Pablo Neruda", "Isabel Allende", "Gabriel García Márquez", "Jorge Luis Borges"], "correct": 2 },
+    { "question": "In which century was 'The Canterbury Tales' written?", "answers": ["12th century", "13th century", "14th century", "15th century"], "correct": 2 },
+    { "question": "Who is the author of 'The Catcher in the Rye'?", "answers": ["Kurt Vonnegut", "Jack Kerouac", "J.D. Salinger", "Philip Roth"], "correct": 2 },
+    { "question": "What is the longest novel ever published (by word count)?", "answers": ["War and Peace", "In Search of Lost Time", "Les Misérables", "A Suitable Boy"], "correct": 1 },
+    { "question": "Which dystopian novel features a society divided into factions?", "answers": ["The Hunger Games", "Divergent", "The Maze Runner", "The Giver"], "correct": 1 },
+    { "question": "Who wrote 'Crime and Punishment'?", "answers": ["Leo Tolstoy", "Fyodor Dostoevsky", "Anton Chekhov", "Ivan Turgenev"], "correct": 1 },
+    { "question": "What type of creature is Smaug in 'The Hobbit'?", "answers": ["Giant spider", "Troll", "Dragon", "Balrog"], "correct": 2 },
+    { "question": "Which Nobel Prize-winning author wrote 'Beloved'?", "answers": ["Alice Walker", "Toni Morrison", "Maya Angelou", "Zora Neale Hurston"], "correct": 1 }
+  ]
+}

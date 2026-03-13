@@ -1,0 +1,19 @@
+{
+  "name": "party-games",
+  "version": "1.0.0",
+  "description": "Party games for game nights — play locally or online",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1",
+    "qrcode-generator": "^2.0.4",
+    "socket.io": "^4.8.3"
+  }
+}

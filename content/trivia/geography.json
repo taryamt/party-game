@@ -1,0 +1,26 @@
+{
+  "pack": "Geography",
+  "emoji": "🗺️",
+  "questions": [
+    { "question": "What is the longest river in the world?", "answers": ["Amazon", "Nile", "Yangtze", "Mississippi"], "correct": 1 },
+    { "question": "Which country has the most natural lakes?", "answers": ["United States", "Russia", "Canada", "Finland"], "correct": 2 },
+    { "question": "What is the smallest country in the world by area?", "answers": ["Monaco", "San Marino", "Vatican City", "Liechtenstein"], "correct": 2 },
+    { "question": "Mount Kilimanjaro is located in which country?", "answers": ["Kenya", "Uganda", "Tanzania", "Ethiopia"], "correct": 2 },
+    { "question": "Which ocean is the deepest?", "answers": ["Atlantic", "Indian", "Arctic", "Pacific"], "correct": 3 },
+    { "question": "What is the capital of Australia?", "answers": ["Sydney", "Melbourne", "Canberra", "Brisbane"], "correct": 2 },
+    { "question": "The Sahara Desert is located on which continent?", "answers": ["Asia", "Africa", "South America", "Australia"], "correct": 1 },
+    { "question": "Which country is home to the Great Barrier Reef?", "answers": ["Indonesia", "Philippines", "Australia", "Fiji"], "correct": 2 },
+    { "question": "What is the most populous city in the world?", "answers": ["Shanghai", "Delhi", "Tokyo", "São Paulo"], "correct": 2 },
+    { "question": "Which river flows through Paris?", "answers": ["Rhine", "Danube", "Thames", "Seine"], "correct": 3 },
+    { "question": "What is the largest island in the world?", "answers": ["Borneo", "Madagascar", "Greenland", "New Guinea"], "correct": 2 },
+    { "question": "Which European country has the longest coastline?", "answers": ["Greece", "Norway", "Italy", "United Kingdom"], "correct": 1 },
+    { "question": "The Dead Sea borders Jordan and which other country?", "answers": ["Syria", "Lebanon", "Israel", "Egypt"], "correct": 2 },
+    { "question": "What is the driest inhabited continent?", "answers": ["Africa", "Australia", "South America", "Asia"], "correct": 1 },
+    { "question": "Which strait separates Europe from Africa?", "answers": ["Strait of Hormuz", "Strait of Malacca", "Bosphorus", "Strait of Gibraltar"], "correct": 3 },
+    { "question": "How many time zones does Russia span?", "answers": ["9", "10", "11", "12"], "correct": 2 },
+    { "question": "Which country is known as the Land of the Rising Sun?", "answers": ["China", "South Korea", "Thailand", "Japan"], "correct": 3 },
+    { "question": "What mountain range separates Europe from Asia?", "answers": ["Alps", "Himalayas", "Ural Mountains", "Caucasus"], "correct": 2 },
+    { "question": "Lake Titicaca is located on the border of Peru and which country?", "answers": ["Chile", "Ecuador", "Bolivia", "Colombia"], "correct": 2 },
+    { "question": "Which African country has the largest population?", "answers": ["Ethiopia", "Egypt", "South Africa", "Nigeria"], "correct": 3 }
+  ]
+}

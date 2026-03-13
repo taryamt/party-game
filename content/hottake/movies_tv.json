@@ -1,0 +1,31 @@
+{
+  "pack": "Movies & TV",
+  "emoji": "🎬",
+  "questions": [
+    { "question": "Which is the better movie experience?", "optionA": "Watching in theaters", "optionB": "Watching at home" },
+    { "question": "Which makes a better series finale?", "optionA": "Happy ending that wraps everything up", "optionB": "Ambiguous ending left to interpretation" },
+    { "question": "Which is more rewatchable?", "optionA": "Comedies", "optionB": "Action movies" },
+    { "question": "Which is the better villain type?", "optionA": "Villain who thinks they're the hero", "optionB": "Villain who knows they're evil and loves it" },
+    { "question": "Which is worse?", "optionA": "A bad remake of a great movie", "optionB": "A terrible sequel to a great movie" },
+    { "question": "Which do you prefer in a movie?", "optionA": "Amazing plot with average acting", "optionB": "Average plot with amazing acting" },
+    { "question": "Which binge strategy is better?", "optionA": "Watch entire season in one sitting", "optionB": "One episode per day to savor it" },
+    { "question": "Which is the better twist?", "optionA": "The hero was the villain all along", "optionB": "The villain was right all along" },
+    { "question": "Which movie snack is superior?", "optionA": "Popcorn", "optionB": "Candy" },
+    { "question": "Which is more important in a movie?", "optionA": "Great soundtrack", "optionB": "Great cinematography" },
+    { "question": "Which is more enjoyable?", "optionA": "Watching a movie you know nothing about", "optionB": "Watching a movie you've seen every trailer for" },
+    { "question": "Which is the better format?", "optionA": "A tight 90-minute movie", "optionB": "An epic 3-hour movie" },
+    { "question": "Which character type is more interesting?", "optionA": "Lovable anti-hero", "optionB": "Morally gray protagonist" },
+    { "question": "Which is better?", "optionA": "A show that ends too soon but perfectly", "optionB": "A show that runs long but has more content" },
+    { "question": "Which adaptation is harder to get right?", "optionA": "Book to movie", "optionB": "Video game to movie" },
+    { "question": "Which is the better plot device?", "optionA": "Time travel", "optionB": "Alternate dimensions" },
+    { "question": "Which genre has the best rewatchability?", "optionA": "Horror", "optionB": "Sci-fi" },
+    { "question": "Which is more annoying?", "optionA": "Spoiling a movie ending", "optionB": "Talking during a movie" },
+    { "question": "Which makes a show better?", "optionA": "Will-they-won't-they romance", "optionB": "Couple that gets together early" },
+    { "question": "Which is the superior animated movie studio?", "optionA": "Pixar", "optionB": "Studio Ghibli" },
+    { "question": "Which do you prefer?", "optionA": "Subtitles on foreign films", "optionB": "Dubbed foreign films" },
+    { "question": "Which is more satisfying?", "optionA": "Protagonist wins through skill", "optionB": "Protagonist wins through cleverness" },
+    { "question": "Which reality TV format is better?", "optionA": "Competition shows", "optionB": "Drama/dating shows" },
+    { "question": "Which is more important for a TV show?", "optionA": "Strong first episode", "optionB": "Strong first season" },
+    { "question": "Which is the better movie era?", "optionA": "Practical effects era", "optionB": "Modern CGI era" }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "pack": "Food & Drinks",
+  "emoji": "🍕",
+  "rounds": [
+    { "word": "pizza", "hint": "the ultimate sharing circle", "difficulty": "easy" },
+    { "word": "sushi", "hint": "a tiny roll of perfection", "difficulty": "easy" },
+    { "word": "avocado", "hint": "millennials can't buy houses because of it", "difficulty": "easy" },
+    { "word": "chocolate", "hint": "the cure for a bad day", "difficulty": "easy" },
+    { "word": "pretzel", "hint": "a twisted snack", "difficulty": "easy" },
+    { "word": "pancake", "hint": "flat, stacked, and covered in syrup", "difficulty": "easy" },
+    { "word": "taco", "hint": "fold it, don't break it", "difficulty": "easy" },
+    { "word": "popcorn", "hint": "the soundtrack of a movie theater", "difficulty": "easy" },
+    { "word": "watermelon", "hint": "summer in fruit form", "difficulty": "easy" },
+    { "word": "espresso", "hint": "a tiny cup of energy", "difficulty": "medium" },
+    { "word": "mango", "hint": "the king of tropical flavors", "difficulty": "easy" },
+    { "word": "bacon", "hint": "makes everything better", "difficulty": "easy" },
+    { "word": "croissant", "hint": "buttery and crescent-shaped", "difficulty": "medium" },
+    { "word": "wasabi", "hint": "clears your sinuses instantly", "difficulty": "medium" },
+    { "word": "burrito", "hint": "a wrapped-up meal you hold in one hand", "difficulty": "easy" },
+    { "word": "boba", "hint": "chewy balls in a drink", "difficulty": "medium" },
+    { "word": "fondue", "hint": "everything tastes better dipped in it", "difficulty": "hard" },
+    { "word": "sriracha", "hint": "the rooster on the bottle", "difficulty": "medium" },
+    { "word": "dumpling", "hint": "a pocket of filling", "difficulty": "easy" },
+    { "word": "cinnamon", "hint": "a spice that smells like the holidays", "difficulty": "easy" }
+  ]
+}

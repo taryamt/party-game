@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Join Game — Party Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0e27; --bg-glow: #1a1f4e; --surface: #141833; --surface2: #1e2344;
+      --accent: #FFD166; --secondary: #EF6351; --green: #06D6A0; --red: #EF4444; --cyan: #06b6d4;
+      --text: #FFF8EE; --text-dim: #a0a4b8; --radius: 16px; --gold: #FFD166;
+      --font-heading: 'Syne', sans-serif; --font-body: 'DM Sans', sans-serif;
+    }
+    html, body { height: 100%; font-family: var(--font-body); background: radial-gradient(ellipse at 50% 30%, var(--bg-glow) 0%, var(--bg) 70%); color: var(--text); overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+    .container { position: relative; z-index: 1; max-width: 420px; margin: 0 auto; padding: 20px 16px; min-height: 100%; display: flex; flex-direction: column; }
+    .screen { display: none; flex-direction: column; align-items: center; text-align: center; flex: 1; animation: fadeIn 0.3s ease; }
+    .screen.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    h1 { font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+    h2 { font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+    .subtitle { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 20px; }
+
+    /* Join form */
+    .join-logo { font-size: 2.5rem; margin: 20px 0 6px; }
+    .code-inputs { display: flex; gap: 10px; margin: 16px 0; justify-content: center; }
+    .code-char { width: 52px; height: 60px; background: var(--surface); border: 2px solid var(--surface2); border-radius: 12px; color: var(--accent); font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; text-align: center; text-transform: uppercase; outline: none; transition: border-color 0.2s; }
+    .code-char:focus { border-color: var(--accent); }
+    .name-input { width: 100%; max-width: 280px; padding: 12px 16px; background: var(--surface); border: 2px solid var(--surface2); border-radius: var(--radius); color: var(--text); font-family: var(--font-body); font-size: 1rem; text-align: center; outline: none; margin-bottom: 8px; transition: border-color 0.2s; }
+    .name-input:focus { border-color: var(--accent); }
+    .name-input::placeholder { color: var(--text-dim); }
+
+    /* Avatar picker */
+    .avatar-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+    .avatar-pick { font-size: 1.5rem; padding: 6px 8px; background: var(--surface); border: 2px solid var(--surface2); border-radius: 10px; cursor: pointer; transition: all 0.15s; }
+    .avatar-pick.selected { border-color: var(--accent); background: rgba(255,209,102,0.15); transform: scale(1.15); }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 28px; border: none; border-radius: var(--radius); font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: transform 0.1s; color: var(--bg); width: 100%; max-width: 280px; }
+    .btn:active { transform: translateY(3px); }
+    .btn-gold { background: var(--accent); box-shadow: 0 4px 0 #c9a230; }
+    .btn-green { background: var(--green); box-shadow: 0 4px 0 #04a87d; }
+    .btn-red { background: var(--secondary); box-shadow: 0 4px 0 #c44a3c; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .error-msg { color: var(--red); font-size: 0.85rem; margin-top: 6px; min-height: 1.2em; }
+
+    /* Waiting room */
+    .pulse-dot { width: 14px; height: 14px; background: var(--accent); border-radius: 50%; margin: 20px auto 12px; animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.5; } }
+    .player-list { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 12px 0; max-width: 320px; }
+    .p-chip { padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: var(--bg); }
+    .p-chip.me { border: 2px solid var(--accent); }
+    .p-chip.disconnected { opacity: 0.4; }
+
+    /* Clue card */
+    .clue-card { background: var(--surface); border-radius: var(--radius); padding: 28px 20px; margin: 16px 0; width: 100%; max-width: 340px; }
+    .clue-label { font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .clue-word { font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: var(--accent); margin-bottom: 6px; }
+    .clue-hint { color: var(--text-dim); font-size: 0.9rem; font-style: italic; }
+    .clue-role { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; padding: 6px 18px; border-radius: 12px; display: inline-block; margin-top: 8px; }
+    .role-crew { background: var(--green); color: var(--bg); }
+    .role-imposter { background: #C1121F; color: white; }
+
+    /* Vote/answer grids */
+    .vote-grid, .answer-grid { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 340px; margin: 12px 0; }
+    .vote-btn, .answer-btn { padding: 14px 18px; background: var(--surface); border: 2px solid var(--surface2); border-radius: var(--radius); color: var(--text); font-family: var(--font-body); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: left; }
+    .vote-btn:hover, .answer-btn:hover { border-color: var(--accent); background: var(--surface2); }
+    .vote-btn.selected, .answer-btn.selected { border-color: var(--accent); background: rgba(255,209,102,0.15); }
+    .answer-btn.correct { border-color: var(--green); background: rgba(6,214,160,0.15); color: var(--green); }
+    .answer-btn.wrong { border-color: var(--red); background: rgba(239,68,68,0.15); color: var(--red); }
+    .answer-btn:disabled { cursor: default; opacity: 0.7; }
+
+    /* Hot Take */
+    .ht-options { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 340px; margin: 12px 0; }
+    .ht-option { padding: 16px 18px; background: var(--surface); border: 2px solid var(--surface2); border-radius: var(--radius); color: var(--text); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .ht-option.a:hover, .ht-option.a.selected { border-color: var(--cyan); background: rgba(6,214,160,0.1); }
+    .ht-option.b:hover, .ht-option.b.selected { border-color: var(--secondary); background: rgba(239,99,81,0.1); }
+
+    /* Slider (wavelength) */
+    .slider-container { width: 100%; max-width: 320px; margin: 16px 0; }
+    .slider-labels { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 8px; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
+
+    /* Night action (mafia) */
+    .night-targets { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 340px; margin: 12px 0; }
+    .night-target { padding: 12px 16px; background: var(--surface); border: 2px solid var(--surface2); border-radius: var(--radius); color: var(--text); font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .night-target.selected { border-color: var(--accent); background: rgba(255,209,102,0.15); }
+
+    /* Buzz button (feud) */
+    .buzz-btn { width: 200px; height: 200px; border-radius: 50%; background: var(--secondary); border: 6px solid #c44a3c; font-family: var(--font-heading); font-size: 2rem; font-weight: 800; color: white; cursor: pointer; transition: transform 0.1s; box-shadow: 0 8px 0 #a0352a; margin: 20px 0; }
+    .buzz-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 #a0352a; }
+
+    /* Emoji reactions */
+    .emoji-bar { display: flex; gap: 6px; justify-content: center; margin: 8px 0; }
+    .emoji-bar button { background: var(--surface); border: 1px solid var(--surface2); border-radius: 8px; padding: 4px 8px; font-size: 1.1rem; cursor: pointer; }
+    .emoji-bar button:active { transform: scale(1.3); }
+
+    /* Ready toggle */
+    .ready-btn { padding: 10px 24px; border-radius: 12px; border: 2px solid var(--surface2); background: var(--surface); color: var(--text); font-weight: 700; cursor: pointer; margin: 8px 0; transition: all 0.2s; }
+    .ready-btn.ready { border-color: var(--green); background: rgba(6,214,160,0.15); color: var(--green); }
+
+    /* Status bar */
+    .status-bar { padding: 8px 14px; background: var(--surface); border-radius: 10px; color: var(--text-dim); font-size: 0.8rem; margin-top: auto; text-align: center; }
+    .status-bar.connected { border-left: 3px solid var(--green); }
+    .status-bar.disconnected { border-left: 3px solid var(--red); color: var(--red); }
+
+    /* Toast */
+    .toast { position: fixed; top: 12px; left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--surface2); color: var(--text); padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; z-index: 999; transition: transform 0.3s; pointer-events: none; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* Timer bar */
+    .timer-bar-track { width: 100%; max-width: 340px; height: 6px; background: var(--surface2); border-radius: 3px; margin: 8px 0; overflow: hidden; }
+    .timer-bar { height: 100%; background: var(--green); border-radius: 3px; transition: width 1s linear; }
+    .timer-bar.warn { background: var(--accent); }
+    .timer-bar.danger { background: var(--red); }
+    .timer-text { font-size: 1.5rem; font-weight: 800; color: var(--accent); margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- JOIN SCREEN -->
+    <div id="screen-join" class="screen active">
+      <div class="join-logo">🎉</div>
+      <h1>Join Game</h1>
+      <p class="subtitle">Enter the room code from the host screen</p>
+      <div class="code-inputs">
+        <input class="code-char" maxlength="1" data-idx="0" autocomplete="off" inputmode="text" />
+        <input class="code-char" maxlength="1" data-idx="1" autocomplete="off" inputmode="text" />
+        <input class="code-char" maxlength="1" data-idx="2" autocomplete="off" inputmode="text" />
+        <input class="code-char" maxlength="1" data-idx="3" autocomplete="off" inputmode="text" />
+      </div>
+      <input class="name-input" id="join-name" placeholder="Your name" maxlength="16" autocomplete="off" />
+      <div class="avatar-row" id="avatar-row"></div>
+      <button class="btn btn-gold" id="btn-join">Join Room</button>
+      <p class="error-msg" id="join-error"></p>
+    </div>
+
+    <!-- WAITING / LOBBY -->
+    <div id="screen-waiting" class="screen">
+      <div class="pulse-dot"></div>
+      <h2>You're in!</h2>
+      <p class="subtitle" id="waiting-subtitle">Waiting for the host to start...</p>
+      <div id="waiting-players" class="player-list"></div>
+      <button class="ready-btn" id="btn-ready">Tap when Ready</button>
+      <div class="emoji-bar" id="lobby-emoji-bar"></div>
+      <div class="status-bar connected" id="status-bar">Connected</div>
+    </div>
+
+    <!-- CLUE (Imposter) -->
+    <div id="screen-clue" class="screen">
+      <h2>Your Clue</h2>
+      <div class="clue-card">
+        <div class="clue-label" id="clue-label">Your word is</div>
+        <div class="clue-word" id="clue-word">—</div>
+        <div class="clue-hint" id="clue-hint"></div>
+      </div>
+      <div id="clue-role"></div>
+      <p class="subtitle" style="margin-top:16px">Don't show anyone!</p>
+      <button class="btn btn-gold" id="btn-clue-ok">Got it!</button>
+    </div>
+
+    <!-- VOTE (Imposter) -->
+    <div id="screen-vote" class="screen">
+      <h2>Who is the Imposter?</h2>
+      <p class="subtitle">Tap to vote</p>
+      <div class="vote-grid" id="vote-grid"></div>
+      <button class="btn btn-gold" id="btn-submit-vote" disabled>Submit Vote</button>
+    </div>
+
+    <!-- TRIVIA QUESTION -->
+    <div id="screen-trivia" class="screen">
+      <div class="timer-text" id="trivia-timer"></div>
+      <div class="timer-bar-track" id="trivia-timer-track" style="display:none;"><div class="timer-bar" id="trivia-timer-bar"></div></div>
+      <h2 id="trivia-q-num" style="font-size:0.85rem;color:var(--text-dim);margin-bottom:4px;"></h2>
+      <h2 id="trivia-q">Question</h2>
+      <div class="answer-grid" id="trivia-answers"></div>
+    </div>
+
+    <!-- HOT TAKE -->
+    <div id="screen-hottake" class="screen">
+      <h2 id="ht-question">Pick a side!</h2>
+      <div class="ht-options">
+        <button class="ht-option a" id="ht-a"></button>
+        <button class="ht-option b" id="ht-b"></button>
+      </div>
+    </div>
+
+    <!-- NIGHT ACTION (Mafia) -->
+    <div id="screen-night" class="screen">
+      <h2 id="night-title">🌙 Night Phase</h2>
+      <p class="subtitle" id="night-subtitle">Choose your target</p>
+      <div class="night-targets" id="night-targets"></div>
+      <button class="btn btn-gold" id="btn-night-submit" disabled>Confirm</button>
+    </div>
+
+    <!-- BUZZ (Feud face-off) -->
+    <div id="screen-buzz" class="screen">
+      <h2>Face Off!</h2>
+      <p class="subtitle" id="buzz-question"></p>
+      <button class="buzz-btn" id="btn-buzz">BUZZ!</button>
+    </div>
+
+    <!-- SLIDER (Wavelength) -->
+    <div id="screen-slider" class="screen">
+      <h2 id="slider-title">Where on the spectrum?</h2>
+      <p class="subtitle" id="slider-clue"></p>
+      <div class="slider-container">
+        <div class="slider-labels"><span id="slider-left"></span><span id="slider-right"></span></div>
+        <input type="range" min="0" max="100" value="50" id="slider-input">
+      </div>
+      <button class="btn btn-gold" id="btn-slider-submit">Lock In</button>
+    </div>
+
+    <!-- GUESS (Drawing/Alias) -->
+    <div id="screen-guess" class="screen">
+      <h2 id="guess-title">Guess the word!</h2>
+      <p class="subtitle" id="guess-hint"></p>
+      <input class="name-input" id="guess-input" placeholder="Type your guess..." maxlength="50" autocomplete="off" />
+      <button class="btn btn-gold" id="btn-guess-submit">Submit Guess</button>
+    </div>
+
+    <!-- IDLE / WAITING -->
+    <div id="screen-idle" class="screen">
+      <div class="pulse-dot"></div>
+      <h2 id="idle-title">Waiting...</h2>
+      <p class="subtitle" id="idle-subtitle">Look at the host screen</p>
+      <div class="emoji-bar" id="idle-emoji-bar"></div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="screen-result" class="screen">
+      <h1 id="result-emoji" style="font-size:3rem;margin-bottom:8px;"></h1>
+      <h2 id="result-title">Results</h2>
+      <div id="result-body" style="font-size:1rem;line-height:1.6;margin:12px 0;max-width:340px;"></div>
+    </div>
+
+    <!-- DISCONNECTED -->
+    <div id="screen-disconnected" class="screen">
+      <h1 style="color:var(--red);font-size:1.6rem;">Disconnected</h1>
+      <p class="subtitle" id="dc-reason">Lost connection.</p>
+      <button class="btn btn-gold" id="btn-rejoin">Rejoin</button>
+    </div>
+
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+  (function() {
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => document.querySelectorAll(sel);
+    const esc = s => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+    const COLORS = ['#FFD166','#06D6A0','#EF6351','#118AB2','#8338EC','#F72585','#4CC9F0','#FB8500','#7209B7','#3A86A7'];
+    const AVATARS = ['🦊','🐱','🐶','🐸','🐵','🦁','🐼','🐨','🐙','🦄','👻','🤖','🎃','🐲'];
+    const EMOJIS = ['🎉','😂','🔥','👏','❤️','💀','😱','🤔'];
+
+    // Persistent device ID for reconnection
+    const deviceId = localStorage.getItem('pg_device_id') || (() => { const id = 'xxxxxxxx-xxxx-4xxx'.replace(/x/g, () => ((Math.random()*16)|0).toString(16)); localStorage.setItem('pg_device_id', id); return id; })();
+
+    let socket = null, myName = '', myId = null, myAvatar = '🦊', roomCode = null;
+    let selectedVote = null, triviaTimer = null, isReady = false;
+
+    // ── Screen management ──
+    function showScreen(id) { $$('.screen').forEach(s => s.classList.remove('active')); $('#' + id).classList.add('active'); }
+
+    function toast(msg) {
+      let el = document.querySelector('.toast');
+      if (!el) { el = document.createElement('div'); el.className = 'toast'; document.body.appendChild(el); }
+      el.textContent = msg; el.classList.remove('show');
+      setTimeout(() => el.classList.add('show'), 10);
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function sendMsg(type, payload) { if (socket) socket.emit('msg', { type, payload, roomCode }); }
+
+    // ── Avatar picker ──
+    const avatarRow = $('#avatar-row');
+    AVATARS.forEach(a => {
+      const btn = document.createElement('button');
+      btn.className = 'avatar-pick' + (a === myAvatar ? ' selected' : '');
+      btn.textContent = a;
+      btn.addEventListener('click', () => { $$('.avatar-pick').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); myAvatar = a; });
+      avatarRow.appendChild(btn);
+    });
+
+    // ── Emoji bars ──
+    ['lobby-emoji-bar', 'idle-emoji-bar'].forEach(id => {
+      const bar = $('#' + id);
+      if (!bar) return;
+      EMOJIS.forEach(e => {
+        const btn = document.createElement('button');
+        btn.textContent = e;
+        btn.addEventListener('click', () => sendMsg('emoji_reaction', { emoji: e }));
+        bar.appendChild(btn);
+      });
+    });
+
+    // ── Auto-fill code from URL ──
+    const urlCode = new URLSearchParams(location.search).get('code');
+    if (urlCode && urlCode.length === 4) {
+      $$('.code-char').forEach((c, i) => { c.value = (urlCode[i] || '').toUpperCase(); });
+    }
+
+    // ── Code input navigation ──
+    $$('.code-char').forEach((input, idx) => {
+      input.addEventListener('input', () => {
+        input.value = input.value.toUpperCase().replace(/[^A-Z]/g, '');
+        if (input.value && idx < 3) $$('.code-char')[idx + 1].focus();
+      });
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !input.value && idx > 0) $$('.code-char')[idx - 1].focus();
+      });
+    });
+
+    // ── Join button ──
+    $('#btn-join').addEventListener('click', () => {
+      const code = Array.from($$('.code-char')).map(c => c.value).join('').toUpperCase();
+      const name = $('#join-name').value.trim();
+      if (code.length !== 4) { $('#join-error').textContent = 'Enter the 4-letter room code'; return; }
+      if (!name) { $('#join-error').textContent = 'Enter your name'; return; }
+      $('#join-error').textContent = '';
+      myName = name;
+      roomCode = code;
+      connectAndJoin();
+    });
+
+    function connectAndJoin() {
+      if (socket) { socket.disconnect(); socket = null; }
+      socket = io();
+      socket.on('connect', () => {
+        sendMsg('join_room', { roomCode, name: myName, avatar: myAvatar, deviceId });
+      });
+      socket.on('msg', handleMsg);
+      socket.on('disconnect', () => {
+        if ($('#screen-disconnected').classList.contains('active')) return;
+        $('#status-bar').className = 'status-bar disconnected';
+        $('#status-bar').textContent = 'Reconnecting...';
+        // Auto-reconnect after 2s
+        setTimeout(() => {
+          if (socket && !socket.connected && roomCode) {
+            socket.connect();
+          }
+        }, 2000);
+      });
+      socket.on('connect', () => {
+        if (myId && roomCode) {
+          // Rejoin after reconnect
+          sendMsg('request_rejoin', { roomCode, deviceId });
+          $('#status-bar').className = 'status-bar connected';
+          $('#status-bar').textContent = 'Connected';
+        }
+      });
+    }
+
+    // ── Rejoin button ──
+    $('#btn-rejoin').addEventListener('click', () => {
+      if (roomCode && myName) connectAndJoin();
+      else location.reload();
+    });
+
+    // ── Ready toggle ──
+    $('#btn-ready').addEventListener('click', () => {
+      isReady = !isReady;
+      $('#btn-ready').textContent = isReady ? '✓ Ready!' : 'Tap when Ready';
+      $('#btn-ready').classList.toggle('ready', isReady);
+      sendMsg('player_ready', {});
+    });
+
+    // ── Clue OK button ──
+    $('#btn-clue-ok').addEventListener('click', () => {
+      sendMsg('confirm_clue', {});
+      showScreen('screen-idle');
+      $('#idle-title').textContent = 'Clue received!';
+      $('#idle-subtitle').textContent = 'Discussion will start soon...';
+    });
+
+    // ── Message handler ──
+    function handleMsg(data) {
+      if (!data || !data.type) return;
+      const { type, payload } = data;
+
+      switch (type) {
+        case 'join_success': {
+          myId = payload.playerId;
+          roomCode = payload.roomCode;
+          renderPlayerList(payload.players || []);
+          showScreen('screen-waiting');
+          toast('Joined room ' + payload.roomCode + '!');
+          break;
+        }
+        case 'rejoin_success': {
+          myId = payload.playerId;
+          roomCode = payload.roomCode;
+          showScreen('screen-waiting');
+          toast('Reconnected!');
+          $('#status-bar').className = 'status-bar connected';
+          $('#status-bar').textContent = 'Connected';
+          break;
+        }
+        case 'error': {
+          const msg = payload.message || 'Error';
+          if ($('#screen-join').classList.contains('active')) {
+            $('#join-error').textContent = msg;
+          } else {
+            toast(msg);
+          }
+          break;
+        }
+        case 'room_update': {
+          renderPlayerList(payload.players || [], payload.teams || null);
+          break;
+        }
+        case 'player_joined': {
+          toast((payload.player?.avatar || '') + ' ' + (payload.player?.name || 'Someone') + ' joined!');
+          break;
+        }
+        case 'game_started': {
+          showScreen('screen-idle');
+          $('#idle-title').textContent = 'Game starting!';
+          $('#idle-subtitle').textContent = 'Look at the host screen';
+          break;
+        }
+        case 'phase_change': {
+          if (payload.phase === 'discussion') {
+            showScreen('screen-idle');
+            $('#idle-title').textContent = 'Discussion Time!';
+            $('#idle-subtitle').textContent = 'Talk with the group — who seems suspicious?';
+          } else if (payload.phase === 'results') {
+            showScreen('screen-idle');
+            $('#idle-title').textContent = 'Results are in!';
+            $('#idle-subtitle').textContent = 'Look at the host screen';
+          }
+          break;
+        }
+
+        // ── Imposter ──
+        case 'your_clue': {
+          if (payload.role === 'imposter') {
+            $('#clue-label').textContent = 'Your hint is';
+            $('#clue-word').textContent = payload.text || '???';
+            $('#clue-hint').textContent = payload.sub || '';
+            $('#clue-role').innerHTML = '<span class="clue-role role-imposter">IMPOSTER</span>';
+          } else {
+            $('#clue-label').textContent = 'Your word is';
+            $('#clue-word').textContent = payload.text || '—';
+            $('#clue-hint').textContent = payload.sub || '';
+            $('#clue-role').innerHTML = '<span class="clue-role role-crew">CREWMATE</span>';
+          }
+          showScreen('screen-clue');
+          break;
+        }
+
+        // ── Voting ──
+        case 'voting_open': // from host_update.event
+          openVoteScreen(payload.players || payload.data?.players || []);
+          break;
+
+        // ── host_update dispatcher ──
+        case 'host_update': {
+          const evt = payload.event;
+          if (evt === 'voting_open') openVoteScreen(payload.players || []);
+          else if (evt === 'round_result') {
+            const d = payload.data || {};
+            $('#result-emoji').textContent = d.caught ? '🎉' : '😈';
+            $('#result-title').textContent = d.caught ? 'Imposter caught!' : 'Imposter escaped!';
+            $('#result-body').innerHTML = '<p>The imposter was: <b>' + esc(d.impNames || '?') + '</b></p><p>The word was: <b>' + esc((d.word || '').toUpperCase()) + '</b></p>';
+            showScreen('screen-result');
+          } else if (evt === 'show_idle') {
+            $('#idle-title').textContent = payload.title || 'Waiting...';
+            $('#idle-subtitle').textContent = payload.subtitle || 'Look at the host screen';
+            showScreen('screen-idle');
+          }
+          break;
+        }
+
+        // ── Trivia ──
+        case 'trivia_question': {
+          const q = payload;
+          $('#trivia-q-num').textContent = 'Question ' + (q.qNum || '') + ' of ' + (q.total || '');
+          $('#trivia-q').textContent = q.question;
+          const grid = $('#trivia-answers');
+          grid.innerHTML = '';
+          (q.answers || []).forEach((ans, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'answer-btn';
+            btn.textContent = ans;
+            btn.addEventListener('click', () => {
+              $$('.answer-btn').forEach(b => { b.disabled = true; });
+              btn.classList.add('selected');
+              sendMsg('submit_answer', { answer: ans, answerIdx: idx, questionIndex: q.qNum - 1 });
+              if (triviaTimer) { clearInterval(triviaTimer); triviaTimer = null; }
+              // Show idle after picking
+              setTimeout(() => {
+                showScreen('screen-idle');
+                $('#idle-title').textContent = 'Answer submitted!';
+                $('#idle-subtitle').textContent = 'Waiting for others...';
+              }, 500);
+            });
+            grid.appendChild(btn);
+          });
+          // Timer
+          const track = $('#trivia-timer-track'), bar = $('#trivia-timer-bar'), timerEl = $('#trivia-timer');
+          if (q.timeLimit && q.timeLimit > 0) {
+            track.style.display = ''; let rem = q.timeLimit;
+            timerEl.textContent = rem + 's'; bar.style.width = '100%'; bar.className = 'timer-bar';
+            if (triviaTimer) clearInterval(triviaTimer);
+            triviaTimer = setInterval(() => {
+              rem--; timerEl.textContent = rem + 's';
+              const pct = (rem / q.timeLimit) * 100; bar.style.width = pct + '%';
+              if (pct < 25) bar.className = 'timer-bar danger'; else if (pct < 50) bar.className = 'timer-bar warn';
+              if (rem <= 0) { clearInterval(triviaTimer); triviaTimer = null; sendMsg('submit_answer', { answerIdx: -1, questionIndex: q.qNum - 1 }); showScreen('screen-idle'); $('#idle-title').textContent = "Time's up!"; }
+            }, 1000);
+          } else { track.style.display = 'none'; timerEl.textContent = ''; }
+          showScreen('screen-trivia');
+          break;
+        }
+
+        // ── Hot Take ──
+        case 'hottake_question': {
+          const q = payload;
+          $('#ht-question').textContent = q.question;
+          const htA = $('#ht-a'), htB = $('#ht-b');
+          htA.textContent = '🅰️ ' + q.optionA; htB.textContent = '🅱️ ' + q.optionB;
+          htA.className = 'ht-option a'; htB.className = 'ht-option b';
+          htA.disabled = false; htB.disabled = false;
+          htA.onclick = () => { htA.classList.add('selected'); htB.disabled = true; sendMsg('submit_choice', { choice: 'A' }); setTimeout(() => { showScreen('screen-idle'); $('#idle-title').textContent = 'Choice locked in!'; }, 500); };
+          htB.onclick = () => { htB.classList.add('selected'); htA.disabled = true; sendMsg('submit_choice', { choice: 'B' }); setTimeout(() => { showScreen('screen-idle'); $('#idle-title').textContent = 'Choice locked in!'; }, 500); };
+          showScreen('screen-hottake');
+          break;
+        }
+
+        // ── Mafia night ──
+        case 'night_action_request': {
+          const d = payload;
+          $('#night-title').textContent = '🌙 Night Phase — ' + (d.role || 'Your Action');
+          $('#night-subtitle').textContent = d.instruction || 'Choose your target';
+          const targets = $('#night-targets');
+          targets.innerHTML = '';
+          let selectedTarget = null;
+          (d.targets || []).forEach(t => {
+            const btn = document.createElement('button');
+            btn.className = 'night-target';
+            btn.textContent = t.name;
+            btn.addEventListener('click', () => {
+              $$('.night-target').forEach(b => b.classList.remove('selected'));
+              btn.classList.add('selected');
+              selectedTarget = t.id;
+              $('#btn-night-submit').disabled = false;
+            });
+            targets.appendChild(btn);
+          });
+          $('#btn-night-submit').disabled = true;
+          $('#btn-night-submit').onclick = () => {
+            if (!selectedTarget) return;
+            sendMsg('submit_night_action', { role: d.role, targetId: selectedTarget });
+            showScreen('screen-idle');
+            $('#idle-title').textContent = 'Action submitted';
+            $('#idle-subtitle').textContent = 'Waiting for dawn...';
+          };
+          showScreen('screen-night');
+          break;
+        }
+
+        // ── Feud buzz ──
+        case 'feud_faceoff': {
+          $('#buzz-question').textContent = payload.question || '';
+          $('#btn-buzz').disabled = false;
+          $('#btn-buzz').onclick = () => {
+            sendMsg('submit_buzz', {});
+            $('#btn-buzz').disabled = true;
+            $('#btn-buzz').textContent = 'BUZZED!';
+          };
+          showScreen('screen-buzz');
+          break;
+        }
+
+        // ── Wavelength slider ──
+        case 'wavelength_guess': {
+          $('#slider-title').textContent = 'Where on the spectrum?';
+          $('#slider-clue').textContent = 'Clue: "' + (payload.clue || '') + '"';
+          $('#slider-left').textContent = payload.left || '';
+          $('#slider-right').textContent = payload.right || '';
+          $('#slider-input').value = 50;
+          $('#btn-slider-submit').onclick = () => {
+            sendMsg('submit_slider', { value: Number($('#slider-input').value) });
+            showScreen('screen-idle');
+            $('#idle-title').textContent = 'Guess locked in!';
+          };
+          showScreen('screen-slider');
+          break;
+        }
+
+        // ── Drawing/Alias guess ──
+        case 'guess_prompt': {
+          $('#guess-title').textContent = payload.title || 'Guess the word!';
+          $('#guess-hint').textContent = payload.hint || '';
+          $('#guess-input').value = '';
+          $('#btn-guess-submit').onclick = () => {
+            const g = $('#guess-input').value.trim();
+            if (!g) return;
+            sendMsg('submit_guess', { guess: g });
+            $('#guess-input').value = '';
+            toast('Guess submitted!');
+          };
+          showScreen('screen-guess');
+          break;
+        }
+
+        // ── Lifecycle events ──
+        case 'kicked': {
+          $('#dc-reason').textContent = payload.message || 'You were kicked from the room.';
+          showScreen('screen-disconnected');
+          if (socket) { socket.disconnect(); socket = null; }
+          break;
+        }
+        case 'game_ended': {
+          $('#result-emoji').textContent = '🏆';
+          $('#result-title').textContent = 'Game Over!';
+          $('#result-body').textContent = 'Check the host screen for final scores.';
+          showScreen('screen-result');
+          break;
+        }
+        case 'return_to_lobby': {
+          isReady = false;
+          $('#btn-ready').textContent = 'Tap when Ready';
+          $('#btn-ready').classList.remove('ready');
+          showScreen('screen-waiting');
+          break;
+        }
+        case 'game_paused': {
+          if (payload.paused) toast('Game paused by host');
+          else toast('Game resumed!');
+          break;
+        }
+        case 'room_expired': case 'server_closing': {
+          $('#dc-reason').textContent = payload.message || 'Room closed.';
+          showScreen('screen-disconnected');
+          break;
+        }
+        case 'emoji_reaction': {
+          // Show floating emoji
+          const el = document.createElement('div');
+          el.style.cssText = 'position:fixed;bottom:20%;font-size:2.5rem;z-index:998;animation:emojiFloat 2s ease-out forwards;pointer-events:none;left:' + (20+Math.random()*60) + '%;';
+          el.textContent = payload.emoji || '🎉';
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), 2000);
+          break;
+        }
+        case 'answer_received': {
+          // Another player answered (could show a tick)
+          break;
+        }
+        case 'host_disconnected': {
+          toast('Host disconnected — waiting...');
+          break;
+        }
+        case 'host_promoted': {
+          toast(payload.name + ' is now the host!');
+          break;
+        }
+      }
+    }
+
+    function openVoteScreen(players) {
+      selectedVote = null;
+      $('#btn-submit-vote').disabled = true;
+      const grid = $('#vote-grid');
+      grid.innerHTML = '';
+      players.forEach((p, i) => {
+        if (p.id === myId) return;
+        const btn = document.createElement('button');
+        btn.className = 'vote-btn';
+        btn.textContent = p.name;
+        btn.style.borderLeft = '4px solid ' + COLORS[i % COLORS.length];
+        btn.addEventListener('click', () => {
+          $$('.vote-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selectedVote = { id: p.id, name: p.name };
+          $('#btn-submit-vote').disabled = false;
+        });
+        grid.appendChild(btn);
+      });
+      showScreen('screen-vote');
+    }
+
+    $('#btn-submit-vote').addEventListener('click', () => {
+      if (!selectedVote) return;
+      sendMsg('submit_vote', { targetId: selectedVote.id, target: selectedVote.name });
+      showScreen('screen-idle');
+      $('#idle-title').textContent = 'Vote submitted!';
+      $('#idle-subtitle').textContent = 'Waiting for everyone...';
+    });
+
+    const TEAM_COLORS_J = ['#FFD166', '#06D6A0', '#EF6351', '#7c3aed'];
+    const TEAM_NAMES_J = ['Gold', 'Green', 'Red', 'Purple'];
+    const TEAM_EMOJIS_J = ['⭐', '🌿', '🔥', '💜'];
+    let currentTeams = null;
+
+    function renderPlayerList(players, teamsData) {
+      if (teamsData) currentTeams = teamsData;
+      const el = $('#waiting-players');
+      el.innerHTML = '';
+      players.forEach((p, i) => {
+        const chip = document.createElement('span');
+        chip.className = 'p-chip' + (p.id === myId ? ' me' : '') + (p.isConnected === false ? ' disconnected' : '');
+        const tIdx = p.teamId != null ? Number(p.teamId) : -1;
+        const teamTag = tIdx >= 0 && currentTeams ? ' ' + TEAM_EMOJIS_J[tIdx] : '';
+        chip.textContent = (p.avatar || '🦊') + ' ' + p.name + (p.isHost ? ' (Host)' : '') + teamTag + (p.ready ? ' ✓' : '');
+        chip.style.background = tIdx >= 0 ? TEAM_COLORS_J[tIdx] : COLORS[i % COLORS.length];
+        el.appendChild(chip);
+      });
+      const teamInfo = currentTeams ? ' · Teams: ' + currentTeams.map(t => t.emoji || '').join(' ') : '';
+      $('#waiting-subtitle').textContent = players.length + ' player' + (players.length !== 1 ? 's' : '') + ' in lobby' + teamInfo;
+    }
+
+    // Emoji float animation
+    const style = document.createElement('style');
+    style.textContent = '@keyframes emojiFloat { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-200px) scale(0.3); opacity: 0; } }';
+    document.head.appendChild(style);
+
+  })();
+  </script>
+</body>
+</html>

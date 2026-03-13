@@ -1,0 +1,26 @@
+{
+  "pack": "Animals",
+  "emoji": "🐾",
+  "rounds": [
+    { "word": "elephant", "hint": "known for its memory", "difficulty": "easy" },
+    { "word": "penguin", "hint": "wears a tuxedo but can't fly", "difficulty": "easy" },
+    { "word": "chameleon", "hint": "a master of disguise", "difficulty": "medium" },
+    { "word": "dolphin", "hint": "the smartest swimmer", "difficulty": "easy" },
+    { "word": "giraffe", "hint": "needs a long scarf in winter", "difficulty": "easy" },
+    { "word": "octopus", "hint": "could wear four pairs of gloves", "difficulty": "easy" },
+    { "word": "flamingo", "hint": "you are what you eat, apparently", "difficulty": "medium" },
+    { "word": "sloth", "hint": "no rush, ever", "difficulty": "medium" },
+    { "word": "parrot", "hint": "the ultimate copycat", "difficulty": "easy" },
+    { "word": "shark", "hint": "has its own theme music", "difficulty": "easy" },
+    { "word": "koala", "hint": "sleeps most of the day in trees", "difficulty": "easy" },
+    { "word": "porcupine", "hint": "gives painful hugs", "difficulty": "medium" },
+    { "word": "peacock", "hint": "loves to show off its outfit", "difficulty": "medium" },
+    { "word": "bat", "hint": "sees with its ears", "difficulty": "easy" },
+    { "word": "kangaroo", "hint": "carries its kids in a pocket", "difficulty": "easy" },
+    { "word": "cheetah", "hint": "the fastest on land", "difficulty": "easy" },
+    { "word": "owl", "hint": "the night shift worker of the sky", "difficulty": "easy" },
+    { "word": "jellyfish", "hint": "no brain, no bones, still stings", "difficulty": "medium" },
+    { "word": "platypus", "hint": "nature couldn't decide what to make", "difficulty": "medium" },
+    { "word": "wolf", "hint": "howls at the moon with its squad", "difficulty": "easy" }
+  ]
+}

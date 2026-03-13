@@ -1,0 +1,26 @@
+{
+  "pack": "Science",
+  "emoji": "🔬",
+  "questions": [
+    { "question": "What is the chemical symbol for gold?", "answers": ["Go", "Au", "Gd", "Ag"], "correct": 1 },
+    { "question": "How many bones are in the adult human body?", "answers": ["186", "206", "226", "196"], "correct": 1 },
+    { "question": "What gas do plants primarily absorb from the atmosphere?", "answers": ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"], "correct": 2 },
+    { "question": "What is the hardest natural substance on Earth?", "answers": ["Quartz", "Topaz", "Diamond", "Corundum"], "correct": 2 },
+    { "question": "Which subatomic particle has a positive charge?", "answers": ["Neutron", "Electron", "Photon", "Proton"], "correct": 3 },
+    { "question": "What is the speed of light in a vacuum (approximately)?", "answers": ["300,000 km/s", "150,000 km/s", "500,000 km/s", "1,000,000 km/s"], "correct": 0 },
+    { "question": "Which element has the atomic number 1?", "answers": ["Helium", "Lithium", "Hydrogen", "Carbon"], "correct": 2 },
+    { "question": "What is the powerhouse of the cell?", "answers": ["Nucleus", "Ribosome", "Endoplasmic reticulum", "Mitochondria"], "correct": 3 },
+    { "question": "What type of bond involves the sharing of electron pairs?", "answers": ["Ionic bond", "Covalent bond", "Metallic bond", "Hydrogen bond"], "correct": 1 },
+    { "question": "Which planet in our solar system has the most moons?", "answers": ["Jupiter", "Saturn", "Uranus", "Neptune"], "correct": 1 },
+    { "question": "What is the pH of pure water?", "answers": ["5", "6", "7", "8"], "correct": 2 },
+    { "question": "Which scientist developed the theory of general relativity?", "answers": ["Isaac Newton", "Niels Bohr", "Albert Einstein", "Max Planck"], "correct": 2 },
+    { "question": "What is the most abundant gas in Earth's atmosphere?", "answers": ["Oxygen", "Carbon dioxide", "Argon", "Nitrogen"], "correct": 3 },
+    { "question": "How many chromosomes do humans have?", "answers": ["44", "46", "48", "42"], "correct": 1 },
+    { "question": "What unit is used to measure electrical resistance?", "answers": ["Volt", "Ampere", "Ohm", "Watt"], "correct": 2 },
+    { "question": "Which organ in the human body produces insulin?", "answers": ["Liver", "Pancreas", "Kidney", "Thyroid"], "correct": 1 },
+    { "question": "What is the chemical formula for table salt?", "answers": ["NaCl", "KCl", "NaOH", "CaCl2"], "correct": 0 },
+    { "question": "What phenomenon causes a rainbow?", "answers": ["Reflection", "Diffraction", "Refraction and dispersion", "Absorption"], "correct": 2 },
+    { "question": "Which blood type is considered the universal donor?", "answers": ["A positive", "B negative", "AB positive", "O negative"], "correct": 3 },
+    { "question": "What is the smallest unit of an element that retains its properties?", "answers": ["Molecule", "Atom", "Proton", "Cell"], "correct": 1 }
+  ]
+}

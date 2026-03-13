@@ -1,0 +1,26 @@
+{
+  "pack": "Food Fights",
+  "emoji": "🍔",
+  "questions": [
+    { "question": "Pineapple on pizza?", "optionA": "Yes, delicious", "optionB": "Absolutely not" },
+    { "question": "Would you rather only eat breakfast food or dinner food for life?", "optionA": "Breakfast forever", "optionB": "Dinner forever" },
+    { "question": "Crunchy peanut butter or smooth?", "optionA": "Crunchy", "optionB": "Smooth" },
+    { "question": "Would you rather give up cheese or chocolate?", "optionA": "Give up cheese", "optionB": "Give up chocolate" },
+    { "question": "Is a hot dog a sandwich?", "optionA": "Yes it is", "optionB": "No way" },
+    { "question": "Fries: ketchup or mayo?", "optionA": "Ketchup", "optionB": "Mayo" },
+    { "question": "Would you rather eat only spicy food or only bland food?", "optionA": "Always spicy", "optionB": "Always bland" },
+    { "question": "Coffee or tea for the rest of your life?", "optionA": "Coffee", "optionB": "Tea" },
+    { "question": "Boneless wings or bone-in wings?", "optionA": "Boneless", "optionB": "Bone-in" },
+    { "question": "Would you rather never eat pizza again or never eat burgers again?", "optionA": "No more pizza", "optionB": "No more burgers" },
+    { "question": "Cake or pie?", "optionA": "Cake", "optionB": "Pie" },
+    { "question": "Would you rather cook every meal or eat out every meal?", "optionA": "Cook everything", "optionB": "Eat out everything" },
+    { "question": "Crispy bacon or chewy bacon?", "optionA": "Crispy", "optionB": "Chewy" },
+    { "question": "Would you rather give up soda or juice?", "optionA": "Give up soda", "optionB": "Give up juice" },
+    { "question": "Tacos or burritos?", "optionA": "Tacos", "optionB": "Burritos" },
+    { "question": "Waffles or pancakes?", "optionA": "Waffles", "optionB": "Pancakes" },
+    { "question": "Would you rather eat the same meal every day or never eat your favorite food again?", "optionA": "Same meal daily", "optionB": "Lose favorite food" },
+    { "question": "Milk chocolate or dark chocolate?", "optionA": "Milk chocolate", "optionB": "Dark chocolate" },
+    { "question": "Would you rather have unlimited sushi or unlimited tacos?", "optionA": "Unlimited sushi", "optionB": "Unlimited tacos" },
+    { "question": "Is cereal a soup?", "optionA": "Yes, technically", "optionB": "No, that's ridiculous" }
+  ]
+}

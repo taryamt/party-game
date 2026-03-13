@@ -1,0 +1,26 @@
+{
+  "pack": "Pop Culture",
+  "emoji": "🌟",
+  "questions": [
+    { "question": "What is the name of the fictional continent in 'Game of Thrones'?", "answers": ["Middle-earth", "Westeros", "Narnia", "Tamriel"], "correct": 1 },
+    { "question": "Which TV show features a character named Walter White?", "answers": ["Dexter", "The Wire", "Breaking Bad", "Better Call Saul"], "correct": 2 },
+    { "question": "What is the name of the coffee shop in the TV show 'Friends'?", "answers": ["Central Perk", "The Coffee Bean", "Java Joe's", "Café Latte"], "correct": 0 },
+    { "question": "Which video game franchise features a plumber named Mario?", "answers": ["Sonic the Hedgehog", "Super Mario", "Donkey Kong", "Mega Man"], "correct": 1 },
+    { "question": "Who painted the 'Mona Lisa'?", "answers": ["Michelangelo", "Raphael", "Leonardo da Vinci", "Donatello"], "correct": 2 },
+    { "question": "What is the highest-grossing film franchise of all time?", "answers": ["Star Wars", "Harry Potter", "Marvel Cinematic Universe", "James Bond"], "correct": 2 },
+    { "question": "Which streaming service produced 'Stranger Things'?", "answers": ["Hulu", "Amazon Prime", "Disney+", "Netflix"], "correct": 3 },
+    { "question": "In 'The Simpsons', what is Homer's favorite beer brand?", "answers": ["Budweiser", "Duff", "Flanders Ale", "Springfield Lager"], "correct": 1 },
+    { "question": "What is the name of the fictional metal in the Marvel universe associated with Captain America's shield?", "answers": ["Adamantium", "Vibranium", "Uru", "Carbonadium"], "correct": 1 },
+    { "question": "Which K-pop group released the hit song 'Dynamite'?", "answers": ["BLACKPINK", "EXO", "BTS", "TWICE"], "correct": 2 },
+    { "question": "What board game involves buying and trading properties?", "answers": ["Risk", "Monopoly", "Clue", "Life"], "correct": 1 },
+    { "question": "Which animated TV show is set in the town of Springfield?", "answers": ["Family Guy", "South Park", "The Simpsons", "Bob's Burgers"], "correct": 2 },
+    { "question": "Who is the author of the 'A Song of Ice and Fire' book series?", "answers": ["J.R.R. Tolkien", "George R.R. Martin", "Patrick Rothfuss", "Brandon Sanderson"], "correct": 1 },
+    { "question": "In which decade did MTV first launch?", "answers": ["1970s", "1980s", "1990s", "2000s"], "correct": 1 },
+    { "question": "What is the name of the magical map in Harry Potter that shows everyone's location?", "answers": ["The Tracing Chart", "The Marauder's Map", "The Hogwarts Atlas", "The Seeker's Guide"], "correct": 1 },
+    { "question": "Which reality TV show features the phrase 'You're fired!'?", "answers": ["Shark Tank", "The Apprentice", "Dragon's Den", "Undercover Boss"], "correct": 1 },
+    { "question": "What color lightsaber does Mace Windu use in Star Wars?", "answers": ["Blue", "Green", "Red", "Purple"], "correct": 3 },
+    { "question": "Which social media platform is known for its disappearing messages?", "answers": ["Instagram", "Twitter", "Snapchat", "TikTok"], "correct": 2 },
+    { "question": "In 'The Office' (US), what is the name of the paper company?", "answers": ["Dunder Mifflin", "Wernham Hogg", "Sabre", "Michael Scott Paper Company"], "correct": 0 },
+    { "question": "Which video game features the Battle Royale mode 'Warzone'?", "answers": ["Fortnite", "Apex Legends", "Call of Duty", "PUBG"], "correct": 2 }
+  ]
+}

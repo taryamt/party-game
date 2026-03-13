@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Party Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<canvas id="bg-particles"></canvas>
+<div id="breadcrumb" class="breadcrumb"></div>
+
+<!-- ══════════════════════════════
+     SESSION SETUP
+     ══════════════════════════════ -->
+<div id="screen-session" class="screen">
+  <div id="continue-banner" class="continue-banner hidden">
+    <div class="continue-banner-title">Resume Last Game →</div>
+    <div class="continue-banner-meta" id="continue-meta"></div>
+  </div>
+  <button class="btn outline back-home" id="btn-session-back" style="align-self:flex-start;">&#8592; Back</button>
+  <h1>Player Setup</h1>
+  <h2 id="session-subtitle">Who's playing?</h2>
+  <div id="local-setup">
+    <div class="inline-row">
+      <input type="text" id="session-player-input" placeholder="Enter player name..." maxlength="20" autocomplete="off" autofocus>
+      <button class="btn" id="btn-session-add" style="min-width:auto;padding:14px 20px;">Add</button>
+    </div>
+    <div id="session-player-error" class="error hidden"></div>
+    <div id="session-chips" class="player-list"></div>
+    <div id="session-count" class="count-badge hidden"></div>
+  </div>
+  <div id="remote-setup" class="hidden"></div>
+  <!-- Team Assignment (visible in both modes when 4+ players) -->
+  <div id="team-section" class="team-section hidden">
+    <div class="team-header">
+      <h3>Team Mode</h3>
+      <label class="toggle-switch">
+        <input type="checkbox" id="team-toggle">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div id="team-config" class="hidden">
+      <div class="team-count-row">
+        <label>Teams:</label>
+        <div class="team-count-btns">
+          <button class="team-count-btn active" data-teams="2">2</button>
+          <button class="team-count-btn" data-teams="3">3</button>
+          <button class="team-count-btn" data-teams="4">4</button>
+        </div>
+      </div>
+      <div class="team-assign-row">
+        <button class="btn sm" id="btn-team-random">🎲 Random</button>
+        <button class="btn sm outline" id="btn-team-balanced">⚖️ Balanced</button>
+        <button class="btn sm outline" id="btn-team-clear">↩ Clear</button>
+      </div>
+      <div id="team-pools" class="team-pools"></div>
+      <div id="team-unassigned" class="team-unassigned hidden">
+        <div class="team-unassigned-label">Unassigned:</div>
+        <div id="team-unassigned-chips" class="team-unassigned-chips"></div>
+      </div>
+    </div>
+  </div>
+  <div class="gap"></div>
+  <button class="btn big green" id="btn-session-start" disabled>Let's Go!</button>
+</div>
+
+<!-- ══════════════════════════════
+     MULTIPLAYER SETUP
+     ══════════════════════════════ -->
+<div id="screen-multiplayer" class="screen">
+  <button class="btn outline back-home" id="btn-mp-back" style="align-self:flex-start;">&#8592; Back</button>
+  <h1>📡 Multiplayer</h1>
+  <h2>Host a room for phone players</h2>
+  <div class="inline-row" style="margin-bottom:12px;">
+    <input type="text" id="host-name-input" placeholder="Your name (host)..." maxlength="20" autocomplete="off">
+    <button class="btn" id="btn-create-room" style="min-width:auto;padding:14px 20px;">Create Room</button>
+  </div>
+  <div id="room-display" class="room-display hidden">
+    <div class="join-instructions">Go to <strong id="room-url-display"></strong> and enter:</div>
+    <div class="room-code-big" id="room-code-display"></div>
+    <canvas id="room-qr" class="room-qr" width="200" height="200" style="margin:0 auto 16px;display:block;border-radius:12px;"></canvas>
+    <div class="divider"></div>
+    <div class="lobby-player-count" id="lobby-player-count">0 players</div>
+    <div id="lobby-players" class="lobby-players" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px;"></div>
+    <div class="lobby-chat">
+      <div class="lobby-chat-messages" id="lobby-chat-messages"></div>
+      <div class="lobby-chat-input">
+        <input type="text" id="lobby-chat-input" placeholder="Chat..." maxlength="50" autocomplete="off">
+        <button id="btn-lobby-chat-send">Send</button>
+      </div>
+    </div>
+    <div class="emoji-reaction-bar" id="emoji-bar">
+      <button data-emoji="🎉">🎉</button><button data-emoji="😂">😂</button><button data-emoji="🔥">🔥</button>
+      <button data-emoji="👏">👏</button><button data-emoji="❤️">❤️</button><button data-emoji="💀">💀</button>
+    </div>
+    <div class="host-controls" id="host-controls" style="display:none;">
+      <button id="btn-host-lock" title="Lock/Unlock Room">🔓 Lock</button>
+      <button id="btn-host-kick" class="danger" title="Kick a Player">🚫 Kick</button>
+    </div>
+  </div>
+  <div class="gap"></div>
+  <button class="btn big green" id="btn-mp-start" disabled>Start Game!</button>
+</div>
+
+<!-- ══════════════════════════════
+     HOME / GAME SELECTOR
+     ══════════════════════════════ -->
+<div id="screen-home" class="screen active">
+  <button class="settings-gear" id="btn-global-settings" title="Settings">⚙️</button>
+  <h1>Party Games</h1>
+  <h2 id="home-subtitle">Pick a game</h2>
+  <div class="game-cards">
+    <div class="game-card playlist-card" data-game="playlist">
+      <div class="game-card-emoji">🎯</div>
+      <div class="game-card-info">
+        <div class="game-card-title">MULTI-GAME NIGHT</div>
+        <div class="game-card-desc">Queue up multiple games and play them in order!</div>
+      </div>
+    </div>
+    <div class="game-card" data-game="imposter">
+      <div class="game-card-emoji">🕵️</div>
+      <div class="game-card-info">
+        <div class="game-card-title">Imposter</div>
+        <div class="game-card-desc">One player gets a hint instead of the word. Find the fake!</div>
+        <div class="game-card-meta">3-10 players</div>
+      </div>
+    </div>
+    <div class="game-card" data-game="trivia">
+      <div class="game-card-emoji">🧠</div>
+      <div class="game-card-info">
+        <div class="game-card-title">Trivia</div>
+        <div class="game-card-desc">Answer questions to earn points. Streaks get bonuses!</div>
+        <div class="game-card-meta">2-10 players</div>
+      </div>
+    </div>
+    <div class="game-card" data-game="hottake">
+      <div class="game-card-emoji">🔥</div>
+      <div class="game-card-info">
+        <div class="game-card-title">Hot Take</div>
+        <div class="game-card-desc">Pick a side on spicy questions. Rare opinions score!</div>
+        <div class="game-card-meta">3-10 players</div>
+      </div>
+    </div>
+    <div class="game-card" data-game="mafia">
+      <div class="game-card-emoji">🎭</div>
+      <div class="game-card-info">
+        <div class="game-card-title">Mafia</div>
+        <div class="game-card-desc">Night kills, investigations, and deception. Find the mafia!</div>
+        <div class="game-card-meta">5-10 players · ~20 min</div>
+      </div>
+    </div>
+    <div class="game-card" data-game="millionaire">
+      <div class="game-card-emoji">💰</div>
+      <div class="game-card-info">
+        <div class="game-card-title">Millionaire</div>
+        <div class="game-card-desc">Answer 15 questions up the money ladder. Use lifelines wisely!</div>
+        <div class="game-card-meta">2-10 players · ~15 min</div>
+      </div>
+    </div>
+    <div class="game-card" data-game="feud">
+      <div class="game-card-emoji">👨‍👩‍👧‍👦</div>
+      <div class="game-card-info">
+        <div class="game-card-title">Family Feud</div>
+        <div class="game-card-desc">Guess the top survey answers! 3 strikes and the other team steals.</div>
+        <div class="game-card-meta">4-10 players · ~20 min</div>
+      </div>
+    </div>
+    <div class="game-card" data-game="wavelength">
+      <div class="game-card-emoji">〰️</div>
+      <div class="game-card-info">
+        <div class="game-card-title">Wavelength</div>
+        <div class="game-card-desc">Give a clue on a spectrum. How well does your team read your mind?</div>
+        <div class="game-card-meta">4-10 players · ~15 min</div>
+      </div>
+    </div>
+    <div class="game-card" data-game="alias">
+      <div class="game-card-emoji">🗣️</div>
+      <div class="game-card-info">
+        <div class="game-card-title">Alias</div>
+        <div class="game-card-desc">Describe the word without using the forbidden words!</div>
+        <div class="game-card-meta">4-10 players · ~15 min</div>
+      </div>
+    </div>
+    <div class="game-card" data-game="drawing">
+      <div class="game-card-emoji">🎨</div>
+      <div class="game-card-info">
+        <div class="game-card-title">Drawing</div>
+        <div class="game-card-desc">Draw the word and let others guess. No letters or numbers!</div>
+        <div class="game-card-meta">3-10 players · ~15 min</div>
+      </div>
+    </div>
+  <div class="game-card" id="btn-multiplayer-mode" data-game="multiplayer">
+    <div class="game-card-emoji">📡</div>
+    <div class="game-card-info">
+      <div class="game-card-title">Multiplayer Mode</div>
+      <div class="game-card-desc">Host a room for players to join on their phones</div>
+    </div>
+  </div>
+  <div class="game-card" id="btn-edit-players">
+    <div class="game-card-emoji">👥</div>
+    <div class="game-card-info">
+      <div class="game-card-title">Players</div>
+      <div class="game-card-desc" id="players-card-desc">Add or manage players</div>
+    </div>
+  </div>
+  <div class="game-card cm-card" id="btn-content-mgr">
+    <div class="game-card-emoji">📦</div>
+    <div class="game-card-info">
+      <div class="game-card-title">Manage Packs</div>
+      <div class="game-card-desc">Create, edit, import & export content packs</div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div id="screen-loading" class="screen">
+  <h1 id="loading-title">Loading...</h1>
+  <div class="subtitle" id="loading-subtitle">Preparing the game</div>
+  <div class="spinner"></div>
+</div>
+
+<!-- PLAYLIST BUILDER -->
+<div id="screen-playlist" class="screen">
+  <button class="btn outline back-home" id="btn-pl-home">&#8592; Home</button>
+  <h1>🎯 Game Night</h1>
+  <h2>Build your playlist</h2>
+  <div class="playlist-add-btns">
+    <button class="btn sm" data-add="imposter">+ Imposter</button>
+    <button class="btn sm cyan" data-add="trivia">+ Trivia</button>
+    <button class="btn sm pink" data-add="hottake">+ Hot Take</button>
+  </div>
+  <div id="playlist-items" class="playlist-list"><div class="playlist-empty">Add games above to build your playlist</div></div>
+  <div class="gap"></div>
+  <button class="btn big green" id="btn-pl-start" disabled>Start Game Night!</button>
+</div>
+
+<!-- IMPOSTER SCREENS -->
+<div id="screen-imp-setup" class="screen">
+  <button class="btn outline back-home" id="btn-imp-home">&#8592; Home</button>
+  <button class="settings-btn" id="btn-imp-settings">&#9881;</button>
+  <h1>🕵️ Imposter <button class="info-btn" id="btn-imp-info">?</button></h1>
+  <h2>Pick a pack</h2>
+  <div class="pack-cards" id="imp-packs"></div>
+  <div class="gap"></div>
+  <button class="btn big red" id="btn-imp-start" disabled>Start Round</button>
+</div>
+
+<div id="screen-imp-clue" class="screen clue-reveal">
+  <div id="imp-clue-pass">
+    <h2 id="imp-clue-pass-label">Pass the device to</h2>
+    <h1 id="imp-clue-name">Player</h1>
+    <div class="subtitle">Everyone else, look away!</div>
+    <div class="gap"></div>
+    <button class="btn big" id="btn-imp-show">Show My Clue</button>
+  </div>
+  <div id="imp-clue-show" class="hidden">
+    <div id="imp-clue-display" class="clue-display">
+      <div id="imp-clue-icon" class="clue-label"></div>
+      <div id="imp-clue-main" class="clue-word"></div>
+      <div id="imp-clue-sub" class="clue-label"></div>
+      <div id="imp-clue-timer" class="clue-timer"></div>
+    </div>
+  </div>
+  <div id="imp-clue-hidden" class="hidden">
+    <h1>Clue Hidden</h1>
+    <div class="subtitle" id="imp-clue-next-label">Pass to the next player</div>
+    <div class="gap"></div>
+    <button class="btn big" id="btn-imp-next">Next Player</button>
+  </div>
+</div>
+
+<div id="screen-imp-discuss" class="screen">
+  <button class="btn outline back-btn" data-back="confirm" data-msg="End discussion and go back?">&#8592; Back</button>
+  <h1>Discussion Time</h1>
+  <h2>Who seems clueless?</h2>
+  <div class="subtitle">Talk, ask questions, describe things related to the word.<br>Figure out who doesn't know it!</div>
+  <div id="imp-discuss-timer" class="discuss-timer hidden"></div>
+  <div class="timer-bar-track hidden" id="imp-discuss-bar-track"><div class="timer-bar" id="imp-discuss-bar" style="width:100%;"></div></div>
+  <div id="imp-discuss-players" class="player-list"></div>
+  <div class="gap"></div>
+  <button class="btn big gold" id="btn-imp-vote">Start Voting</button>
+</div>
+
+<div id="screen-imp-vote" class="screen">
+  <button class="btn outline back-btn" data-back="confirm" data-msg="Cancel voting?">&#8592; Back</button>
+  <h2 id="imp-vote-label">Waiting for</h2>
+  <h1 id="imp-vote-name">Player's vote</h1>
+  <div class="subtitle">Who do you think is the imposter?</div>
+  <div id="imp-vote-grid" class="vote-grid"></div>
+  <div class="confidence-meter hidden" id="imp-confidence">
+    <label>Confidence:</label>
+    <input type="range" min="1" max="5" value="3" id="imp-confidence-slider">
+    <span class="confidence-val" id="imp-confidence-val">3</span>
+  </div>
+</div>
+
+<div id="screen-imp-results" class="screen">
+  <div id="imp-res-emoji" class="reveal-emoji"></div>
+  <h1 id="imp-res-text" class="reveal-text"></h1>
+  <div id="imp-res-imposter" class="subtitle"></div>
+  <div id="imp-res-word" class="subtitle"></div>
+  <div class="results-list" id="imp-res-tally"></div>
+  <div id="imp-res-breakdown" class="round-breakdown"></div>
+  <div class="btn-row" id="imp-res-btns">
+    <button class="btn red" id="btn-imp-again">Play Again</button>
+    <button class="btn outline" id="btn-imp-home2">Home</button>
+  </div>
+</div>
+
+<!-- TRIVIA SCREENS -->
+<div id="screen-triv-setup" class="screen">
+  <button class="btn outline back-home" id="btn-triv-home">&#8592; Home</button>
+  <button class="settings-btn" id="btn-triv-settings">&#9881;</button>
+  <h1>🧠 Trivia <button class="info-btn" id="btn-triv-info">?</button></h1>
+  <h2>Pick a pack</h2>
+  <div class="pack-cards" id="triv-packs"></div>
+  <div class="gap"></div>
+  <button class="btn big cyan" id="btn-triv-start" disabled>Start Trivia</button>
+</div>
+
+<div id="screen-triv-pass" class="screen">
+  <h2>Pass the device to</h2>
+  <h1 id="triv-pass-name">Player</h1>
+  <div class="subtitle" id="triv-q-preview"></div>
+  <div class="gap"></div>
+  <button class="btn big" id="btn-triv-ready">I'm Ready</button>
+</div>
+
+<div id="screen-triv-question" class="screen">
+  <div id="triv-final-banner" class="final-q-banner hidden">Final Question!</div>
+  <div class="trivia-q-num" id="triv-q-num">Question 1 of 5</div>
+  <div id="triv-timer" class="trivia-timer hidden"></div>
+  <div class="timer-bar-track hidden" id="triv-timer-bar-track"><div class="timer-bar" id="triv-timer-bar" style="width:100%;"></div></div>
+  <div class="trivia-question" id="triv-q-text"></div>
+  <div class="answer-grid" id="triv-answers"></div>
+  <button class="btn outline hidden" id="btn-triv-skip" style="margin-top:8px;">Skip</button>
+</div>
+
+<div id="screen-triv-reveal" class="screen">
+  <h2 id="triv-reveal-q-num">Question 1 of 5</h2>
+  <div class="trivia-question" id="triv-reveal-q"></div>
+  <div id="triv-reveal-answer" style="font-size:1.4rem;font-weight:800;color:var(--green);margin-bottom:20px;text-align:center;"></div>
+  <div id="triv-explanation" class="explanation-text hidden"></div>
+  <div id="triv-reveal-results" class="results-list"></div>
+  <div id="triv-mini-scores" class="mini-scores"></div>
+  <div class="gap"></div>
+  <button class="btn big" id="btn-triv-next-q">Next Question</button>
+</div>
+
+<div id="screen-triv-results" class="screen">
+  <div class="reveal-emoji">🧠</div>
+  <h1 class="reveal-text">Trivia Complete!</h1>
+  <div id="triv-res-summary" class="subtitle"></div>
+  <div id="triv-res-list" class="results-list"></div>
+  <div id="triv-res-breakdown" class="round-breakdown"></div>
+  <div class="btn-row" id="triv-res-btns">
+    <button class="btn cyan" id="btn-triv-again">Play Again</button>
+    <button class="btn outline" id="btn-triv-home2">Home</button>
+  </div>
+</div>
+
+<!-- HOT TAKE SCREENS -->
+<div id="screen-ht-setup" class="screen">
+  <button class="btn outline back-home" id="btn-ht-home">&#8592; Home</button>
+  <button class="settings-btn" id="btn-ht-settings">&#9881;</button>
+  <h1>🔥 Hot Take <button class="info-btn" id="btn-ht-info">?</button></h1>
+  <h2>Pick a pack</h2>
+  <div class="pack-cards" id="ht-packs"></div>
+  <div class="gap"></div>
+  <button class="btn big pink" id="btn-ht-start" disabled>Start Hot Take</button>
+</div>
+
+<div id="screen-ht-question" class="screen">
+  <button class="btn outline back-btn" data-back="screen-ht-setup">&#8592; Back</button>
+  <h2>The question is...</h2>
+  <h1 id="ht-question-text" style="font-size:clamp(1.1rem,4vw,1.6rem);line-height:1.4;max-width:500px;margin-bottom:24px;"></h1>
+  <div class="ht-choices" id="ht-preview-choices">
+    <div class="ht-choice a" id="ht-preview-a"></div>
+    <div class="ht-choice b" id="ht-preview-b"></div>
+  </div>
+  <div class="subtitle">Everyone read the question, then pass the device to vote secretly.</div>
+  <div class="gap"></div>
+  <button class="btn big pink" id="btn-ht-begin-vote">Start Voting</button>
+</div>
+
+<div id="screen-ht-pass" class="screen ht-choice-reveal">
+  <div id="ht-pass-view">
+    <h2>Pass the device to</h2>
+    <h1 id="ht-pass-name">Player</h1>
+    <div class="subtitle">Everyone else, look away!</div>
+    <div class="gap"></div>
+    <button class="btn big" id="btn-ht-show-choice">Show Choices</button>
+  </div>
+  <div id="ht-choice-view" class="hidden">
+    <div class="clue-display" id="ht-choice-display">
+      <h2 style="color:var(--text);">Pick your side!</h2>
+      <div class="ht-choices" id="ht-choice-btns">
+        <div class="ht-choice a" id="ht-btn-a"></div>
+        <div class="ht-choice b" id="ht-btn-b"></div>
+      </div>
+    </div>
+  </div>
+  <div id="ht-chosen-view" class="hidden">
+    <div class="clue-display visible">
+      <div class="clue-label" id="ht-chosen-label"></div>
+      <div class="clue-word" id="ht-chosen-text" style="font-size:clamp(1.3rem,5vw,2.5rem);"></div>
+      <div class="clue-timer" id="ht-chosen-timer"></div>
+    </div>
+  </div>
+  <div id="ht-pass-next" class="hidden">
+    <h1>Choice Hidden</h1>
+    <div class="subtitle" id="ht-pass-next-label">Pass to the next player</div>
+    <div class="gap"></div>
+    <button class="btn big" id="btn-ht-next-player">Next Player</button>
+  </div>
+</div>
+
+<div id="screen-ht-results" class="screen">
+  <div class="reveal-emoji">🔥</div>
+  <h1 class="reveal-text" id="ht-res-title">Results!</h1>
+  <div id="ht-res-question" class="subtitle" style="margin-bottom:16px;"></div>
+  <div style="display:flex;gap:20px;width:100%;max-width:450px;margin-bottom:20px;">
+    <div style="flex:1;text-align:center;padding:16px;border-radius:14px;background:rgba(6,214,160,0.08);border:2px solid var(--cyan);">
+      <div style="font-weight:800;font-size:1.1rem;margin-bottom:4px;" id="ht-res-a-label"></div>
+      <div style="font-size:2rem;font-weight:900;color:var(--cyan);" id="ht-res-a-count"></div>
+      <div id="ht-res-a-names" style="font-size:0.85rem;color:var(--text-dim);margin-top:4px;"></div>
+    </div>
+    <div style="flex:1;text-align:center;padding:16px;border-radius:14px;background:rgba(239,99,81,0.08);border:2px solid var(--pink);">
+      <div style="font-weight:800;font-size:1.1rem;margin-bottom:4px;" id="ht-res-b-label"></div>
+      <div style="font-size:2rem;font-weight:900;color:var(--pink);" id="ht-res-b-count"></div>
+      <div id="ht-res-b-names" style="font-size:0.85rem;color:var(--text-dim);margin-top:4px;"></div>
+    </div>
+  </div>
+  <div class="ht-split-bar" id="ht-split-bar"><div class="ht-split-a" id="ht-split-a"></div><div class="ht-split-b" id="ht-split-b"></div></div>
+  <div id="ht-opinion-labels" style="text-align:center;margin-bottom:8px;"></div>
+  <div id="ht-res-points" class="subtitle" style="font-size:1.1rem;color:var(--gold);font-weight:700;"></div>
+  <div id="ht-debate-timer" class="debate-timer hidden"></div>
+  <div id="ht-res-breakdown" class="round-breakdown"></div>
+  <div class="btn-row" id="ht-res-btns">
+    <button class="btn pink" id="btn-ht-again">New Question</button>
+    <button class="btn outline" id="btn-ht-home2">Home</button>
+  </div>
+</div>
+
+<!-- SESSION STATS -->
+<div id="screen-session-stats" class="screen">
+  <div class="reveal-emoji">🏆</div>
+  <h1 class="reveal-text">Session Stats</h1>
+  <div id="stats-awards" class="stats-awards"></div>
+  <div class="divider"></div>
+  <div id="stats-summary" class="subtitle"></div>
+  <div id="stats-final-scores" class="results-list"></div>
+  <div class="gap"></div>
+  <button class="btn big green" id="btn-stats-home">Back to Home</button>
+</div>
+
+<!-- ROUND SUMMARY -->
+<div id="screen-round-summary" class="screen">
+  <h1>Round Summary</h1>
+  <div id="round-summary-content" class="round-breakdown"></div>
+  <div class="gap"></div>
+  <button class="btn big" id="btn-round-continue">Continue</button>
+</div>
+
+<!-- PLAYLIST COMPLETE -->
+<div id="screen-playlist-complete" class="screen">
+  <div class="reveal-emoji">🎯</div>
+  <h1 class="reveal-text">Game Night Complete!</h1>
+  <div id="pl-final-scores" class="results-list"></div>
+  <div class="gap"></div>
+  <button class="btn big green" id="btn-pl-complete-home">Back to Home</button>
+  <button class="btn" id="btn-pl-complete-stats" style="margin-top:8px;">View Session Stats</button>
+</div>
+
+<!-- ══════════ MAFIA ══════════ -->
+<div id="screen-mafia-setup" class="screen">
+  <button class="back-btn" data-target="screen-home">← Back</button>
+  <h1>🎭 Mafia</h1>
+  <div class="subtitle">Deception, deduction, and drama.</div>
+  <div class="pack-grid" id="mafia-packs"></div>
+  <button class="btn big" id="btn-mafia-start" disabled>Start Game</button>
+</div>
+
+<div id="screen-mafia-night" class="screen">
+  <h1 id="mafia-night-title">🌙 Night Phase</h1>
+  <div id="mafia-night-msg" class="subtitle">The town falls silent...</div>
+  <div id="mafia-night-action" class="action-area"></div>
+  <button class="btn big" id="btn-mafia-night-next">Continue</button>
+</div>
+
+<div id="screen-mafia-day" class="screen">
+  <h1>☀️ Day Phase</h1>
+  <div id="mafia-day-msg" class="subtitle"></div>
+  <div id="mafia-alive-players" class="chip-grid"></div>
+  <div class="spacer"></div>
+  <button class="btn big" id="btn-mafia-nominate">Start Vote</button>
+</div>
+
+<div id="screen-mafia-vote" class="screen">
+  <h1>🗳️ Town Vote</h1>
+  <div class="subtitle">Who do you want to eliminate?</div>
+  <div id="mafia-vote-grid" class="vote-grid"></div>
+</div>
+
+<div id="screen-mafia-results" class="screen">
+  <div id="mafia-res-emoji" class="reveal-emoji"></div>
+  <h1 id="mafia-res-title" class="reveal-text"></h1>
+  <div id="mafia-res-detail" class="subtitle"></div>
+  <div id="mafia-res-roles"></div>
+  <div class="gap"></div>
+  <button class="btn big green" id="btn-mafia-home">Home</button>
+  <button class="btn" id="btn-mafia-again">Play Again</button>
+</div>
+
+<!-- ══════════ MILLIONAIRE ══════════ -->
+<div id="screen-mill-setup" class="screen">
+  <button class="back-btn" data-target="screen-home">← Back</button>
+  <h1>💰 Millionaire</h1>
+  <div class="subtitle">Answer questions to climb the money ladder!</div>
+  <div class="pack-grid" id="mill-packs"></div>
+  <button class="btn big" id="btn-mill-start" disabled>Start Game</button>
+</div>
+
+<div id="screen-mill-question" class="screen">
+  <div id="mill-ladder" class="mill-ladder"></div>
+  <div id="mill-lifelines" class="mill-lifelines"></div>
+  <h2 id="mill-q-text" style="text-align:center;margin:16px 0;"></h2>
+  <div id="mill-answers" class="mill-answer-grid"></div>
+  <button class="btn outline" id="btn-mill-walk" style="margin-top:16px;">Walk Away</button>
+</div>
+
+<div id="screen-mill-result" class="screen">
+  <div id="mill-res-emoji" class="reveal-emoji"></div>
+  <h1 id="mill-res-text" class="reveal-text"></h1>
+  <div id="mill-res-detail" class="subtitle"></div>
+  <button class="btn big" id="btn-mill-next">Next Player</button>
+</div>
+
+<div id="screen-mill-final" class="screen">
+  <div class="reveal-emoji">💰</div>
+  <h1 class="reveal-text">Final Results</h1>
+  <div id="mill-final-scores" class="results-list"></div>
+  <div class="gap"></div>
+  <button class="btn big green" id="btn-mill-home">Home</button>
+  <button class="btn" id="btn-mill-again">Play Again</button>
+</div>
+
+<!-- ══════════ FAMILY FEUD ══════════ -->
+<div id="screen-feud-setup" class="screen">
+  <button class="back-btn" data-target="screen-home">← Back</button>
+  <h1>👨‍👩‍👧‍👦 Family Feud</h1>
+  <div class="subtitle">Guess the top survey answers!</div>
+  <div class="pack-grid" id="feud-packs"></div>
+  <button class="btn big" id="btn-feud-start" disabled>Start Game</button>
+</div>
+
+<div id="screen-feud-board" class="screen">
+  <h2 id="feud-question" style="text-align:center;margin-bottom:16px;"></h2>
+  <div id="feud-board" class="feud-board"></div>
+  <div id="feud-strikes" class="feud-strikes"></div>
+  <div id="feud-team-info" class="subtitle"></div>
+  <div class="gap"></div>
+  <button class="btn big" id="btn-feud-guess">Reveal Answer</button>
+  <button class="btn outline" id="btn-feud-strike">Strike! ✗</button>
+</div>
+
+<div id="screen-feud-results" class="screen">
+  <div class="reveal-emoji">👨‍👩‍👧‍👦</div>
+  <h1 class="reveal-text">Feud Results</h1>
+  <div id="feud-final-scores" class="results-list"></div>
+  <div class="gap"></div>
+  <button class="btn big green" id="btn-feud-home">Home</button>
+  <button class="btn" id="btn-feud-again">Play Again</button>
+</div>
+
+<!-- ══════════ WAVELENGTH ══════════ -->
+<div id="screen-wave-setup" class="screen">
+  <button class="back-btn" data-target="screen-home">← Back</button>
+  <h1>〰️ Wavelength</h1>
+  <div class="subtitle">Read minds across a spectrum!</div>
+  <div class="pack-grid" id="wave-packs"></div>
+  <button class="btn big" id="btn-wave-start" disabled>Start Game</button>
+</div>
+
+<div id="screen-wave-clue" class="screen">
+  <h1>🎯 Give a Clue</h1>
+  <div id="wave-psychic-name" class="subtitle"></div>
+  <div class="wave-spectrum">
+    <span id="wave-left" class="wave-label"></span>
+    <div class="wave-bar"><div class="wave-target" id="wave-target"></div></div>
+    <span id="wave-right" class="wave-label"></span>
+  </div>
+  <div class="spacer"></div>
+  <input type="text" id="wave-clue-input" placeholder="Type your clue..." maxlength="40" style="max-width:300px;">
+  <button class="btn big" id="btn-wave-clue-done">Lock In Clue</button>
+</div>
+
+<div id="screen-wave-guess" class="screen">
+  <h1>🤔 Guess the Target</h1>
+  <div id="wave-clue-display" class="subtitle" style="font-size:1.5rem;color:var(--accent);font-weight:700;"></div>
+  <div class="wave-spectrum">
+    <span id="wave-guess-left" class="wave-label"></span>
+    <div class="wave-bar"><input type="range" id="wave-slider" min="0" max="100" value="50" class="wave-slider"></div>
+    <span id="wave-guess-right" class="wave-label"></span>
+  </div>
+  <button class="btn big" id="btn-wave-guess-done">Lock In Guess</button>
+</div>
+
+<div id="screen-wave-reveal" class="screen">
+  <h1>〰️ Results</h1>
+  <div class="wave-spectrum">
+    <span id="wave-rev-left" class="wave-label"></span>
+    <div class="wave-bar"><div class="wave-target" id="wave-rev-target"></div><div class="wave-guess-marker" id="wave-rev-guess"></div></div>
+    <span id="wave-rev-right" class="wave-label"></span>
+  </div>
+  <div id="wave-rev-score" class="subtitle" style="font-size:1.3rem;margin-top:16px;"></div>
+  <button class="btn big" id="btn-wave-next">Next Round</button>
+</div>
+
+<!-- ══════════ ALIAS ══════════ -->
+<div id="screen-alias-setup" class="screen">
+  <button class="back-btn" data-target="screen-home">← Back</button>
+  <h1>🗣️ Alias</h1>
+  <div class="subtitle">Describe words without the forbidden ones!</div>
+  <div class="pack-grid" id="alias-packs"></div>
+  <button class="btn big" id="btn-alias-start" disabled>Start Game</button>
+</div>
+
+<div id="screen-alias-play" class="screen">
+  <h2 id="alias-describer" style="text-align:center;"></h2>
+  <div id="alias-timer" class="timer-big"></div>
+  <div id="alias-word" class="alias-word-card">
+    <div id="alias-main-word" class="alias-main"></div>
+    <div id="alias-forbidden" class="alias-forbidden"></div>
+  </div>
+  <div style="display:flex;gap:12px;margin-top:16px;">
+    <button class="btn big green" id="btn-alias-correct">✓ Got It!</button>
+    <button class="btn big" id="btn-alias-skip" style="background:var(--surface2);">Skip</button>
+  </div>
+  <div id="alias-score-display" class="subtitle" style="margin-top:12px;"></div>
+</div>
+
+<div id="screen-alias-results" class="screen">
+  <div class="reveal-emoji">🗣️</div>
+  <h1 class="reveal-text">Alias Results</h1>
+  <div id="alias-final-scores" class="results-list"></div>
+  <div class="gap"></div>
+  <button class="btn big green" id="btn-alias-home">Home</button>
+  <button class="btn" id="btn-alias-again">Play Again</button>
+</div>
+
+<!-- ══════════ DRAWING ══════════ -->
+<div id="screen-draw-setup" class="screen">
+  <button class="back-btn" data-target="screen-home">← Back</button>
+  <h1>🎨 Drawing</h1>
+  <div class="subtitle">Draw and guess!</div>
+  <div class="pack-grid" id="draw-packs"></div>
+  <button class="btn big" id="btn-draw-start" disabled>Start Game</button>
+</div>
+
+<div id="screen-draw-play" class="screen">
+  <h2 id="draw-player-name" style="text-align:center;"></h2>
+  <div id="draw-timer" class="timer-big"></div>
+  <div id="draw-word-display" class="subtitle" style="font-size:1.3rem;color:var(--accent);"></div>
+  <canvas id="draw-canvas" width="400" height="300" style="border:2px solid var(--surface2);border-radius:var(--radius);background:#fff;max-width:100%;touch-action:none;"></canvas>
+  <div class="draw-tools" id="draw-tools">
+    <button class="draw-tool active" data-tool="pen">✏️</button>
+    <button class="draw-tool" data-tool="eraser">🧹</button>
+    <button class="draw-tool" data-tool="clear">🗑️</button>
+    <input type="color" id="draw-color" value="#000000" style="width:32px;height:32px;border:none;cursor:pointer;">
+    <input type="range" id="draw-size" min="2" max="20" value="4" style="width:60px;">
+  </div>
+  <div id="draw-hint" class="subtitle"></div>
+  <div style="display:flex;gap:12px;margin-top:12px;">
+    <button class="btn big green" id="btn-draw-correct">Someone Guessed It!</button>
+    <button class="btn" id="btn-draw-skip">Skip Word</button>
+  </div>
+</div>
+
+<div id="screen-draw-results" class="screen">
+  <div class="reveal-emoji">🎨</div>
+  <h1 class="reveal-text">Drawing Results</h1>
+  <div id="draw-final-scores" class="results-list"></div>
+  <div class="gap"></div>
+  <button class="btn big green" id="btn-draw-home">Home</button>
+  <button class="btn" id="btn-draw-again">Play Again</button>
+</div>
+
+<!-- SAVE SLOTS -->
+<div id="screen-saves" class="screen">
+  <h1>💾 Save Slots</h1>
+  <h2 id="saves-subtitle">Pick a slot</h2>
+  <div id="save-slots" class="save-slots"></div>
+  <div class="gap"></div>
+  <button class="btn outline" id="btn-saves-back">Cancel</button>
+</div>
+
+<!-- CONTENT MANAGER -->
+<div id="screen-content-mgr" class="screen">
+  <button class="btn outline back-home" id="btn-cm-home">&#8592; Home</button>
+  <h1>📦 Content Manager</h1>
+  <div class="cm-toolbar">
+    <input type="text" id="cm-search" placeholder="Search packs..." class="cm-search">
+    <select id="cm-sort" class="cm-sort-select">
+      <option value="name">Sort: Name</option>
+      <option value="count">Sort: Count</option>
+      <option value="type">Sort: Type</option>
+    </select>
+  </div>
+  <div class="cm-tabs">
+    <button class="cm-tab active" data-tab="all">All</button>
+    <button class="cm-tab" data-tab="imposter">🕵️ Imposter</button>
+    <button class="cm-tab" data-tab="trivia">🧠 Trivia</button>
+    <button class="cm-tab" data-tab="hottake">🔥 Hot Take</button>
+    <button class="cm-tab" data-tab="feud">👨‍👩‍👧‍👦 Feud</button>
+    <button class="cm-tab" data-tab="wavelength">〰️ Wave</button>
+    <button class="cm-tab" data-tab="alias">🗣️ Alias</button>
+    <button class="cm-tab" data-tab="drawing">🎨 Draw</button>
+    <button class="cm-tab" data-tab="millionaire">💰 Mill.</button>
+    <button class="cm-tab" data-tab="mafia">🎭 Mafia</button>
+  </div>
+  <div id="cm-pack-grid" class="cm-pack-grid"></div>
+  <div class="cm-bottom-bar">
+    <button class="btn sm green" id="btn-cm-create">+ Create New Pack</button>
+    <input type="file" id="cm-import-file" accept=".json" style="display:none;">
+    <button class="btn outline sm" id="btn-cm-import">Import (.json)</button>
+  </div>
+</div>
+
+<!-- PACK WIZARD -->
+<div class="overlay" id="pack-wizard-overlay">
+  <div class="overlay-panel" style="max-width:540px;">
+    <div class="wizard-progress" id="wizard-progress">
+      <div class="wizard-step active" data-step="1">1. Type</div>
+      <div class="wizard-step" data-step="2">2. Details</div>
+      <div class="wizard-step" data-step="3">3. Content</div>
+      <div class="wizard-step" data-step="4">4. Review</div>
+    </div>
+    <div id="wizard-body"></div>
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn outline" id="btn-wizard-back">Back</button>
+      <button class="btn green" id="btn-wizard-next">Next</button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAYS -->
+<button class="scoreboard-fab" id="scoreboard-fab">🏆</button>
+
+<div class="overlay" id="scoreboard-overlay">
+  <div class="overlay-panel"><h2>🏆 Scoreboard</h2><div id="scoreboard-rows"></div>
+  <button class="btn outline" id="btn-sb-close" style="margin-top:20px;width:100%;">Close</button></div>
+</div>
+
+<div class="overlay" id="settings-overlay">
+  <div class="overlay-panel"><h2 id="settings-title">Settings</h2><div id="settings-content"></div>
+  <button class="btn outline" id="btn-settings-close" style="margin-top:20px;width:100%;">Close</button></div>
+</div>
+
+<div class="overlay" id="info-overlay">
+  <div class="overlay-panel"><h2 id="info-title">How to Score</h2><div id="info-content" class="scoring-rules"></div>
+  <button class="btn outline" id="btn-info-close" style="margin-top:20px;width:100%;">Close</button></div>
+</div>
+
+<button class="game-menu-btn" id="game-menu-btn">&#9776;</button>
+<div class="overlay" id="menu-overlay">
+  <div class="overlay-panel"><h2>Menu</h2>
+  <div class="game-menu-panel">
+    <button class="gm-item" id="gm-resume">&#9654; Resume</button>
+    <button class="gm-item" id="gm-scoreboard">&#127942; Scoreboard</button>
+    <button class="gm-item" id="gm-settings">&#9881; Settings</button>
+    <button class="gm-item" id="gm-save">&#128190; Save &amp; Exit</button>
+    <button class="gm-item red" id="gm-abandon">&#128682; Abandon Game</button>
+    <button class="gm-item" id="gm-home">&#127968; Back to Game Selector</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="confirm-overlay">
+  <div class="overlay-panel confirm-dialog"><h2 id="confirm-title">Are you sure?</h2>
+  <div class="subtitle" id="confirm-msg">Progress will be lost.</div>
+  <div class="btn-row"><button class="btn red" id="btn-confirm-yes">Yes</button><button class="btn outline" id="btn-confirm-no">Cancel</button></div></div>
+</div>
+
+<div class="overlay" id="pack-preview-overlay">
+  <div class="overlay-panel"><h2 id="preview-title">Pack Preview</h2><div id="preview-content" style="font-size:0.9rem;line-height:1.6;"></div>
+  <button class="btn outline" id="btn-preview-close" style="margin-top:20px;width:100%;">Close</button></div>
+</div>
+
+<div class="overlay" id="pack-editor-overlay">
+  <div class="overlay-panel" style="max-width:520px;"><h2 id="editor-title">Edit Pack</h2><div id="editor-content"></div>
+  <div class="btn-row" style="margin-top:16px;"><button class="btn green" id="btn-editor-save">Save Pack</button><button class="btn outline" id="btn-editor-cancel">Cancel</button></div></div>
+</div>
+
+<script src="/socket.io/socket.io.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
+<script src="app.js" defer></script>
+</body>
+</html>

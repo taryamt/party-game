@@ -1,0 +1,31 @@
+{
+  "pack": "Sports",
+  "emoji": "⚽",
+  "questions": [
+    { "question": "Which makes a sport more exciting?", "optionA": "High scoring games", "optionB": "Low scoring defensive battles" },
+    { "question": "Which athlete trait matters more?", "optionA": "Natural raw talent", "optionB": "Insane work ethic" },
+    { "question": "Which is the better sports experience?", "optionA": "Watching live at the stadium", "optionB": "Watching at home with friends" },
+    { "question": "Which is more impressive?", "optionA": "An undefeated season", "optionB": "A championship comeback from behind" },
+    { "question": "Which is the better sports take?", "optionA": "Defense wins championships", "optionB": "Offense wins championships" },
+    { "question": "Which team type do you root for?", "optionA": "Dominant dynasty team", "optionB": "Underdog Cinderella story" },
+    { "question": "Which is the harder sport to master?", "optionA": "Individual sports (tennis, golf)", "optionB": "Team sports (basketball, soccer)" },
+    { "question": "Which is more exciting to watch?", "optionA": "Playoffs / knockout rounds", "optionB": "Regular season rivalry games" },
+    { "question": "Which matters more for a great game?", "optionA": "Star individual performances", "optionB": "Perfect team chemistry" },
+    { "question": "Which is the better hot take?", "optionA": "The GOAT debate matters", "optionB": "Comparing across eras is pointless" },
+    { "question": "Which sport has the best atmosphere?", "optionA": "Football (soccer) matches", "optionB": "American football games" },
+    { "question": "Which is the tougher mental challenge?", "optionA": "Free throw with the game on the line", "optionB": "Penalty kick in a shootout" },
+    { "question": "Which coaching style is more effective?", "optionA": "Intense and demanding", "optionB": "Calm and supportive" },
+    { "question": "Which is the better era of sports?", "optionA": "Old school physical play", "optionB": "Modern analytics-driven play" },
+    { "question": "Which is more fun to play casually?", "optionA": "Basketball", "optionB": "Soccer" },
+    { "question": "Which is a bigger deal?", "optionA": "Breaking a world record", "optionB": "Winning an Olympic gold medal" },
+    { "question": "Which fan behavior is worse?", "optionA": "Bandwagon fans", "optionB": "Overly negative fans of their own team" },
+    { "question": "Which is more entertaining?", "optionA": "A blowout win by your team", "optionB": "A nail-biter that could go either way" },
+    { "question": "Which matters more for an athlete's legacy?", "optionA": "Championships won", "optionB": "Individual stats and records" },
+    { "question": "Which is the better format?", "optionA": "Single elimination tournament", "optionB": "Best-of-seven series" },
+    { "question": "Which summer sport is more fun to watch?", "optionA": "Swimming", "optionB": "Track and field" },
+    { "question": "Which is the better celebration?", "optionA": "Choreographed team celebration", "optionB": "Raw emotional solo reaction" },
+    { "question": "Which trade scenario is worse?", "optionA": "Your favorite player leaves for a rival", "optionB": "Your team trades away a future star" },
+    { "question": "Which is more exciting in overtime?", "optionA": "Sudden death / golden goal", "optionB": "Full extra period played out" },
+    { "question": "Which youth sports philosophy is better?", "optionA": "Specialize early in one sport", "optionB": "Play multiple sports growing up" }
+  ]
+}

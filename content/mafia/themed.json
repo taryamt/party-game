@@ -1,0 +1,46 @@
+{
+  "pack": "Shadow Agency",
+  "emoji": "🕵️",
+  "roles": {
+    "mafia": {
+      "name": "Double Agent",
+      "description": "You work for the enemy. Eliminate operatives at night while maintaining your cover during debriefings."
+    },
+    "doctor": {
+      "name": "Field Medic",
+      "description": "Deploy your extraction kit each night to save one operative from elimination. You cannot extract yourself two nights in a row."
+    },
+    "detective": {
+      "name": "Intelligence Analyst",
+      "description": "Access classified files each night to uncover the true allegiance of one operative."
+    },
+    "civilian": {
+      "name": "Field Operative",
+      "description": "Root out the double agents during debriefings. Trust your instincts and watch for inconsistencies."
+    },
+    "jester": {
+      "name": "Rogue Agent",
+      "description": "You have gone off the grid. Win by getting discharged during a debriefing. Act suspicious enough to draw attention."
+    }
+  },
+  "nightMessages": [
+    "Mission control goes dark. Operatives, stand by for nightfall protocol...",
+    "Encrypted channels open. The double agents make their move...",
+    "HQ powers down. Only shadows and secrets remain...",
+    "Night shift begins. Someone in this room is not who they claim to be...",
+    "The surveillance feeds cut to static. Danger lurks in the facility...",
+    "Classified operations are underway. All operatives, maintain radio silence...",
+    "The bunker lights dim. Trust no one in the darkness...",
+    "A coded transmission crackles through the static. The night op begins..."
+  ],
+  "dayMessages": [
+    "Morning debriefing commences. All operatives, report to the situation room.",
+    "The alarm sounds. HQ is back online. Time to review last night's events.",
+    "Daylight protocol activated. Someone did not survive the night shift...",
+    "The briefing room fills with tension. Intelligence reports are in.",
+    "Secure channels reopen. The team assembles, but trust is fractured.",
+    "All operatives are summoned. Last night's mission had casualties...",
+    "The director calls an emergency meeting. Suspicions are running high.",
+    "Debriefing begins. The evidence board awaits new connections."
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "pack": "General Knowledge",
+  "emoji": "💰",
+  "questions": [
+    {
+      "question": "What is the largest planet in our solar system?",
+      "answers": ["Mars", "Jupiter", "Saturn", "Neptune"],
+      "correct": 1,
+      "difficulty": "easy"
+    },
+    {
+      "question": "How many sides does a hexagon have?",
+      "answers": ["5", "6", "7", "8"],
+      "correct": 1,
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which ocean is the largest?",
+      "answers": ["Atlantic", "Indian", "Arctic", "Pacific"],
+      "correct": 3,
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the hardest natural substance on Earth?",
+      "answers": ["Gold", "Iron", "Diamond", "Titanium"],
+      "correct": 2,
+      "difficulty": "easy"
+    },
+    {
+      "question": "In which country would you find the Great Barrier Reef?",
+      "answers": ["Brazil", "Australia", "Indonesia", "Thailand"],
+      "correct": 1,
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the capital of Japan?",
+      "answers": ["Beijing", "Seoul", "Tokyo", "Bangkok"],
+      "correct": 2,
+      "difficulty": "medium"
+    },
+    {
+      "question": "Who painted the Mona Lisa?",
+      "answers": ["Michelangelo", "Raphael", "Donatello", "Leonardo da Vinci"],
+      "correct": 3,
+      "difficulty": "medium"
+    },
+    {
+      "question": "What year did the Titanic sink?",
+      "answers": ["1905", "1912", "1918", "1923"],
+      "correct": 1,
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which element has the chemical symbol 'Au'?",
+      "answers": ["Silver", "Aluminum", "Gold", "Copper"],
+      "correct": 2,
+      "difficulty": "medium"
+    },
+    {
+      "question": "How many bones are in the adult human body?",
+      "answers": ["186", "206", "226", "246"],
+      "correct": 1,
+      "difficulty": "medium"
+    },
+    {
+      "question": "In what year was the first iPhone released?",
+      "answers": ["2005", "2006", "2007", "2008"],
+      "correct": 2,
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the longest river in Africa?",
+      "answers": ["Congo", "Niger", "Zambezi", "Nile"],
+      "correct": 3,
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which composer wrote 'The Four Seasons'?",
+      "answers": ["Bach", "Mozart", "Vivaldi", "Beethoven"],
+      "correct": 2,
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the deepest point in the world's oceans?",
+      "answers": ["Mariana Trench", "Tonga Trench", "Philippine Trench", "Puerto Rico Trench"],
+      "correct": 0,
+      "difficulty": "hard"
+    },
+    {
+      "question": "In which decade was the United Nations founded?",
+      "answers": ["1930s", "1940s", "1950s", "1960s"],
+      "correct": 1,
+      "difficulty": "hard"
+    }
+  ]
+}

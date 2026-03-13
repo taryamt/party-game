@@ -1,0 +1,96 @@
+{
+  "pack": "Science",
+  "emoji": "🔬",
+  "questions": [
+    {
+      "question": "What gas do plants absorb from the atmosphere during photosynthesis?",
+      "answers": ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"],
+      "correct": 2,
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the chemical formula for water?",
+      "answers": ["CO2", "H2O", "NaCl", "O2"],
+      "correct": 1,
+      "difficulty": "easy"
+    },
+    {
+      "question": "How many legs does an insect have?",
+      "answers": ["4", "6", "8", "10"],
+      "correct": 1,
+      "difficulty": "easy"
+    },
+    {
+      "question": "What force keeps us on the ground?",
+      "answers": ["Magnetism", "Friction", "Gravity", "Inertia"],
+      "correct": 2,
+      "difficulty": "easy"
+    },
+    {
+      "question": "What planet is closest to the Sun?",
+      "answers": ["Venus", "Mercury", "Mars", "Earth"],
+      "correct": 1,
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the speed of light approximately in km/s?",
+      "answers": ["100,000", "200,000", "300,000", "400,000"],
+      "correct": 2,
+      "difficulty": "medium"
+    },
+    {
+      "question": "What element does 'Fe' represent on the periodic table?",
+      "answers": ["Fluorine", "Fermium", "Iron", "Francium"],
+      "correct": 2,
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which organ is responsible for filtering blood in the human body?",
+      "answers": ["Liver", "Kidney", "Heart", "Spleen"],
+      "correct": 1,
+      "difficulty": "medium"
+    },
+    {
+      "question": "What type of bond involves the sharing of electron pairs between atoms?",
+      "answers": ["Ionic", "Covalent", "Metallic", "Hydrogen"],
+      "correct": 1,
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the most abundant gas in Earth's atmosphere?",
+      "answers": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Argon"],
+      "correct": 2,
+      "difficulty": "medium"
+    },
+    {
+      "question": "What phenomenon explains why the sky is blue?",
+      "answers": ["Reflection", "Refraction", "Rayleigh scattering", "Diffraction"],
+      "correct": 2,
+      "difficulty": "hard"
+    },
+    {
+      "question": "What particle in an atom has no electric charge?",
+      "answers": ["Proton", "Electron", "Neutron", "Positron"],
+      "correct": 2,
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the half-life of Carbon-14 approximately?",
+      "answers": ["1,000 years", "5,730 years", "10,000 years", "50,000 years"],
+      "correct": 1,
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which scientist proposed the theory of general relativity?",
+      "answers": ["Isaac Newton", "Niels Bohr", "Albert Einstein", "Max Planck"],
+      "correct": 2,
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the Mohs scale used to measure?",
+      "answers": ["Earthquake intensity", "Wind speed", "Mineral hardness", "Sound volume"],
+      "correct": 2,
+      "difficulty": "hard"
+    }
+  ]
+}

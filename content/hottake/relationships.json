@@ -1,0 +1,31 @@
+{
+  "pack": "Relationships",
+  "emoji": "💕",
+  "questions": [
+    { "question": "Which is more important in a partner?", "optionA": "Makes you laugh constantly", "optionB": "Is your emotional rock" },
+    { "question": "Which is the better date?", "optionA": "Fancy dinner out", "optionB": "Cozy night in cooking together" },
+    { "question": "Which is the bigger green flag?", "optionA": "Gets along great with your friends", "optionB": "Gets along great with your family" },
+    { "question": "Which is worse in a relationship?", "optionA": "Someone who's always late", "optionB": "Someone who's too controlling about time" },
+    { "question": "Which matters more long-term?", "optionA": "Shared hobbies and interests", "optionB": "Shared values and goals" },
+    { "question": "Which is the better approach to conflict?", "optionA": "Talk it out immediately", "optionB": "Cool off first then discuss" },
+    { "question": "Which is more romantic?", "optionA": "Grand public gestures", "optionB": "Small private thoughtful acts" },
+    { "question": "Which friend is more valuable?", "optionA": "One who always tells you the honest truth", "optionB": "One who always has your back no matter what" },
+    { "question": "Which is the better love story setup?", "optionA": "Childhood friends who fall in love", "optionB": "Strangers with instant chemistry" },
+    { "question": "Which is more important for friendship?", "optionA": "Talking every day", "optionB": "Picking up right where you left off after months" },
+    { "question": "Which living arrangement is better for couples?", "optionA": "Share everything, one bedroom", "optionB": "Have your own separate spaces too" },
+    { "question": "Which is the bigger relationship dealbreaker?", "optionA": "Terrible taste in music", "optionB": "Terrible taste in food" },
+    { "question": "Which vacation style works better for couples?", "optionA": "Adventure and exploring together", "optionB": "Relaxing and doing nothing together" },
+    { "question": "Which is more important?", "optionA": "Your partner remembers important dates", "optionB": "Your partner notices when you're upset" },
+    { "question": "Which is the harder conversation to have?", "optionA": "Telling a friend they hurt your feelings", "optionB": "Telling a friend you disagree with their life choices" },
+    { "question": "Which is worse?", "optionA": "A partner who overshares about your relationship", "optionB": "A partner who never talks about you to anyone" },
+    { "question": "Which pet peeve is worse in a roommate?", "optionA": "Messy but fun to live with", "optionB": "Clean but has a ton of rules" },
+    { "question": "Which is the better way to meet someone?", "optionA": "Dating apps", "optionB": "Meeting through mutual friends" },
+    { "question": "Which is more important in a friendship?", "optionA": "Always being available when needed", "optionB": "Always being honest even when it's hard" },
+    { "question": "Which is the better surprise?", "optionA": "Surprise party planned by your partner", "optionB": "Surprise trip planned by your partner" },
+    { "question": "Which is harder?", "optionA": "Long distance relationship", "optionB": "Relationship where you work together daily" },
+    { "question": "Which morning routine is better for couples?", "optionA": "Wake up at the same time together", "optionB": "Let each person follow their own schedule" },
+    { "question": "Which is the better apology style?", "optionA": "Heartfelt words and conversation", "optionB": "Making it up through actions" },
+    { "question": "Which is more attractive?", "optionA": "Confidence", "optionB": "Humility" },
+    { "question": "Which is better for a relationship?", "optionA": "Never go to bed angry", "optionB": "Sleep on it and talk tomorrow with fresh eyes" }
+  ]
+}

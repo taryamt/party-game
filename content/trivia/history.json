@@ -1,0 +1,26 @@
+{
+  "pack": "World History",
+  "emoji": "📜",
+  "questions": [
+    { "question": "In what year did World War I begin?", "answers": ["1912", "1914", "1916", "1918"], "correct": 1 },
+    { "question": "Which ancient civilization built Machu Picchu?", "answers": ["Aztec", "Maya", "Inca", "Olmec"], "correct": 2 },
+    { "question": "Who was the first Emperor of Rome?", "answers": ["Julius Caesar", "Augustus", "Nero", "Caligula"], "correct": 1 },
+    { "question": "The Berlin Wall fell in which year?", "answers": ["1987", "1988", "1989", "1991"], "correct": 2 },
+    { "question": "Which country was formerly known as Persia?", "answers": ["Iraq", "Turkey", "Iran", "Afghanistan"], "correct": 2 },
+    { "question": "The Magna Carta was signed in which year?", "answers": ["1066", "1215", "1302", "1415"], "correct": 1 },
+    { "question": "Who led the Soviet Union during World War II?", "answers": ["Lenin", "Trotsky", "Khrushchev", "Stalin"], "correct": 3 },
+    { "question": "Which empire was ruled by Genghis Khan?", "answers": ["Ottoman Empire", "Mongol Empire", "Persian Empire", "Roman Empire"], "correct": 1 },
+    { "question": "The French Revolution began in what year?", "answers": ["1776", "1789", "1799", "1804"], "correct": 1 },
+    { "question": "Who was the first woman to fly solo across the Atlantic?", "answers": ["Bessie Coleman", "Amelia Earhart", "Harriet Quimby", "Jacqueline Cochran"], "correct": 1 },
+    { "question": "Which ancient wonder was located in Alexandria, Egypt?", "answers": ["Colossus of Rhodes", "Hanging Gardens", "Great Lighthouse", "Temple of Artemis"], "correct": 2 },
+    { "question": "The Renaissance began in which country?", "answers": ["France", "England", "Spain", "Italy"], "correct": 3 },
+    { "question": "Who discovered penicillin?", "answers": ["Louis Pasteur", "Alexander Fleming", "Joseph Lister", "Robert Koch"], "correct": 1 },
+    { "question": "The Trojan War was fought between the Greeks and the people of which city?", "answers": ["Sparta", "Carthage", "Troy", "Athens"], "correct": 2 },
+    { "question": "Which treaty ended World War I?", "answers": ["Treaty of Paris", "Treaty of Versailles", "Treaty of Ghent", "Treaty of Westphalia"], "correct": 1 },
+    { "question": "What was the name of the ship on which the Pilgrims sailed to America in 1620?", "answers": ["Santa Maria", "Mayflower", "Endeavour", "Beagle"], "correct": 1 },
+    { "question": "The Cold War was primarily between the USA and which other superpower?", "answers": ["China", "United Kingdom", "Soviet Union", "Germany"], "correct": 2 },
+    { "question": "Which Egyptian pharaoh's tomb was discovered by Howard Carter in 1922?", "answers": ["Ramesses II", "Cleopatra", "Tutankhamun", "Akhenaten"], "correct": 2 },
+    { "question": "The Hundred Years' War was fought between England and which country?", "answers": ["Spain", "Germany", "France", "Scotland"], "correct": 2 },
+    { "question": "Who was the first President of the United States?", "answers": ["Thomas Jefferson", "John Adams", "Benjamin Franklin", "George Washington"], "correct": 3 }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "pack": "Classic Mafia",
+  "emoji": "🎭",
+  "roles": {
+    "mafia": {
+      "name": "Mafia",
+      "description": "Eliminate civilians at night. Blend in during the day."
+    },
+    "doctor": {
+      "name": "Doctor",
+      "description": "Choose one player to save each night. You cannot save yourself two nights in a row."
+    },
+    "detective": {
+      "name": "Detective",
+      "description": "Investigate one player each night to learn their role."
+    },
+    "civilian": {
+      "name": "Civilian",
+      "description": "Find and vote out the mafia during the day. Use logic, observation, and persuasion."
+    },
+    "jester": {
+      "name": "Jester",
+      "description": "Win by getting voted out during the day. Cause chaos and suspicion to draw votes to yourself."
+    }
+  },
+  "nightMessages": [
+    "The town falls silent as darkness takes hold...",
+    "Darkness descends upon the town. Close your eyes...",
+    "A chill runs through the air. Night has come...",
+    "The streetlights flicker and die. Shadows move in the dark...",
+    "The moon hides behind the clouds. The town sleeps uneasily...",
+    "Silence blankets the town. Not everyone will see the dawn...",
+    "The clock strikes midnight. Evil stirs in the shadows...",
+    "A cold wind sweeps through empty streets. The night begins..."
+  ],
+  "dayMessages": [
+    "The sun rises over the town. Time to find the truth.",
+    "A new day dawns. The town gathers in the square.",
+    "Morning breaks, but not everyone made it through the night...",
+    "Roosters crow as sunlight returns. Who survived the night?",
+    "The fog lifts to reveal the morning. The town assembles.",
+    "Dawn arrives with an uneasy silence. Accusations will fly.",
+    "The church bell rings. A new day of reckoning begins.",
+    "Sunlight streams through the windows. Time for justice."
+  ]
+}

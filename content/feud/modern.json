@@ -1,0 +1,216 @@
+{
+  "pack": "Modern Survey",
+  "emoji": "📱",
+  "questions": [
+    {
+      "question": "Name a popular social media platform",
+      "answers": [
+        { "text": "Instagram", "points": 30 },
+        { "text": "TikTok", "points": 25 },
+        { "text": "YouTube", "points": 20 },
+        { "text": "X / Twitter", "points": 15 },
+        { "text": "Snapchat", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name something people binge-watch on streaming",
+      "answers": [
+        { "text": "True crime docs", "points": 30 },
+        { "text": "Reality shows", "points": 25 },
+        { "text": "Sitcoms", "points": 20 },
+        { "text": "K-dramas", "points": 15 },
+        { "text": "Anime", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name an excuse people give for not texting back",
+      "answers": [
+        { "text": "Didn't see it", "points": 35 },
+        { "text": "Phone died", "points": 25 },
+        { "text": "Was busy", "points": 20 },
+        { "text": "Fell asleep", "points": 12 },
+        { "text": "Bad signal", "points": 8 }
+      ]
+    },
+    {
+      "question": "Name something people order from a food delivery app",
+      "answers": [
+        { "text": "Pizza", "points": 35 },
+        { "text": "Burgers", "points": 25 },
+        { "text": "Sushi", "points": 18 },
+        { "text": "Chinese food", "points": 12 },
+        { "text": "Burritos", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name a popular video game genre",
+      "answers": [
+        { "text": "Shooter", "points": 30 },
+        { "text": "Battle Royale", "points": 25 },
+        { "text": "RPG", "points": 20 },
+        { "text": "Sports", "points": 15 },
+        { "text": "Puzzle", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name something people post about on social media",
+      "answers": [
+        { "text": "Food", "points": 30 },
+        { "text": "Vacation", "points": 25 },
+        { "text": "Selfies", "points": 20 },
+        { "text": "Pets", "points": 15 },
+        { "text": "Workouts", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name a popular streaming service",
+      "answers": [
+        { "text": "Netflix", "points": 40 },
+        { "text": "Disney+", "points": 20 },
+        { "text": "Spotify", "points": 18 },
+        { "text": "YouTube Premium", "points": 12 },
+        { "text": "HBO Max", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name something that always needs charging",
+      "answers": [
+        { "text": "Phone", "points": 45 },
+        { "text": "Laptop", "points": 20 },
+        { "text": "Earbuds", "points": 15 },
+        { "text": "Smartwatch", "points": 12 },
+        { "text": "Tablet", "points": 8 }
+      ]
+    },
+    {
+      "question": "Name a reason someone unfollows a person on social media",
+      "answers": [
+        { "text": "Too many posts", "points": 30 },
+        { "text": "Political opinions", "points": 25 },
+        { "text": "Annoying content", "points": 20 },
+        { "text": "Breakup", "points": 15 },
+        { "text": "Spam or ads", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name a popular coffee drink",
+      "answers": [
+        { "text": "Latte", "points": 30 },
+        { "text": "Iced coffee", "points": 25 },
+        { "text": "Cappuccino", "points": 20 },
+        { "text": "Espresso", "points": 15 },
+        { "text": "Cold brew", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name something people do while waiting in line",
+      "answers": [
+        { "text": "Look at phone", "points": 45 },
+        { "text": "Talk to others", "points": 20 },
+        { "text": "People-watch", "points": 15 },
+        { "text": "Listen to music", "points": 12 },
+        { "text": "Complain", "points": 8 }
+      ]
+    },
+    {
+      "question": "Name a subscription people forget to cancel",
+      "answers": [
+        { "text": "Gym membership", "points": 35 },
+        { "text": "Streaming service", "points": 25 },
+        { "text": "Free trial app", "points": 18 },
+        { "text": "Magazine", "points": 12 },
+        { "text": "Cloud storage", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name something people Google late at night",
+      "answers": [
+        { "text": "Symptoms", "points": 35 },
+        { "text": "Random facts", "points": 20 },
+        { "text": "Recipes", "points": 18 },
+        { "text": "Celebrity gossip", "points": 15 },
+        { "text": "How to spell a word", "points": 12 }
+      ]
+    },
+    {
+      "question": "Name a type of content that goes viral",
+      "answers": [
+        { "text": "Dance challenge", "points": 30 },
+        { "text": "Cat video", "points": 25 },
+        { "text": "Fail compilation", "points": 20 },
+        { "text": "Meme", "points": 15 },
+        { "text": "Life hack", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name an annoying thing about working from home",
+      "answers": [
+        { "text": "Distractions", "points": 30 },
+        { "text": "Too many meetings", "points": 25 },
+        { "text": "Loneliness", "points": 20 },
+        { "text": "Bad Wi-Fi", "points": 15 },
+        { "text": "No work-life boundary", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name a popular type of podcast",
+      "answers": [
+        { "text": "True crime", "points": 35 },
+        { "text": "Comedy", "points": 25 },
+        { "text": "News", "points": 18 },
+        { "text": "Self-help", "points": 12 },
+        { "text": "Interview", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name a side hustle people talk about online",
+      "answers": [
+        { "text": "Reselling", "points": 25 },
+        { "text": "Dropshipping", "points": 25 },
+        { "text": "Freelancing", "points": 20 },
+        { "text": "Content creation", "points": 18 },
+        { "text": "Tutoring", "points": 12 }
+      ]
+    },
+    {
+      "question": "Name an app everyone has on their phone",
+      "answers": [
+        { "text": "WhatsApp", "points": 30 },
+        { "text": "Instagram", "points": 25 },
+        { "text": "YouTube", "points": 20 },
+        { "text": "Google Maps", "points": 15 },
+        { "text": "Spotify", "points": 10 }
+      ]
+    },
+    {
+      "question": "Name a New Year's resolution people never keep",
+      "answers": [
+        { "text": "Exercise more", "points": 40 },
+        { "text": "Eat healthy", "points": 25 },
+        { "text": "Save money", "points": 18 },
+        { "text": "Read more", "points": 10 },
+        { "text": "Quit smoking", "points": 7 }
+      ]
+    },
+    {
+      "question": "Name something people argue about on the internet",
+      "answers": [
+        { "text": "Politics", "points": 35 },
+        { "text": "Best movie/show", "points": 20 },
+        { "text": "Sports teams", "points": 18 },
+        { "text": "Pineapple on pizza", "points": 15 },
+        { "text": "Music taste", "points": 12 }
+      ]
+    },
+    {
+      "question": "Name a smart home device people own",
+      "answers": [
+        { "text": "Smart speaker", "points": 35 },
+        { "text": "Smart TV", "points": 25 },
+        { "text": "Smart thermostat", "points": 18 },
+        { "text": "Robot vacuum", "points": 12 },
+        { "text": "Smart lights", "points": 10 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "pack": "Movies & TV",
+  "emoji": "🎬",
+  "rounds": [
+    { "word": "Titanic", "hint": "there was room on that door", "difficulty": "easy" },
+    { "word": "Shrek", "hint": "layers, like an onion", "difficulty": "easy" },
+    { "word": "Jaws", "hint": "you'll need a bigger boat", "difficulty": "easy" },
+    { "word": "Matrix", "hint": "red pill or blue pill", "difficulty": "easy" },
+    { "word": "Frozen", "hint": "a queen with cold powers", "difficulty": "easy" },
+    { "word": "Batman", "hint": "a billionaire with a cape", "difficulty": "easy" },
+    { "word": "Jurassic Park", "hint": "life finds a way", "difficulty": "easy" },
+    { "word": "Star Wars", "hint": "may the force be with you", "difficulty": "easy" },
+    { "word": "The Office", "hint": "that's what she said", "difficulty": "easy" },
+    { "word": "Stranger Things", "hint": "the upside down", "difficulty": "easy" },
+    { "word": "Friends", "hint": "six people in a coffee shop", "difficulty": "easy" },
+    { "word": "Inception", "hint": "a dream within a dream", "difficulty": "medium" },
+    { "word": "Finding Nemo", "hint": "just keep swimming", "difficulty": "easy" },
+    { "word": "Breaking Bad", "hint": "a chemistry teacher's side hustle", "difficulty": "easy" },
+    { "word": "Toy Story", "hint": "toys that come alive", "difficulty": "easy" },
+    { "word": "Squid Game", "hint": "deadly childhood games", "difficulty": "easy" },
+    { "word": "Forrest Gump", "hint": "life is like a box of chocolates", "difficulty": "easy" },
+    { "word": "The Lion King", "hint": "a prince returns to claim the throne in Africa", "difficulty": "easy" },
+    { "word": "Harry Potter", "hint": "a boy wizard at a special school", "difficulty": "easy" },
+    { "word": "Spider-Man", "hint": "bitten by something radioactive", "difficulty": "easy" }
+  ]
+}

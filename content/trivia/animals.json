@@ -1,0 +1,26 @@
+{
+  "pack": "Animals",
+  "emoji": "🐾",
+  "questions": [
+    { "question": "What is the fastest land animal?", "answers": ["Lion", "Cheetah", "Horse", "Gazelle"], "correct": 1 },
+    { "question": "How many hearts does an octopus have?", "answers": ["1", "2", "3", "4"], "correct": 2 },
+    { "question": "What is a group of wolves called?", "answers": ["Pack", "Flock", "Herd", "Pride"], "correct": 0 },
+    { "question": "Which bird is known for its ability to mimic human speech?", "answers": ["Crow", "Parrot", "Mynah", "Starling"], "correct": 1 },
+    { "question": "What is the largest species of shark?", "answers": ["Great white shark", "Hammerhead shark", "Tiger shark", "Whale shark"], "correct": 3 },
+    { "question": "How many legs does a spider have?", "answers": ["6", "10", "8", "12"], "correct": 2 },
+    { "question": "Which mammal can truly fly?", "answers": ["Bat", "Flying squirrel", "Colugo", "Sugar glider"], "correct": 0 },
+    { "question": "What is the largest living reptile?", "answers": ["Komodo dragon", "Green anaconda", "Leatherback turtle", "Saltwater crocodile"], "correct": 3 },
+    { "question": "Which animal has the longest lifespan?", "answers": ["Galápagos tortoise", "Greenland shark", "Bowhead whale", "African elephant"], "correct": 1 },
+    { "question": "What color is a polar bear's skin under its white fur?", "answers": ["Black", "Pink", "White", "Gray"], "correct": 0 },
+    { "question": "Which insect is responsible for pollinating the most crops worldwide?", "answers": ["Butterfly", "Wasp", "Beetle", "Honeybee"], "correct": 3 },
+    { "question": "What is the only continent where giraffes live in the wild?", "answers": ["Asia", "Africa", "South America", "Australia"], "correct": 1 },
+    { "question": "How long is an elephant's gestation period (approximately)?", "answers": ["22 months", "12 months", "16 months", "28 months"], "correct": 0 },
+    { "question": "Which animal produces cashmere wool?", "answers": ["Sheep", "Alpaca", "Rabbit", "Goat"], "correct": 3 },
+    { "question": "What is the largest species of penguin?", "answers": ["King penguin", "Gentoo penguin", "Emperor penguin", "Macaroni penguin"], "correct": 2 },
+    { "question": "Which sea creature has the ability to regenerate its arms?", "answers": ["Jellyfish", "Starfish", "Seahorse", "Sea urchin"], "correct": 1 },
+    { "question": "What type of animal is a Komodo dragon?", "answers": ["Dinosaur", "Crocodilian", "Snake", "Lizard"], "correct": 3 },
+    { "question": "Which animal has the most powerful bite force?", "answers": ["Saltwater crocodile", "Hippopotamus", "Great white shark", "Grizzly bear"], "correct": 0 },
+    { "question": "How many stomachs does a cow have?", "answers": ["1", "2", "3", "4"], "correct": 3 },
+    { "question": "What is the only mammal that lays eggs besides the echidna?", "answers": ["Armadillo", "Pangolin", "Platypus", "Opossum"], "correct": 2 }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "pack": "Video Games",
+  "emoji": "🎮",
+  "questions": [
+    { "question": "What year was Minecraft officially released?", "answers": ["2009", "2011", "2013", "2010"], "correct": 1 },
+    { "question": "What is the best-selling video game of all time?", "answers": ["GTA V", "Minecraft", "Tetris", "Wii Sports"], "correct": 1 },
+    { "question": "What is Mario's brother's name?", "answers": ["Wario", "Luigi", "Toad", "Yoshi"], "correct": 1 },
+    { "question": "Which game features the character Master Chief?", "answers": ["Gears of War", "Destiny", "Halo", "Call of Duty"], "correct": 2 },
+    { "question": "What company developed Fortnite?", "answers": ["Valve", "Epic Games", "Riot Games", "EA"], "correct": 1 },
+    { "question": "In Pac-Man, how many ghosts chase the player?", "answers": ["3", "4", "5", "6"], "correct": 1 },
+    { "question": "What is the name of the princess Mario rescues?", "answers": ["Zelda", "Peach", "Daisy", "Rosalina"], "correct": 1 },
+    { "question": "Which game takes place in Rapture, an underwater city?", "answers": ["Subnautica", "BioShock", "Half-Life", "Portal"], "correct": 1 },
+    { "question": "What does 'GTA' stand for?", "answers": ["Grand Theft Auto", "Great Theft Adventure", "Grand Turismo Auto", "Game Theft Action"], "correct": 0 },
+    { "question": "In which game do players collect V-Bucks?", "answers": ["Roblox", "Apex Legends", "Fortnite", "Valorant"], "correct": 2 },
+    { "question": "What animal is Sonic?", "answers": ["Fox", "Rabbit", "Hedgehog", "Armadillo"], "correct": 2 },
+    { "question": "Which game features a battle royale on an island that shrinks?", "answers": ["Minecraft", "PUBG", "Terraria", "Rust"], "correct": 1 },
+    { "question": "What is the highest-grossing arcade game of all time?", "answers": ["Donkey Kong", "Space Invaders", "Pac-Man", "Street Fighter II"], "correct": 2 },
+    { "question": "In Zelda, what is the protagonist's name?", "answers": ["Zelda", "Link", "Ganon", "Epona"], "correct": 1 },
+    { "question": "Which company created PlayStation?", "answers": ["Nintendo", "Microsoft", "Sony", "Sega"], "correct": 2 },
+    { "question": "What is the name of the blocky sandbox game made by Roblox Corporation?", "answers": ["Minecraft", "Roblox", "Terraria", "Lego Worlds"], "correct": 1 },
+    { "question": "What color is Pikachu?", "answers": ["Red", "Blue", "Yellow", "Green"], "correct": 2 },
+    { "question": "Which game has the tagline 'War. War never changes'?", "answers": ["Call of Duty", "Battlefield", "Fallout", "Metal Gear Solid"], "correct": 2 },
+    { "question": "How many players are on a standard League of Legends team?", "answers": ["4", "5", "6", "3"], "correct": 1 },
+    { "question": "What is the name of the creepy green creature in Minecraft that explodes?", "answers": ["Zombie", "Enderman", "Creeper", "Skeleton"], "correct": 2 }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "pack": "Music",
+  "emoji": "🎵",
+  "questions": [
+    { "question": "How many strings does a standard guitar have?", "answers": ["4", "5", "6", "8"], "correct": 2 },
+    { "question": "Which musician is known as the 'King of Pop'?", "answers": ["Elvis Presley", "Prince", "Michael Jackson", "Stevie Wonder"], "correct": 2 },
+    { "question": "What musical term means to gradually get louder?", "answers": ["Diminuendo", "Fortissimo", "Crescendo", "Pianissimo"], "correct": 2 },
+    { "question": "Which band released the album 'Abbey Road'?", "answers": ["The Rolling Stones", "The Beatles", "Led Zeppelin", "The Who"], "correct": 1 },
+    { "question": "What instrument does a pianist play?", "answers": ["Organ", "Harpsichord", "Synthesizer", "Piano"], "correct": 3 },
+    { "question": "How many symphonies did Beethoven compose?", "answers": ["7", "8", "9", "10"], "correct": 2 },
+    { "question": "Which country is known as the birthplace of jazz?", "answers": ["United Kingdom", "United States", "Brazil", "Cuba"], "correct": 1 },
+    { "question": "What is the highest female singing voice?", "answers": ["Alto", "Mezzo-soprano", "Soprano", "Contralto"], "correct": 2 },
+    { "question": "Which rapper's real name is Marshall Mathers?", "answers": ["Jay-Z", "Kanye West", "Eminem", "Snoop Dogg"], "correct": 2 },
+    { "question": "What does 'forte' mean in music?", "answers": ["Soft", "Fast", "Loud", "Slow"], "correct": 2 },
+    { "question": "Which instrument is the largest in a standard orchestra?", "answers": ["Tuba", "Double bass", "Grand piano", "Harp"], "correct": 1 },
+    { "question": "The musical 'Hamilton' is about which historical figure?", "answers": ["Benjamin Franklin", "Thomas Jefferson", "Alexander Hamilton", "George Washington"], "correct": 2 },
+    { "question": "Which rock band is known for the song 'Bohemian Rhapsody'?", "answers": ["Led Zeppelin", "Pink Floyd", "Queen", "The Eagles"], "correct": 2 },
+    { "question": "How many keys are on a standard piano?", "answers": ["76", "82", "88", "92"], "correct": 2 },
+    { "question": "Which genre of music originated in Jamaica?", "answers": ["Salsa", "Bossa nova", "Soca", "Reggae"], "correct": 3 },
+    { "question": "What instrument is Yo-Yo Ma famous for playing?", "answers": ["Violin", "Cello", "Viola", "Double bass"], "correct": 1 },
+    { "question": "Which music streaming service launched in Sweden in 2008?", "answers": ["Apple Music", "Pandora", "Tidal", "Spotify"], "correct": 3 },
+    { "question": "What is the time signature of a waltz?", "answers": ["2/4", "3/4", "4/4", "6/8"], "correct": 1 },
+    { "question": "Which singer is known as the 'Queen of Soul'?", "answers": ["Whitney Houston", "Aretha Franklin", "Diana Ross", "Tina Turner"], "correct": 1 },
+    { "question": "What woodwind instrument is typically made of metal despite its classification?", "answers": ["Clarinet", "Oboe", "Flute", "Bassoon"], "correct": 2 }
+  ]
+}

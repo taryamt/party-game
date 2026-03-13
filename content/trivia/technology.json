@@ -1,0 +1,26 @@
+{
+  "pack": "Technology",
+  "emoji": "💻",
+  "questions": [
+    { "question": "What does 'HTTP' stand for?", "answers": ["HyperText Transfer Protocol", "High Tech Transfer Protocol", "HyperText Transmission Process", "High Transfer Text Protocol"], "correct": 0 },
+    { "question": "In what year was the first iPhone released?", "answers": ["2005", "2006", "2007", "2008"], "correct": 2 },
+    { "question": "What programming language is known for its coffee cup logo?", "answers": ["Python", "C++", "JavaScript", "Java"], "correct": 3 },
+    { "question": "Who co-founded Microsoft alongside Bill Gates?", "answers": ["Steve Ballmer", "Paul Allen", "Steve Wozniak", "Larry Ellison"], "correct": 1 },
+    { "question": "What does 'CPU' stand for?", "answers": ["Central Processing Unit", "Computer Personal Unit", "Central Program Utility", "Core Processing Unit"], "correct": 0 },
+    { "question": "Which company developed the Android mobile operating system?", "answers": ["Apple", "Microsoft", "Google", "Samsung"], "correct": 2 },
+    { "question": "What is the binary representation of the number 10?", "answers": ["1000", "1010", "1100", "1001"], "correct": 1 },
+    { "question": "Which social media platform was founded by Mark Zuckerberg?", "answers": ["Twitter", "Instagram", "Facebook", "Snapchat"], "correct": 2 },
+    { "question": "What does 'RAM' stand for in computing?", "answers": ["Read Access Memory", "Random Access Memory", "Rapid Action Memory", "Run Application Memory"], "correct": 1 },
+    { "question": "In which decade was the World Wide Web invented?", "answers": ["1970s", "1980s", "1990s", "2000s"], "correct": 1 },
+    { "question": "What does 'USB' stand for?", "answers": ["Universal Serial Bus", "Ultra Speed Bridge", "Unified System Bus", "Universal System Bridge"], "correct": 0 },
+    { "question": "Which company created the first commercially successful personal computer?", "answers": ["IBM", "Apple", "Microsoft", "Commodore"], "correct": 1 },
+    { "question": "What is the name of the AI assistant developed by Amazon?", "answers": ["Siri", "Cortana", "Alexa", "Bixby"], "correct": 2 },
+    { "question": "What does 'SSD' stand for?", "answers": ["Solid State Drive", "Super Speed Disk", "Static Storage Device", "Secure System Drive"], "correct": 0 },
+    { "question": "Which company manufactures the GPU brand 'GeForce'?", "answers": ["AMD", "Intel", "NVIDIA", "Qualcomm"], "correct": 2 },
+    { "question": "What was the first widely used web browser?", "answers": ["Internet Explorer", "Netscape Navigator", "Mozilla Firefox", "Mosaic"], "correct": 3 },
+    { "question": "How many bits are in a byte?", "answers": ["4", "6", "8", "16"], "correct": 2 },
+    { "question": "What does 'IoT' stand for?", "answers": ["Internet of Things", "Integration of Technology", "Internal Operating Tool", "Intelligent Online Tracking"], "correct": 0 },
+    { "question": "Which programming language was created by Guido van Rossum?", "answers": ["Ruby", "Python", "Perl", "PHP"], "correct": 1 },
+    { "question": "What year was YouTube founded?", "answers": ["2003", "2004", "2005", "2006"], "correct": 2 }
+  ]
+}

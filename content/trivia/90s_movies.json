@@ -1,0 +1,26 @@
+{
+  "pack": "90s Movies",
+  "emoji": "📼",
+  "questions": [
+    { "question": "Which 1997 film became the highest-grossing movie of its time?", "answers": ["Jurassic Park", "Titanic", "The Matrix", "Forrest Gump"], "correct": 1 },
+    { "question": "Who played the Genie in Aladdin (1992)?", "answers": ["Eddie Murphy", "Jim Carrey", "Robin Williams", "Will Smith"], "correct": 2 },
+    { "question": "What is the name of the computer hacker in The Matrix?", "answers": ["Morpheus", "Trinity", "Neo", "Agent Smith"], "correct": 2 },
+    { "question": "In Toy Story, what is the name of the cowboy doll?", "answers": ["Buzz", "Woody", "Jessie", "Rex"], "correct": 1 },
+    { "question": "Which 1994 film features a box of chocolates as a metaphor for life?", "answers": ["Pulp Fiction", "The Shawshank Redemption", "Forrest Gump", "Schindler's List"], "correct": 2 },
+    { "question": "What animal does Jim Carrey's character become in a 1994 comedy?", "answers": ["A dog", "A bat", "No animal — he wears a mask", "A monkey"], "correct": 2 },
+    { "question": "Which 1999 film features the quote 'I see dead people'?", "answers": ["The Blair Witch Project", "The Sixth Sense", "Scream", "The Ring"], "correct": 1 },
+    { "question": "Who directed Jurassic Park?", "answers": ["James Cameron", "Ridley Scott", "Steven Spielberg", "George Lucas"], "correct": 2 },
+    { "question": "What sport is featured in Space Jam (1996)?", "answers": ["Football", "Baseball", "Basketball", "Soccer"], "correct": 2 },
+    { "question": "In The Lion King, what is Simba's father's name?", "answers": ["Scar", "Mufasa", "Rafiki", "Zazu"], "correct": 1 },
+    { "question": "Which 1990 film features a kid defending his home from burglars?", "answers": ["Home Alone", "Problem Child", "The Sandlot", "Richie Rich"], "correct": 0 },
+    { "question": "What color pill does Neo take in The Matrix?", "answers": ["Blue", "Green", "Red", "Yellow"], "correct": 2 },
+    { "question": "Which film features the quote 'Life finds a way'?", "answers": ["Jurassic Park", "Gattaca", "Deep Blue Sea", "Congo"], "correct": 0 },
+    { "question": "Who played Jack in Titanic?", "answers": ["Brad Pitt", "Matt Damon", "Leonardo DiCaprio", "Johnny Depp"], "correct": 2 },
+    { "question": "What is the name of the ship in Titanic?", "answers": ["HMS Victory", "RMS Olympic", "SS Poseidon", "RMS Titanic"], "correct": 3 },
+    { "question": "In Fight Club, what is the first rule of Fight Club?", "answers": ["Always fight fair", "You do not talk about Fight Club", "No weapons", "Win at all costs"], "correct": 1 },
+    { "question": "Which 90s movie features a bus that can't slow below 50 mph?", "answers": ["The Fast and the Furious", "Speed", "Con Air", "The Rock"], "correct": 1 },
+    { "question": "Who starred as the Terminator in Terminator 2 (1991)?", "answers": ["Sylvester Stallone", "Bruce Willis", "Arnold Schwarzenegger", "Jean-Claude Van Damme"], "correct": 2 },
+    { "question": "What is the name of the island in Jurassic Park?", "answers": ["Skull Island", "Isla Nublar", "Monster Island", "Isla Sorna"], "correct": 1 },
+    { "question": "Which Pixar film was released first?", "answers": ["A Bug's Life", "Monsters Inc", "Toy Story", "Finding Nemo"], "correct": 2 }
+  ]
+}

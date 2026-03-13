@@ -1,0 +1,26 @@
+{
+  "pack": "Space & Astronomy",
+  "emoji": "🚀",
+  "questions": [
+    { "question": "What is the closest star to Earth (besides the Sun)?", "answers": ["Alpha Centauri", "Proxima Centauri", "Barnard's Star", "Sirius"], "correct": 1 },
+    { "question": "How many planets are in our solar system?", "answers": ["7", "8", "9", "10"], "correct": 1 },
+    { "question": "What planet is known as the 'Red Planet'?", "answers": ["Venus", "Jupiter", "Mars", "Mercury"], "correct": 2 },
+    { "question": "Who was the first human to walk on the Moon?", "answers": ["Buzz Aldrin", "Yuri Gagarin", "Neil Armstrong", "John Glenn"], "correct": 2 },
+    { "question": "What is the largest planet in our solar system?", "answers": ["Saturn", "Jupiter", "Neptune", "Uranus"], "correct": 1 },
+    { "question": "What galaxy do we live in?", "answers": ["Andromeda", "Milky Way", "Triangulum", "Whirlpool"], "correct": 1 },
+    { "question": "What is the name of NASA's most famous space telescope launched in 1990?", "answers": ["James Webb", "Kepler", "Hubble", "Spitzer"], "correct": 2 },
+    { "question": "Which planet has the Great Red Spot?", "answers": ["Mars", "Saturn", "Jupiter", "Neptune"], "correct": 2 },
+    { "question": "What is the hottest planet in our solar system?", "answers": ["Mercury", "Venus", "Mars", "Jupiter"], "correct": 1 },
+    { "question": "How long does it take light from the Sun to reach Earth?", "answers": ["About 4 minutes", "About 8 minutes", "About 12 minutes", "About 16 minutes"], "correct": 1 },
+    { "question": "What is the name of the first artificial satellite launched into space?", "answers": ["Explorer 1", "Vanguard 1", "Sputnik 1", "Telstar 1"], "correct": 2 },
+    { "question": "Which planet is famous for its prominent ring system?", "answers": ["Jupiter", "Uranus", "Neptune", "Saturn"], "correct": 3 },
+    { "question": "What force keeps planets in orbit around the Sun?", "answers": ["Electromagnetic force", "Nuclear force", "Gravity", "Centrifugal force"], "correct": 2 },
+    { "question": "What is a supernova?", "answers": ["A new star forming", "A star exploding", "A type of galaxy", "A black hole collision"], "correct": 1 },
+    { "question": "Which dwarf planet was reclassified from planet status in 2006?", "answers": ["Ceres", "Eris", "Pluto", "Haumea"], "correct": 2 },
+    { "question": "What is the International Space Station's approximate altitude above Earth?", "answers": ["200 km", "400 km", "600 km", "800 km"], "correct": 1 },
+    { "question": "Which planet rotates on its side with an axial tilt of about 98 degrees?", "answers": ["Neptune", "Venus", "Uranus", "Saturn"], "correct": 2 },
+    { "question": "What is the name of the boundary where the Sun's solar wind meets interstellar space?", "answers": ["Oort Cloud", "Kuiper Belt", "Heliosphere", "Heliopause"], "correct": 3 },
+    { "question": "How old is the universe (approximately)?", "answers": ["10.8 billion years", "13.8 billion years", "16.8 billion years", "19.8 billion years"], "correct": 1 },
+    { "question": "What type of celestial object is a pulsar?", "answers": ["A type of comet", "A rapidly rotating neutron star", "A small black hole", "A dying red giant"], "correct": 1 }
+  ]
+}
