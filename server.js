@@ -321,6 +321,9 @@ io.on("connection", (socket) => {
           createdAt: Date.now(),
           lastActivity: Date.now(),
           chat: [],
+          clueConfirmations: new Set(),
+          roundVotes: {},
+          votingOpen: false,
         };
         rooms.set(code, room);
         currentRoom = code;
@@ -438,6 +441,9 @@ io.on("connection", (socket) => {
         room.settings = payload.settings || room.settings;
         room.gameState = payload.gameState || {};
         room.lastActivity = Date.now();
+        room.clueConfirmations = new Set();
+        room.roundVotes = {};
+        room.votingOpen = false;
         broadcastToRoom(currentRoom, "game_started", { gameType: room.gameType, settings: room.settings });
         broadcastRoomUpdate(currentRoom);
         break;
@@ -458,6 +464,11 @@ io.on("connection", (socket) => {
         if (!room || socket.id !== room.hostWsId) return;
         if (payload.gameState) Object.assign(room.gameState, payload.gameState);
         room.lastActivity = Date.now();
+        // Track voting_open state server-side
+        if (payload.event === "voting_open") {
+          room.votingOpen = true;
+          room.roundVotes = {};
+        }
         // Forward to all players
         broadcastToPlayersOnly(room, currentRoom, "host_update", payload);
         break;
@@ -614,6 +625,18 @@ io.on("connection", (socket) => {
           playerName: room.players.find(p => p.id === currentPlayerId)?.name,
           targetId: payload.targetId, target: payload.target,
         });
+        // Server-side vote tracking for live counters
+        if (room.votingOpen && !room.roundVotes[currentPlayerId]) {
+          room.roundVotes[currentPlayerId] = payload.targetId;
+          const nonHostCount = room.players.filter(p => !p.isHost && p.isConnected).length;
+          const voteCount = Object.keys(room.roundVotes).length;
+          broadcastToRoom(currentRoom, "vote_count_update", { count: voteCount, total: nonHostCount });
+          if (voteCount >= nonHostCount) {
+            room.votingOpen = false;
+            broadcastToRoom(currentRoom, "all_votes_in", { votes: room.roundVotes });
+            room.roundVotes = {};
+          }
+        }
         break;
       }
 
@@ -699,6 +722,14 @@ io.on("connection", (socket) => {
         const room = getRoom(currentRoom);
         if (!room) return;
         sendToHost(room, "player_confirmed_clue", { playerId: currentPlayerId });
+        // Server-side clue confirmation tracking
+        room.clueConfirmations.add(currentPlayerId);
+        const nonHostConnected = room.players.filter(p => !p.isHost && p.isConnected).length;
+        broadcastToRoom(currentRoom, "clue_confirm_count", { confirmed: room.clueConfirmations.size, total: nonHostConnected });
+        if (room.clueConfirmations.size >= nonHostConnected) {
+          broadcastToRoom(currentRoom, "all_clues_confirmed", {});
+          room.clueConfirmations = new Set();
+        }
         break;
       }
 

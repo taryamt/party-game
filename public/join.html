@@ -466,12 +466,43 @@
             const d = payload.data || {};
             $('#result-emoji').textContent = d.caught ? '🎉' : '😈';
             $('#result-title').textContent = d.caught ? 'Imposter caught!' : 'Imposter escaped!';
-            $('#result-body').innerHTML = '<p>The imposter was: <b>' + esc(d.impNames || '?') + '</b></p><p>The word was: <b>' + esc((d.word || '').toUpperCase()) + '</b></p>';
+            let bodyHtml = '<p>The imposter was: <b>' + esc(d.impNames || '?') + '</b></p><p>The word was: <b>' + esc((d.word || '').toUpperCase()) + '</b></p>';
+            const myBreakdown = (d.breakdown || []).find(b => b.id === myId);
+            if (myBreakdown) bodyHtml += '<p style="margin-top:12px;font-size:1.3em;font-weight:bold;">Your score: +' + myBreakdown.pts + '</p>';
+            $('#result-body').innerHTML = bodyHtml;
             showScreen('screen-result');
           } else if (evt === 'show_idle') {
             $('#idle-title').textContent = payload.title || 'Waiting...';
             $('#idle-subtitle').textContent = payload.subtitle || 'Look at the host screen';
             showScreen('screen-idle');
+          }
+          break;
+        }
+
+        // ── Live counters ──
+        case 'clue_confirm_count': {
+          if ($('#screen-idle').classList.contains('active')) {
+            $('#idle-subtitle').textContent = payload.confirmed + '/' + payload.total + ' players ready';
+          }
+          break;
+        }
+        case 'all_clues_confirmed': {
+          if ($('#screen-idle').classList.contains('active')) {
+            $('#idle-title').textContent = '🗣️ Discussion Time!';
+            $('#idle-subtitle').textContent = 'Talk with the group — who seems suspicious?';
+          }
+          break;
+        }
+        case 'vote_count_update': {
+          if ($('#screen-idle').classList.contains('active')) {
+            $('#idle-subtitle').textContent = payload.count + '/' + payload.total + ' voted';
+          }
+          break;
+        }
+        case 'all_votes_in': {
+          if ($('#screen-idle').classList.contains('active')) {
+            $('#idle-title').textContent = '🎯 All votes in!';
+            $('#idle-subtitle').textContent = 'Check the host screen for results...';
           }
           break;
         }
