@@ -729,7 +729,10 @@ $('#btn-multiplayer-mode').addEventListener('click', () => {
   showScreen('screen-multiplayer');
 });
 $('#btn-mp-back').addEventListener('click', () => { isMultiDevice = false; goHome(); });
-$('#btn-mp-start').addEventListener('click', () => { goHome(); });
+$('#btn-mp-start').addEventListener('click', () => {
+  showToast('Pick a game to play!');
+  goHome();
+});
 
 $('#btn-create-room').addEventListener('click', () => {
   const hostName = $('#host-name-input').value.trim(); if (!hostName) return;
@@ -781,7 +784,10 @@ function handleServerMsg(data) {
       if (host) hostPlayerId = host.id;
       renderLobbyPlayers();
       const minPlayers = 2;
-      btnSessStart.disabled = gameState.session.players.filter(p => p.isConnected).length < minPlayers;
+      const enoughPlayers = gameState.session.players.filter(p => p.isConnected).length >= minPlayers;
+      btnSessStart.disabled = !enoughPlayers;
+      const mpStart = $('#btn-mp-start');
+      if (mpStart) mpStart.disabled = !enoughPlayers;
       // Play sound on new player join
       if (gameState.session.players.length > prevCount) playSound('coinCollect');
       break;
