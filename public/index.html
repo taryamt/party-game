@@ -115,6 +115,11 @@
   <button class="settings-gear" id="btn-global-settings" title="Settings">⚙️</button>
   <h1>Party Games</h1>
   <h2 id="home-subtitle">Pick a game</h2>
+  <div id="home-player-strip" class="player-strip hidden"></div>
+  <div id="home-session-btns" class="session-btns hidden">
+    <button class="btn sm outline" id="btn-reset-scores">🔄 Reset Scores</button>
+    <button class="btn sm outline" id="btn-end-session">🚪 End Session</button>
+  </div>
   <div class="game-cards">
     <div class="game-card playlist-card" data-game="playlist">
       <div class="game-card-emoji">🎯</div>
@@ -247,6 +252,10 @@
   <h1>🕵️ Imposter <button class="info-btn" id="btn-imp-info">?</button></h1>
   <h2>Pick a pack</h2>
   <div class="pack-cards" id="imp-packs"></div>
+  <div class="pack-actions">
+    <button class="btn sm outline" id="btn-imp-import">📥 Import Pack</button>
+    <button class="btn sm outline" id="btn-imp-create">✏️ Create Pack</button>
+  </div>
   <div class="gap"></div>
   <button class="btn big red" id="btn-imp-start" disabled>Start Round</button>
 </div>
@@ -264,8 +273,10 @@
       <div id="imp-clue-icon" class="clue-label"></div>
       <div id="imp-clue-main" class="clue-word"></div>
       <div id="imp-clue-sub" class="clue-label"></div>
-      <div id="imp-clue-timer" class="clue-timer"></div>
+      <div id="imp-clue-timer" class="clue-timer hidden"></div>
     </div>
+  <div class="gap"></div>
+  <button class="btn big" id="btn-imp-hide-pass">Hide & Pass →</button>
   </div>
   <div id="imp-clue-hidden" class="hidden">
     <h1>Clue Hidden</h1>
@@ -292,13 +303,15 @@
   <button class="btn outline back-btn" data-back="confirm" data-msg="Cancel voting?">&#8592; Back</button>
   <h2 id="imp-vote-label">Waiting for</h2>
   <h1 id="imp-vote-name">Player's vote</h1>
-  <div class="subtitle">Who do you think is the imposter?</div>
+  <div class="subtitle">Choose carefully — only one vote per player!</div>
+  <div id="imp-vote-progress" class="vote-progress"></div>
   <div id="imp-vote-grid" class="vote-grid"></div>
   <div class="confidence-meter hidden" id="imp-confidence">
     <label>Confidence:</label>
     <input type="range" min="1" max="5" value="3" id="imp-confidence-slider">
     <span class="confidence-val" id="imp-confidence-val">3</span>
   </div>
+  <div id="imp-vote-confirm" class="vote-confirm hidden"></div>
 </div>
 
 <div id="screen-imp-results" class="screen">
@@ -321,6 +334,24 @@
   <h1>🧠 Trivia <button class="info-btn" id="btn-triv-info">?</button></h1>
   <h2>Pick a pack</h2>
   <div class="pack-cards" id="triv-packs"></div>
+  <div class="pack-actions">
+    <button class="btn sm outline" id="btn-triv-import">📥 Import Pack</button>
+    <button class="btn sm outline" id="btn-triv-create">✏️ Create Pack</button>
+    <button class="btn sm outline" id="btn-triv-quick-add">⚡ Quick Add</button>
+  </div>
+  <div id="triv-quick-add-panel" class="quick-add-panel hidden">
+    <h3>Quick Add Question</h3>
+    <input id="qa-question" placeholder="Question text" class="input-full">
+    <input id="qa-ans-1" placeholder="Answer 1 (correct)" class="input-full">
+    <input id="qa-ans-2" placeholder="Answer 2" class="input-full">
+    <input id="qa-ans-3" placeholder="Answer 3" class="input-full">
+    <input id="qa-ans-4" placeholder="Answer 4" class="input-full">
+    <div class="pack-actions">
+      <button class="btn sm" id="btn-qa-add">Add Question</button>
+      <button class="btn sm outline" id="btn-qa-done">Done</button>
+    </div>
+    <div id="qa-count" class="subtitle"></div>
+  </div>
   <div class="gap"></div>
   <button class="btn big cyan" id="btn-triv-start" disabled>Start Trivia</button>
 </div>
@@ -380,10 +411,11 @@
 <div id="screen-ht-question" class="screen">
   <button class="btn outline back-btn" data-back="screen-ht-setup">&#8592; Back</button>
   <h2>The question is...</h2>
+  <div id="ht-q-number" class="round-badge"></div>
   <h1 id="ht-question-text" style="font-size:clamp(1.1rem,4vw,1.6rem);line-height:1.4;max-width:500px;margin-bottom:24px;"></h1>
   <div class="ht-choices" id="ht-preview-choices">
-    <div class="ht-choice a" id="ht-preview-a"></div>
-    <div class="ht-choice b" id="ht-preview-b"></div>
+    <div class="ht-option-card teal" id="ht-preview-a"></div>
+    <div class="ht-option-card coral" id="ht-preview-b"></div>
   </div>
   <div class="subtitle">Everyone read the question, then pass the device to vote secretly.</div>
   <div class="gap"></div>
@@ -411,7 +443,7 @@
     <div class="clue-display visible">
       <div class="clue-label" id="ht-chosen-label"></div>
       <div class="clue-word" id="ht-chosen-text" style="font-size:clamp(1.3rem,5vw,2.5rem);"></div>
-      <div class="clue-timer" id="ht-chosen-timer"></div>
+    <button class="btn big" id="btn-ht-chosen-next">Next Player →</button>
     </div>
   </div>
   <div id="ht-pass-next" class="hidden">
@@ -441,7 +473,7 @@
   <div class="ht-split-bar" id="ht-split-bar"><div class="ht-split-a" id="ht-split-a"></div><div class="ht-split-b" id="ht-split-b"></div></div>
   <div id="ht-opinion-labels" style="text-align:center;margin-bottom:8px;"></div>
   <div id="ht-res-points" class="subtitle" style="font-size:1.1rem;color:var(--gold);font-weight:700;"></div>
-  <div id="ht-debate-timer" class="debate-timer hidden"></div>
+  <div id="ht-mini-leaderboard" class="mini-leaderboard"></div>
   <div id="ht-res-breakdown" class="round-breakdown"></div>
   <div class="btn-row" id="ht-res-btns">
     <button class="btn pink" id="btn-ht-again">New Question</button>

@@ -71,8 +71,8 @@ let nextPlayerId = 1;
 const gameState = {
   session: { players: [], settings: {
     global: { pointsToWin: 0, roundLimit: 0, showScoresBetweenRounds: true, animationSpeed: 'normal', sound: true, soundVolume: 70, theme: 'dark' },
-    imposter: { imposterCount: 1, discussionTimer: 0, imposterMode: 'hint', anonymousVoting: false, votePts: 1, survivalPts: 3, unanimousBonus: 1 },
-    trivia: { questionsPerRound: 5, timeLimit: 0, showAnswerAfter: true, allowSkip: false, wagerMode: false, eliminationMode: false, streakMultiplier: true, negativeMarking: false, correctPts: 2, onlyCorrectBonus: 1, streakBonus: 1 },
+    imposter: { imposterCount: 1, discussionTimer: 0, imposterMode: 'hint', blankScreen: false, anonymousVoting: false, votePts: 1, survivalPts: 3, unanimousBonus: 1 },
+    trivia: { questionsPerRound: 5, timeLimit: 0, showAnswerAfter: true, allowSkip: false, answerMode: 'choice', questionMode: 'same', wagerMode: false, eliminationMode: false, streakMultiplier: true, negativeMarking: false, correctPts: 2, onlyCorrectBonus: 1, streakBonus: 1 },
     hottake: { questionsPerRound: 5, revealStyle: 'all', allowPass: false, debateTimer: 0, minorityPts: 2, splitPts: 1 }
   }},
   scores: { byPlayer: {}, byGame: {}, history: [], streaks: {} },
@@ -223,9 +223,10 @@ function goBack() {
 
 function goHome() {
   clearAllTimers();
+  const flash = $('#answer-flash'); if (flash) { flash.classList.remove('visible', 'correct', 'wrong'); flash.textContent = ''; }
   gameState.currentGame = null; screenHistory.length = 0; showScreen('screen-home');
   const sub = $('#home-subtitle'); if (sub) sub.textContent = HOME_SUBTITLES[Math.floor(Math.random() * HOME_SUBTITLES.length)];
-  updatePlayersCard(); releaseWakeLock();
+  updatePlayersCard(); if (typeof updateHomePlayerStrip === 'function') updateHomePlayerStrip(); releaseWakeLock();
   // Clean up game-specific state
   gameState.imposter.votes = {}; gameState.imposter.individualVotes = {};
   gameState.trivia.answers = {}; gameState.hottake.choices = {};
@@ -430,22 +431,25 @@ function openSettings(gameType) {
   html += rangeSetting('Volume', 'global.soundVolume', s.global.soundVolume ?? 70, 0, 100);
   html += segSetting('Theme', 'global.theme', [['Dark','dark'],['Light','light'],['Hi-Con','high-contrast']], s.global.theme || 'dark');
   html += '</div>';
-  if (!gameType || gameType === 'imposter') {
+  if (gameType === 'imposter') {
     html += '<div class="setting-group"><div class="setting-group-title">Imposter</div>';
     html += segSetting('Imposters', 'imposter.imposterCount', [['1',1],['2',2]], s.imposter.imposterCount);
     html += segSetting('Discussion timer', 'imposter.discussionTimer', [['Off',0],['1m',60],['2m',120],['3m',180]], s.imposter.discussionTimer);
-    html += segSetting('Imposter mode', 'imposter.imposterMode', [['Hint','hint'],['Just told','told'],['None','none']], s.imposter.imposterMode);
+    html += segSetting('Imposter mode', 'imposter.imposterMode', [['Hint','hint'],['Just told','told']], s.imposter.imposterMode);
+    html += toggleSetting('Blank screen for imposter', 'imposter.blankScreen', s.imposter.blankScreen);
     html += toggleSetting('Anonymous voting', 'imposter.anonymousVoting', s.imposter.anonymousVoting);
     html += rangeSetting('Vote points', 'imposter.votePts', s.imposter.votePts ?? 1, 0, 5);
     html += rangeSetting('Survival points', 'imposter.survivalPts', s.imposter.survivalPts ?? 3, 0, 10);
     html += rangeSetting('Unanimous bonus', 'imposter.unanimousBonus', s.imposter.unanimousBonus ?? 1, 0, 5);
     html += '</div>';
   }
-  if (!gameType || gameType === 'trivia') {
+  if (gameType === 'trivia') {
     html += '<div class="setting-group"><div class="setting-group-title">Trivia</div>';
     html += segSetting('Questions', 'trivia.questionsPerRound', [['3',3],['5',5],['10',10],['15',15]], s.trivia.questionsPerRound);
     html += segSetting('Time limit', 'trivia.timeLimit', [['Off',0],['15s',15],['30s',30],['60s',60]], s.trivia.timeLimit);
     html += toggleSetting('Show answer after question', 'trivia.showAnswerAfter', s.trivia.showAnswerAfter);
+    html += segSetting('Answer mode', 'trivia.answerMode', [['Multiple Choice','choice'],['Write Answer','write']], s.trivia.answerMode || 'choice');
+    html += segSetting('Question mode', 'trivia.questionMode', [['Same Question','same'],['Different Questions','different']], s.trivia.questionMode || 'same');
     html += toggleSetting('Allow skipping', 'trivia.allowSkip', s.trivia.allowSkip);
     html += toggleSetting('Wager mode', 'trivia.wagerMode', s.trivia.wagerMode);
     html += toggleSetting('Elimination mode', 'trivia.eliminationMode', s.trivia.eliminationMode);
@@ -456,12 +460,11 @@ function openSettings(gameType) {
     html += rangeSetting('Streak bonus', 'trivia.streakBonus', s.trivia.streakBonus ?? 1, 0, 3);
     html += '</div>';
   }
-  if (!gameType || gameType === 'hottake') {
+  if (gameType === 'hottake') {
     html += '<div class="setting-group"><div class="setting-group-title">Hot Take</div>';
     html += segSetting('Questions per round', 'hottake.questionsPerRound', [['3',3],['5',5],['10',10]], s.hottake.questionsPerRound);
     html += segSetting('Reveal style', 'hottake.revealStyle', [['All at once','all'],['One by one','one']], s.hottake.revealStyle);
     html += toggleSetting('Allow pass', 'hottake.allowPass', s.hottake.allowPass);
-    html += segSetting('Debate timer', 'hottake.debateTimer', [['Off',0],['30s',30],['60s',60],['90s',90]], s.hottake.debateTimer ?? 0);
     html += rangeSetting('Minority pts', 'hottake.minorityPts', s.hottake.minorityPts ?? 2, 1, 5);
     html += rangeSetting('Split pts', 'hottake.splitPts', s.hottake.splitPts ?? 1, 0, 3);
     html += '</div>';
@@ -611,8 +614,9 @@ const RESULT_FLAVORS = {
   imposterEscaped: ['The imposter walks free...', 'Better luck next time!', 'Fooled everyone!', 'The perfect crime.', 'Oscar-worthy performance!', 'The greatest con of all time.', 'They never saw it coming.', 'Trust nobody — especially that one.', 'Living among you this whole time...', 'A masterclass in deception.'],
   triviaClose: ['That was a close one!', 'Photo finish!', 'Down to the wire!'],
   triviaLandslide: ['Absolute domination!', 'Not even close!', 'A true trivia master!'],
-  htSplit: ['Perfectly balanced!', 'Great minds think... differently!', 'Split right down the middle!'],
-  htLoneWolf: ['One brave soul stands alone!', 'Against all odds!', 'A truly unique opinion!']
+  htSplit: ['Perfectly balanced!', 'Great minds think... differently!', 'Split right down the middle!', 'The ultimate stalemate!', 'Agree to disagree!'],
+  htLoneWolf: ['One brave soul stands alone!', 'Against all odds!', 'A truly unique opinion!', 'Bold and fearless!', 'Marching to their own beat!', 'A rebel with a cause!'],
+  htMajority: ['The people have spoken!', 'Clear winner here!', 'Overwhelming consensus!', 'The crowd follows!', 'Herd mentality at its finest!']
 };
 function randomFlavor(key) { const arr = RESULT_FLAVORS[key]; return arr ? arr[Math.floor(Math.random() * arr.length)] : ''; }
 
@@ -728,7 +732,7 @@ async function loadPacks() {
 function renderPackCards(containerId, gameType, btnId) {
   const container = $(containerId), btn = $(btnId), list = gameState.packs[gameType] || [];
   if (!list.length) { container.innerHTML = '<div class="empty-state">No packs available. Create one in Content Manager!</div>'; btn.disabled = true; return () => null; }
-  container.innerHTML = list.map((p, i) => '<div class="pack-card" data-idx="' + i + '" data-file="' + p.file + '"><span class="pack-card-emoji">' + p.emoji + '</span><div class="pack-card-info"><div class="pack-card-name">' + esc(p.pack) + '</div><div class="pack-card-count">' + p.count + ' ' + (gameType === 'imposter' ? 'words' : 'questions') + '</div></div></div>').join('');
+  container.innerHTML = list.map((p, i) => '<div class="pack-card" data-idx="' + i + '" data-file="' + p.file + '"><span class="pack-card-emoji">' + p.emoji + '</span><div class="pack-card-info"><div class="pack-card-name">' + esc(p.pack) + '</div>' + (gameType !== 'imposter' ? '<div class="pack-card-count">' + p.count + ' questions</div>' : '') + '</div></div>').join('');
   btn.disabled = true; let selectedFile = null;
   container.querySelectorAll('.pack-card').forEach(card => { card.addEventListener('click', () => { container.querySelectorAll('.pack-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected'); selectedFile = card.dataset.file; btn.disabled = false; }); });
   return () => selectedFile;
@@ -1480,15 +1484,23 @@ function impShowPass() {
 $('#btn-imp-show').addEventListener('click', () => {
   const imp = gameState.imposter, isImp = imp.imposterIndices.includes(imp.clueIdx);
   $('#imp-clue-pass').classList.add('hidden'); $('#imp-clue-show').classList.remove('hidden');
-  impScreen.classList.add('showing-clue'); impScreen.classList.toggle('crew', !isImp); impScreen.classList.toggle('imposter', isImp);
   const display = $('#imp-clue-display'); display.classList.remove('visible');
   const mode = gameState.session.settings.imposter.imposterMode;
-  if (isImp) { if (mode === 'told') { $('#imp-clue-icon').textContent = '🔴 You are the IMPOSTER!'; $('#imp-clue-main').textContent = 'Blend in!'; $('#imp-clue-main').style.fontSize = 'clamp(1.3rem,5vw,2.5rem)'; $('#imp-clue-sub').textContent = 'You do NOT know the word'; } else if (mode === 'none') { $('#imp-clue-icon').textContent = '🔴 You are the IMPOSTER!'; $('#imp-clue-main').textContent = 'No hints!'; $('#imp-clue-main').style.fontSize = 'clamp(1.3rem,5vw,2.5rem)'; $('#imp-clue-sub').textContent = 'Figure it out on your own...'; } else { $('#imp-clue-icon').textContent = '🔴 Your hint is:'; $('#imp-clue-main').textContent = imp.hint; $('#imp-clue-main').style.fontSize = 'clamp(1.3rem,5vw,2.5rem)'; $('#imp-clue-sub').textContent = 'You might be the imposter...'; } }
-  else { $('#imp-clue-icon').textContent = '🟢 Your word is:'; typewriterReveal($('#imp-clue-main'), imp.word.toUpperCase(), 80); $('#imp-clue-main').style.fontSize = ''; $('#imp-clue-sub').textContent = "Don't say it out loud!"; }
+  const blank = gameState.session.settings.imposter.blankScreen;
+  if (isImp && blank) {
+    impScreen.classList.add('showing-clue'); impScreen.classList.remove('crew', 'imposter');
+    $('#imp-clue-icon').textContent = ''; $('#imp-clue-main').textContent = ''; $('#imp-clue-main').style.fontSize = ''; $('#imp-clue-sub').textContent = '';
+  } else if (isImp) {
+    impScreen.classList.add('showing-clue'); impScreen.classList.remove('crew'); impScreen.classList.add('imposter');
+    if (mode === 'told') { $('#imp-clue-icon').textContent = '🔴 You are the IMPOSTER!'; $('#imp-clue-main').textContent = 'Blend in!'; $('#imp-clue-main').style.fontSize = 'clamp(1.3rem,5vw,2.5rem)'; $('#imp-clue-sub').textContent = 'You do NOT know the word'; }
+    else { $('#imp-clue-icon').textContent = '🔴 Your hint is:'; $('#imp-clue-main').textContent = imp.hint; $('#imp-clue-main').style.fontSize = 'clamp(1.3rem,5vw,2.5rem)'; $('#imp-clue-sub').textContent = 'You might be the imposter...'; }
+  } else {
+    impScreen.classList.add('showing-clue'); impScreen.classList.add('crew'); impScreen.classList.remove('imposter');
+    $('#imp-clue-icon').textContent = '🟢 Your word is:'; typewriterReveal($('#imp-clue-main'), imp.word.toUpperCase(), 80); $('#imp-clue-main').style.fontSize = ''; $('#imp-clue-sub').textContent = "Don't say it out loud!";
+  }
   requestAnimationFrame(() => display.classList.add('visible'));
-  let rem = 5; const timer = $('#imp-clue-timer'); timer.textContent = rem;
-  const iv = safeInterval(() => { rem--; timer.textContent = rem; if (rem <= 0) { clearInterval(iv); impShowHidden(); } }, 1000);
 });
+$('#btn-imp-hide-pass').addEventListener('click', () => impShowHidden());
 
 function impShowHidden() {
   const imp = gameState.imposter, players = allPlayers();
@@ -1545,10 +1557,19 @@ $('#btn-imp-vote').addEventListener('click', () => {
 
 function impShowVoter() { // MULTIPLAYER_HOOK: in remote mode, voting happens on player devices via socket
   showScreen('screen-imp-vote'); const imp = gameState.imposter, players = nonHostPlayers(), voter = players[imp.voterIdx];
-  $('#imp-vote-label').textContent = 'Waiting for'; $('#imp-vote-name').textContent = voter.name + "'s vote";
+  $('#imp-vote-label').textContent = '👆 ' + voter.name + "'s turn"; $('#imp-vote-name').textContent = 'Tap who you think is the IMPOSTER';
+  const progress = $('#imp-vote-progress'); if (progress) progress.textContent = 'Vote ' + (imp.voterIdx + 1) + ' of ' + players.length;
+  const confirm = $('#imp-vote-confirm'); if (confirm) confirm.classList.add('hidden');
   const grid = $('#imp-vote-grid');
   grid.innerHTML = players.filter(p => p.id !== voter.id).map(p => '<button class="vote-btn" data-id="' + p.id + '">' + esc(p.name) + '</button>').join('');
-  grid.querySelectorAll('.vote-btn').forEach(btn => { btn.addEventListener('click', () => { imp.votes[btn.dataset.id] = (imp.votes[btn.dataset.id] || 0) + 1; imp.individualVotes[voter.id] = btn.dataset.id; imp.voterIdx++; if (imp.voterIdx >= players.length) impShowResults(); else impShowVoter(); }); });
+  grid.querySelectorAll('.vote-btn').forEach(btn => { btn.addEventListener('click', () => {
+    const targetName = btn.textContent;
+    imp.votes[btn.dataset.id] = (imp.votes[btn.dataset.id] || 0) + 1; imp.individualVotes[voter.id] = btn.dataset.id;
+    // Disable all buttons and show confirmation
+    grid.querySelectorAll('.vote-btn').forEach(b => b.disabled = true);
+    if (confirm) { confirm.textContent = '✓ ' + voter.name + ' voted for ' + targetName; confirm.classList.remove('hidden'); }
+    safeTimeout(() => { imp.voterIdx++; if (imp.voterIdx >= players.length) impShowResults(); else impShowVoter(); }, 1000);
+  }); });
 }
 
 function impShowResults() {
@@ -1569,13 +1590,16 @@ function impShowResults() {
   const allEntries = players.map(p => [p, imp.votes[p.id] || 0]);
   allEntries.forEach(([p, count]) => { const isTop = count === maxV && count > 0, isImp = imp.imposterIndices.includes(players.indexOf(p)); const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name">' + esc(p.name) + (isImp ? ' 🔴' : '') + '</span><div class="result-bar-track"><div class="result-bar' + (isTop ? ' top' : '') + '" style="width:0%"></div></div><span class="result-count">' + count + '</span>'; tally.appendChild(row); });
   // Show who voted for whom
-  const voteMap = Object.entries(imp.individualVotes).filter(([,t]) => t).map(([voterId, targetId]) => {
-    const voter = players.find(p => p.id === voterId), target = players.find(p => p.id === targetId);
-    return voter && target ? esc(voter.name) + ' → ' + esc(target.name) : '';
-  }).filter(Boolean);
-  if (voteMap.length > 0) {
-    const voteDiv = document.createElement('div'); voteDiv.className = 'vote-map'; voteDiv.style.cssText = 'margin:12px 0;font-size:0.85rem;opacity:0.7;text-align:center;';
-    voteDiv.innerHTML = voteMap.join(' &nbsp;|&nbsp; ');
+  const voteEntries = Object.entries(imp.individualVotes).filter(([,t]) => t);
+  if (voteEntries.length > 0) {
+    const voteDiv = document.createElement('div'); voteDiv.className = 'vote-map';
+    voteDiv.innerHTML = '<div class="vote-map-title">Who voted for whom</div>' +
+      voteEntries.map(([voterId, targetId]) => {
+        const v = players.find(p => p.id === voterId), t = players.find(p => p.id === targetId);
+        if (!v || !t) return '';
+        const isImpTarget = imp.imposterIndices.includes(players.indexOf(t));
+        return '<div class="vote-map-row"><span>' + esc(v.name) + '</span><span>→</span><span' + (isImpTarget ? ' style="color:var(--red)"' : '') + '>' + esc(t.name) + (isImpTarget ? ' 🔴' : '') + '</span></div>';
+      }).filter(Boolean).join('');
     tally.after(voteDiv);
   }
   renderBreakdown('#imp-res-breakdown', breakdown); setupResultButtons('#btn-imp-home2', '#btn-imp-again', 'screen-imp-setup');
@@ -1594,14 +1618,24 @@ let trivTimerInterval = null;
 $('#btn-triv-start').addEventListener('click', async () => {
   const file = trivGetFile(); if (!file) return;
   requestWakeLock(); checkOrientation();
-  const data = await fetchPack('trivia', file), triv = gameState.trivia, qCount = gameState.session.settings.trivia.questionsPerRound;
-  triv.questions = shuffle(data.questions).slice(0, qCount); triv.qIdx = 0; triv.answers = {}; triv.roundNum++;
+  const triv = gameState.trivia, settings = gameState.session.settings.trivia, qCount = settings.questionsPerRound;
+  let questions;
+  if (file === '__custom__' && triv.customQuestions && triv.customQuestions.length > 0) {
+    questions = shuffle([...triv.customQuestions]);
+  } else {
+    const data = await fetchPack('trivia', file);
+    questions = shuffle(data.questions);
+  }
+  // For 'different' mode, need more questions (qCount * numPlayers)
+  const needCount = settings.questionMode === 'different' ? Math.min(qCount * allPlayers().length, questions.length) : qCount;
+  triv.questions = questions.slice(0, needCount); triv.qIdx = 0; triv.answers = {}; triv.roundNum++;
   gameState.currentGame = 'trivia'; allPlayers().forEach(p => triv.answers[p.id] = []); gameState.scores.streaks = {};
   trivStartQuestion();
 });
 
 function trivStartQuestion() {
   gameState.trivia.playerIdx = 0;
+  const flash = $('#answer-flash'); if (flash) { flash.classList.remove('visible', 'correct', 'wrong'); flash.textContent = ''; }
   if (isMultiDevice && socket) {
     // Show question on host screen (Kahoot-style) + send to player devices
     const triv = gameState.trivia, q = triv.questions[triv.qIdx];
@@ -1637,7 +1671,15 @@ function trivStartQuestion() {
   }
   trivShowPass();
 }
-function trivShowPass() { showScreen('screen-triv-pass'); const triv = gameState.trivia; $('#triv-pass-name').textContent = allPlayers()[triv.playerIdx].name; $('#triv-q-preview').textContent = 'Question ' + (triv.qIdx + 1) + ' of ' + triv.questions.length; }
+function trivShowPass() {
+  showScreen('screen-triv-pass'); const triv = gameState.trivia, settings = gameState.session.settings.trivia;
+  $('#triv-pass-name').textContent = allPlayers()[triv.playerIdx].name;
+  if (settings.questionMode === 'different') {
+    $('#triv-q-preview').textContent = 'Your question (' + (triv.playerIdx + 1) + ' of ' + allPlayers().length + ')';
+  } else {
+    $('#triv-q-preview').textContent = 'Question ' + (triv.qIdx + 1) + ' of ' + triv.questions.length;
+  }
+}
 
 $('#btn-triv-ready').addEventListener('click', () => {
   showScreen('screen-triv-question'); const triv = gameState.trivia, players = allPlayers(), q = triv.questions[triv.qIdx], settings = gameState.session.settings.trivia;
@@ -1661,20 +1703,49 @@ $('#btn-triv-ready').addEventListener('click', () => {
     }, 1000);
   } else { timerEl.classList.add('hidden'); barTrack.classList.add('hidden'); }
   const grid = $('#triv-answers');
-  grid.innerHTML = q.answers.map((opt, i) => '<button class="answer-btn" data-idx="' + i + '">' + esc(opt) + '</button>').join('');
-  grid.querySelectorAll('.answer-btn').forEach(btn => { btn.addEventListener('click', () => {
-    if (trivTimerInterval) { clearInterval(trivTimerInterval); trivTimerInterval = null; }
-    const idx = Number(btn.dataset.idx), correct = q.correct;
-    grid.querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
-    if (idx === correct) { btn.classList.add('correct'); playSound('correct'); } else { btn.classList.add('wrong'); playSound('wrong'); grid.querySelector('.answer-btn[data-idx="' + correct + '"]').classList.add('correct'); }
-    setTimeout(() => trivSubmitAnswer(idx), 600);
-  }); });
+  if (settings.answerMode === 'write') {
+    grid.innerHTML = '<input class="input-full" id="triv-write-input" placeholder="Type your answer..." autocomplete="off"><button class="btn big" id="btn-triv-submit-write" style="margin-top:12px">Submit</button>';
+    const submitWrite = () => {
+      if (trivTimerInterval) { clearInterval(trivTimerInterval); trivTimerInterval = null; }
+      const input = $('#triv-write-input'), val = (input.value || '').trim().toLowerCase(), correctText = q.answers[q.correct].toLowerCase();
+      const isCorrect = val === correctText || (val.length > 2 && correctText.includes(val));
+      input.disabled = true; $('#btn-triv-submit-write').disabled = true;
+      if (isCorrect) { input.style.borderColor = 'var(--green)'; playSound('correct'); } else { input.style.borderColor = 'var(--red)'; playSound('wrong'); }
+      grid.innerHTML += '<div style="margin-top:8px;font-weight:700;color:var(--green)">✓ ' + esc(q.answers[q.correct]) + '</div>';
+      setTimeout(() => trivSubmitAnswer(isCorrect ? q.correct : -1), 1000);
+    };
+    $('#btn-triv-submit-write').addEventListener('click', submitWrite);
+    $('#triv-write-input').addEventListener('keydown', e => { if (e.key === 'Enter') submitWrite(); });
+    safeTimeout(() => { const inp = $('#triv-write-input'); if (inp) inp.focus(); }, 100);
+  } else {
+    grid.innerHTML = q.answers.map((opt, i) => '<button class="answer-btn" data-idx="' + i + '">' + esc(opt) + '</button>').join('');
+    grid.querySelectorAll('.answer-btn').forEach(btn => { btn.addEventListener('click', () => {
+      if (trivTimerInterval) { clearInterval(trivTimerInterval); trivTimerInterval = null; }
+      const idx = Number(btn.dataset.idx), correct = q.correct;
+      grid.querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
+      if (idx === correct) { btn.classList.add('correct'); playSound('correct'); } else { btn.classList.add('wrong'); playSound('wrong'); grid.querySelector('.answer-btn[data-idx="' + correct + '"]').classList.add('correct'); }
+      setTimeout(() => trivSubmitAnswer(idx), 600);
+    }); });
+  }
 });
 
 $('#btn-triv-skip').addEventListener('click', () => { if (trivTimerInterval) { clearInterval(trivTimerInterval); trivTimerInterval = null; } trivSubmitAnswer(-1); });
 
 function trivSubmitAnswer(ansIdx) { // MULTIPLAYER_HOOK: in remote mode, answers come via socket player_answer events
-  const triv = gameState.trivia, players = allPlayers(); triv.answers[players[triv.playerIdx].id].push(ansIdx); triv.playerIdx++; if (triv.playerIdx >= players.length) trivRevealQuestion(); else trivShowPass(); }
+  const triv = gameState.trivia, players = allPlayers(), settings = gameState.session.settings.trivia;
+  triv.answers[players[triv.playerIdx].id].push(ansIdx);
+  if (settings.questionMode === 'different') {
+    // In 'different' mode, each player gets a unique question — score immediately and advance
+    const q = triv.questions[triv.qIdx];
+    snapshotScores(); scoreTriviaQuestion(q, triv.qIdx);
+    triv.playerIdx++; triv.qIdx++;
+    if (triv.playerIdx >= players.length) trivShowFinalResults();
+    else if (triv.qIdx >= triv.questions.length) trivShowFinalResults();
+    else trivShowPass();
+  } else {
+    triv.playerIdx++; if (triv.playerIdx >= players.length) trivRevealQuestion(); else trivShowPass();
+  }
+}
 
 function trivRevealQuestion() {
   const triv = gameState.trivia, q = triv.questions[triv.qIdx], settings = gameState.session.settings.trivia;
@@ -1729,7 +1800,9 @@ $('#btn-triv-again').addEventListener('click', () => showScreen('screen-triv-set
 $('#btn-ht-start').addEventListener('click', async () => { const file = htGetFile(); if (!file) return; requestWakeLock(); checkOrientation(); const data = await fetchPack('hottake', file); gameState.hottake.questions = shuffle(data.questions); gameState.hottake.roundNum++; gameState.hottake.htRoundCount = 0; gameState.currentGame = 'hottake'; htNextQuestion(); });
 
 function htNextQuestion() { // MULTIPLAYER_HOOK: broadcast question to all player devices
-  const ht = gameState.hottake, q = ht.questions[0]; ht.questions.push(ht.questions.shift()); ht.question = q.question; ht.optA = q.optionA; ht.optB = q.optionB; ht.htRoundCount++; $('#ht-question-text').textContent = ht.question; $('#ht-preview-a').textContent = '🅰️ ' + ht.optA; $('#ht-preview-b').textContent = '🅱️ ' + ht.optB; showScreen('screen-ht-question'); }
+  const ht = gameState.hottake, q = ht.questions[0]; ht.questions.push(ht.questions.shift()); ht.question = q.question; ht.optA = q.optionA; ht.optB = q.optionB; ht.htRoundCount++;
+  const qNum = $('#ht-q-number'); if (qNum) qNum.textContent = 'Question ' + ht.htRoundCount + ' of ' + gameState.session.settings.hottake.questionsPerRound;
+  $('#ht-question-text').textContent = ht.question; $('#ht-preview-a').textContent = '🅰️ ' + ht.optA; $('#ht-preview-b').textContent = '🅱️ ' + ht.optB; showScreen('screen-ht-question'); }
 
 $('#btn-ht-begin-vote').addEventListener('click', () => {
   gameState.hottake.choices = {};
@@ -1767,9 +1840,8 @@ function htPickChoice(choice) {
   htPassScreen.classList.add('showing-clue'); htPassScreen.classList.toggle('optA', choice === 'A'); htPassScreen.classList.toggle('optB', choice === 'B');
   $('#ht-chosen-label').textContent = choice === 'A' ? '🅰️ You picked:' : '🅱️ You picked:';
   $('#ht-chosen-text').textContent = choice === 'A' ? ht.optA : ht.optB;
-  let rem = 3; const timer = $('#ht-chosen-timer'); timer.textContent = rem;
-  const iv = safeInterval(() => { rem--; timer.textContent = rem; if (rem <= 0) { clearInterval(iv); htShowPassNext(); } }, 1000);
 }
+$('#btn-ht-chosen-next').addEventListener('click', () => htShowPassNext());
 
 $('#ht-btn-a').addEventListener('click', () => htPickChoice('A'));
 $('#ht-btn-b').addEventListener('click', () => htPickChoice('B'));
@@ -1779,6 +1851,10 @@ function htShowPassNext() { const ht = gameState.hottake, players = allPlayers()
 $('#btn-ht-next-player').addEventListener('click', () => { gameState.hottake.playerIdx++; if (gameState.hottake.playerIdx >= allPlayers().length) htShowResults(); else htShowPass(); });
 
 function htShowResults() {
+  showPhaseOverlay('🔥 REVEALING...');
+  safeTimeout(() => htShowResultsInner(), 1200);
+}
+function htShowResultsInner() {
   const ht = gameState.hottake, players = allPlayers(), aP = players.filter(p => ht.choices[p.id] === 'A'), bP = players.filter(p => ht.choices[p.id] === 'B');
   $('#ht-res-question').textContent = ht.question; $('#ht-res-a-label').textContent = '🅰️ ' + ht.optA; $('#ht-res-b-label').textContent = '🅱️ ' + ht.optB;
   $('#ht-res-a-count').textContent = aP.length; $('#ht-res-b-count').textContent = bP.length;
@@ -1794,24 +1870,39 @@ function htShowResults() {
   allVoters.forEach(p => {
     const side = ht.choices[p.id], sideArr = side === 'A' ? aP : bP, otherArr = side === 'A' ? bP : aP;
     let label = '', cls = '';
-    if (sideArr.length === 1) { label = 'Lone Wolf'; cls = 'lonewolf'; }
-    else if (sideArr.length < otherArr.length) { label = 'Unique'; cls = 'unique'; }
-    else if (sideArr.length > otherArr.length && sideArr.length >= total * 0.75) { label = 'Basic'; cls = 'basic'; }
+    if (sideArr.length === 1) { label = '🐺 Lone Wolf'; cls = 'lonewolf'; }
+    else if (sideArr.length < otherArr.length) { label = '💎 Unique'; cls = 'unique'; }
+    else if (sideArr.length > otherArr.length && sideArr.length >= total * 0.75) { label = '📋 Basic'; cls = 'basic'; }
     if (label) labelsHtml += '<span class="ht-opinion-label ' + cls + '">' + esc(p.name) + ': ' + label + '</span> ';
   });
   labelsEl.innerHTML = labelsHtml;
   snapshotScores();
   const { type, breakdown } = scoreHotTakeQuestion();
-  if (type === 'split') { $('#ht-res-points').textContent = 'Perfect split! Everyone gets +1 point. ' + randomFlavor('htSplit'); $('#ht-res-title').textContent = 'Perfect Split!'; }
-  else { const minSide = aP.length < bP.length ? ht.optA : ht.optB; const hasLoneWolf = (aP.length === 1 || bP.length === 1); $('#ht-res-points').textContent = 'Minority (' + minSide + ') gets +2 points each! ' + (hasLoneWolf ? randomFlavor('htLoneWolf') : ''); $('#ht-res-title').textContent = 'Results!'; }
-  // Debate timer (if enabled via settings, default 0 = off)
-  const debateEl = $('#ht-debate-timer'), debateSecs = cfg.debateTimer ?? 0;
-  if (debateSecs > 0) { debateEl.classList.remove('hidden'); let rem = debateSecs; debateEl.textContent = 'Debate: ' + rem + 's'; const dInt = safeInterval(() => { rem--; debateEl.textContent = 'Debate: ' + rem + 's'; if (rem <= 0) { clearInterval(dInt); debateEl.textContent = 'Time!'; } }, 1000); }
-  else debateEl.classList.add('hidden');
+  if (type === 'split') {
+    $('#ht-res-title').textContent = '⚔️ PERFECTLY DIVIDED!';
+    $('#ht-res-points').textContent = 'Everyone gets +1 point. ' + randomFlavor('htSplit');
+  } else {
+    const minSide = aP.length < bP.length ? ht.optA : ht.optB;
+    const hasLoneWolf = (aP.length === 1 || bP.length === 1);
+    if (hasLoneWolf) {
+      const lonePlayer = (aP.length === 1 ? aP : bP)[0];
+      $('#ht-res-title').textContent = '🐺 ' + lonePlayer.name + ' is the Lone Wolf!';
+      $('#ht-res-points').textContent = 'Minority (' + minSide + ') gets +2 points each! ' + randomFlavor('htLoneWolf');
+    } else {
+      $('#ht-res-title').textContent = '🔥 Results!';
+      $('#ht-res-points').textContent = 'Minority (' + minSide + ') gets +2 points each! ' + randomFlavor('htMajority');
+    }
+  }
+  // Mini leaderboard
+  const lbEl = $('#ht-mini-leaderboard');
+  if (lbEl) {
+    const sorted = [...players].sort((a, b) => (gameState.session.scores[b.id] || 0) - (gameState.session.scores[a.id] || 0));
+    lbEl.innerHTML = '<div class="vote-map-title">Leaderboard</div>' + sorted.map((p, i) => '<div class="vote-map-row"><span>' + (i === 0 ? '👑 ' : '') + esc(p.name) + '</span><span>' + (gameState.session.scores[p.id] || 0) + ' pts</span></div>').join('');
+  }
   renderBreakdown('#ht-res-breakdown', breakdown); autoSave();
   const maxQ = gameState.session.settings.hottake.questionsPerRound, againBtn = $('#btn-ht-again');
   if (ht.htRoundCount >= maxQ) { againBtn.textContent = 'Finish'; againBtn.onclick = () => { if (isInPlaylist()) advancePlaylist(); else goHome(); }; }
-  else { againBtn.textContent = 'New Question'; againBtn.onclick = () => htNextQuestion(); }
+  else { againBtn.textContent = 'Next Question →'; againBtn.onclick = () => htNextQuestion(); }
   setupResultButtons('#btn-ht-home2', null, 'screen-ht-setup'); showScreen('screen-ht-results'); autoSave(); checkWinCondition();
 }
 
@@ -2792,6 +2883,72 @@ $('#continue-banner').addEventListener('click', () => {
   const auto = getSaveSlotInfo('auto');
   if (auto && loadFromSlot('auto')) { rebuildAfterLoad(); return; }
   for (let i = 0; i < 3; i++) { if (getSaveSlotInfo(i) && loadFromSlot(i)) { rebuildAfterLoad(); return; } }
+});
+
+/* ════════════════════════════
+   IMPORT/CREATE PACK SHORTCUTS
+   ════════════════════════════ */
+['imp', 'triv'].forEach(prefix => {
+  const gt = prefix === 'imp' ? 'imposter' : 'trivia';
+  const importBtn = $('#btn-' + prefix + '-import');
+  const createBtn = $('#btn-' + prefix + '-create');
+  if (importBtn) importBtn.addEventListener('click', () => { cmActiveTab = gt; $('#cm-import-file').click(); });
+  if (createBtn) createBtn.addEventListener('click', () => { cmActiveTab = gt; wizardStep = 1; wizardData = { gameType: gt, name: '', emoji: '🎮', entries: [] }; renderWizard(); $('#pack-wizard-overlay').classList.add('open'); });
+});
+
+/* ════════════════════════════
+   SESSION MANAGEMENT
+   ════════════════════════════ */
+function updateHomePlayerStrip() {
+  const strip = $('#home-player-strip'), btns = $('#home-session-btns'), players = allPlayers();
+  if (!strip || !btns) return;
+  if (players.length === 0) { strip.classList.add('hidden'); btns.classList.add('hidden'); return; }
+  strip.classList.remove('hidden'); btns.classList.remove('hidden');
+  strip.innerHTML = players.map((p, i) => '<span class="player-pip" style="background:' + playerColor(i) + '">' + esc(p.name) + '</span>').join('');
+}
+const resetBtn = $('#btn-reset-scores');
+if (resetBtn) resetBtn.addEventListener('click', () => {
+  showConfirm('Reset Scoreboard?', 'All player scores will be set to zero.', () => {
+    Object.keys(gameState.scores.byPlayer).forEach(id => { gameState.scores.byPlayer[id] = 0; });
+    gameState.scores.byGame = {}; gameState.scores.history = [];
+    showToast('Scores reset!', 'success');
+  });
+});
+const endBtn = $('#btn-end-session');
+if (endBtn) endBtn.addEventListener('click', () => {
+  showConfirm('End Session?', 'This will remove all players and scores.', () => {
+    gameState.session.players = []; gameState.scores = { byPlayer: {}, byGame: {}, history: [], streaks: {} };
+    updateHomePlayerStrip(); updatePlayersCard();
+    showToast('Session ended', 'info');
+  });
+});
+
+/* ════════════════════════════
+   TRIVIA QUICK ADD
+   ════════════════════════════ */
+const qaPanel = $('#triv-quick-add-panel');
+if ($('#btn-triv-quick-add')) $('#btn-triv-quick-add').addEventListener('click', () => { if (qaPanel) qaPanel.classList.toggle('hidden'); });
+gameState.trivia.customQuestions = [];
+if ($('#btn-qa-add')) $('#btn-qa-add').addEventListener('click', () => {
+  const q = $('#qa-question').value.trim(), a1 = $('#qa-ans-1').value.trim(), a2 = $('#qa-ans-2').value.trim(), a3 = $('#qa-ans-3').value.trim(), a4 = $('#qa-ans-4').value.trim();
+  if (!q || !a1 || !a2) { showToast('Need question + at least 2 answers', 'warning'); return; }
+  const answers = [a1, a2]; if (a3) answers.push(a3); if (a4) answers.push(a4);
+  gameState.trivia.customQuestions.push({ question: q, answers, correct: 0 });
+  $('#qa-question').value = ''; $('#qa-ans-1').value = ''; $('#qa-ans-2').value = ''; $('#qa-ans-3').value = ''; $('#qa-ans-4').value = '';
+  const count = $('#qa-count'); if (count) count.textContent = gameState.trivia.customQuestions.length + ' custom question' + (gameState.trivia.customQuestions.length !== 1 ? 's' : '') + ' added';
+  showToast('Question added!', 'success');
+});
+if ($('#btn-qa-done')) $('#btn-qa-done').addEventListener('click', () => {
+  const cq = gameState.trivia.customQuestions;
+  if (cq.length === 0) { if (qaPanel) qaPanel.classList.add('hidden'); return; }
+  // Add as virtual pack
+  if (!gameState.packs.trivia) gameState.packs.trivia = [];
+  const existing = gameState.packs.trivia.findIndex(p => p.pack === 'Custom Questions');
+  if (existing >= 0) gameState.packs.trivia.splice(existing, 1);
+  gameState.packs.trivia.unshift({ pack: 'Custom Questions', emoji: '⚡', count: cq.length, file: '__custom__' });
+  renderAllPackCards();
+  if (qaPanel) qaPanel.classList.add('hidden');
+  showToast(cq.length + ' custom questions ready!', 'success');
 });
 
 /* ════════════════════════════
