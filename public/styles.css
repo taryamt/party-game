@@ -237,6 +237,7 @@ textarea { resize: vertical; min-height: 60px; }
   border-radius: 16px; cursor: pointer;
   transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
   box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  overflow: visible;
 }
 .game-card[data-game="imposter"] { border-left-color: #C1121F; background: linear-gradient(135deg, rgba(193,18,31,0.08) 0%, var(--surface) 100%); }
 .game-card[data-game="trivia"] { border-left-color: #06D6A0; background: linear-gradient(135deg, rgba(6,214,160,0.08) 0%, var(--surface) 100%); }
@@ -1429,6 +1430,7 @@ textarea { resize: vertical; min-height: 60px; }
   height: 140px;
   object-fit: contain;
   background: transparent !important;
+  mix-blend-mode: screen;
   filter: drop-shadow(0 8px 24px rgba(0,0,0,0.6));
   border-radius: 0 !important;
   overflow: visible !important;
@@ -1466,9 +1468,10 @@ textarea { resize: vertical; min-height: 60px; }
   height: 72px !important;
   object-fit: contain;
   background: transparent !important;
+  mix-blend-mode: screen;
   filter: drop-shadow(0 4px 16px rgba(0,0,0,0.5));
   border-radius: 0 !important;
-  image-rendering: auto;
+  overflow: visible !important;
 }
 .game-card:hover .game-card-character { transform: scale(1.1) translateY(-2px); }
 /* Game card emoji wrapper */
