@@ -764,12 +764,13 @@ function showScoringInfo(game) {
    ══════════════════════════════ */
 async function loadPacks() {
   // Show shimmer placeholders while loading
-  document.querySelectorAll('.pack-cards').forEach(c => { c.innerHTML = '<div class="shimmer" style="height:60px;border-radius:12px;margin-bottom:8px"></div><div class="shimmer" style="height:60px;border-radius:12px;margin-bottom:8px"></div>'; });
+  document.querySelectorAll('.pack-cards, .pack-grid').forEach(c => { c.innerHTML = '<div class="shimmer" style="height:60px;border-radius:12px;margin-bottom:8px"></div><div class="shimmer" style="height:60px;border-radius:12px;margin-bottom:8px"></div>'; });
   try { const r = await fetch('/api/packs'); gameState.packs = await r.json(); } catch { gameState.packs = {}; }
 }
 
 function renderPackCards(containerId, gameType, btnId) {
   const container = $(containerId), btn = $(btnId), list = gameState.packs[gameType] || [];
+  if (!container || !btn) return () => null;
   if (!list.length) { container.innerHTML = '<div class="empty-state">No packs available. Create one in Content Manager!</div>'; btn.disabled = true; return () => null; }
   container.innerHTML = list.map((p, i) => '<div class="pack-card" data-idx="' + i + '" data-file="' + p.file + '"><img src="/assets/ui/pack-card-decoration.png" class="pack-card-deco" alt="" onerror="this.style.display=\'none\'"><span class="pack-card-emoji">' + p.emoji + '</span><div class="pack-card-info"><div class="pack-card-name">' + esc(p.pack) + '</div>' + (gameType !== 'imposter' ? '<div class="pack-card-count">' + p.count + ' questions</div>' : '') + '</div></div>').join('');
   btn.disabled = true; let selectedFile = null;
