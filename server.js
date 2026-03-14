@@ -99,6 +99,7 @@ app.get("/api/packs", (req, res) => {
     if (!result[gameType]) result[gameType] = [];
     result[gameType].push(...packs);
   }
+  console.log('Packs loaded:', JSON.stringify(Object.keys(result)));
   res.json(result);
 });
 
