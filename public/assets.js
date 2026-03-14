@@ -13,6 +13,9 @@ const ASSETS = {
     drawing: '/assets/characters/drawing.png',
     win: '/assets/characters/win.png',
     lose: '/assets/characters/lose.png',
+    impCrewLarge: '/assets/characters/imp-crew-large.png',
+    impEvilLarge: '/assets/characters/imp-evil-large.png',
+    hostScreen: '/assets/characters/host-screen.png',
   },
   scenes: {
     homeBg: '/assets/scenes/home-bg.png',
@@ -41,6 +44,8 @@ const ASSETS = {
     loseBg: '/assets/scenes/lose-bg.png',
     scoreboardBg: '/assets/scenes/scoreboard-bg.png',
     loadingBg: '/assets/scenes/loading-bg.png',
+    sessionBg: '/assets/scenes/session-bg.png',
+    votingBg: '/assets/scenes/voting-bg.png',
   },
   lottie: {
     confetti: '/assets/lottie/confetti-partyyy.json',
@@ -81,6 +86,9 @@ const ASSETS = {
     speechBubble2: '/assets/ui/speech-bubble-2.png',
     timerFrame: '/assets/ui/timer-frame.png',
     voteBadge: '/assets/ui/vote-badge.png',
+    gameNightTitle: '/assets/ui/game-night-title.png',
+    playerCardFrame: '/assets/ui/player-card-frame.png',
+    roomCodeFrame: '/assets/ui/room-code-frame.png',
   },
   backgrounds: {
     darkStars: '/assets/backgrounds/bg-dark-stars.png',

@@ -14,7 +14,8 @@
       --text: #FFF8EE; --text-dim: #a0a4b8; --radius: 16px; --gold: #FFD166;
       --font-heading: 'Syne', sans-serif; --font-body: 'DM Sans', sans-serif;
     }
-    html, body { height: 100%; font-family: var(--font-body); background: radial-gradient(ellipse at 50% 30%, var(--bg-glow) 0%, var(--bg) 70%); color: var(--text); overflow-x: hidden; overscroll-behavior: none; }
+    html, body { height: 100%; font-family: var(--font-body); background: radial-gradient(ellipse at 50% 30%, var(--bg-glow) 0%, var(--bg) 70%); color: var(--text); overflow-x: hidden; overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
+    input { font-size: 16px; /* prevent iOS zoom */ }
     body::before { content: ''; position: fixed; inset: 0; background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
     .container { position: relative; z-index: 1; max-width: 420px; margin: 0 auto; padding: 20px 16px; min-height: 100%; display: flex; flex-direction: column; }
     .screen { display: none; flex-direction: column; align-items: center; text-align: center; flex: 1; animation: fadeIn 0.3s ease; }
@@ -107,6 +108,17 @@
     .status-bar.connected { border-left: 3px solid var(--green); }
     .status-bar.disconnected { border-left: 3px solid var(--red); color: var(--red); }
 
+    /* Room code badge in waiting room */
+    .room-code-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); border: 2px solid var(--surface2); border-radius: 12px; padding: 8px 16px; margin: 8px 0 12px; cursor: pointer; transition: border-color 0.2s; }
+    .room-code-badge:hover { border-color: var(--accent); }
+    .room-code-badge .code { font-family: var(--font-heading); font-size: 1.3rem; font-weight: 800; color: var(--accent); letter-spacing: 3px; }
+    .room-code-badge .copy-icon { font-size: 0.9rem; color: var(--text-dim); }
+
+    /* Connection indicator dot */
+    .conn-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .conn-dot.on { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .conn-dot.off { background: var(--red); box-shadow: 0 0 6px var(--red); }
+
     /* Toast */
     .toast { position: fixed; top: 12px; left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--surface2); color: var(--text); padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; z-index: 999; transition: transform 0.3s; pointer-events: none; }
     .toast.show { transform: translateX(-50%) translateY(0); }
@@ -143,11 +155,15 @@
     <div id="screen-waiting" class="screen">
       <div class="pulse-dot"></div>
       <h2>You're in!</h2>
+      <div class="room-code-badge" id="room-code-badge" title="Tap to copy invite link">
+        <span class="code" id="display-room-code">----</span>
+        <span class="copy-icon">📋</span>
+      </div>
       <p class="subtitle" id="waiting-subtitle">Waiting for the host to start...</p>
       <div id="waiting-players" class="player-list"></div>
       <button class="ready-btn" id="btn-ready">Tap when Ready</button>
       <div class="emoji-bar" id="lobby-emoji-bar"></div>
-      <div class="status-bar connected" id="status-bar">Connected</div>
+      <div class="status-bar connected" id="status-bar"><span class="conn-dot on"></span> Connected</div>
     </div>
 
     <!-- CLUE (Imposter) -->
@@ -337,7 +353,7 @@
       socket.on('disconnect', () => {
         if ($('#screen-disconnected').classList.contains('active')) return;
         $('#status-bar').className = 'status-bar disconnected';
-        $('#status-bar').textContent = 'Reconnecting...';
+        $('#status-bar').innerHTML = '<span class="conn-dot off"></span> Reconnecting...';
         // Auto-reconnect after 2s
         setTimeout(() => {
           if (socket && !socket.connected && roomCode) {
@@ -350,10 +366,22 @@
           // Rejoin after reconnect
           sendMsg('request_rejoin', { roomCode, deviceId });
           $('#status-bar').className = 'status-bar connected';
-          $('#status-bar').textContent = 'Connected';
+          $('#status-bar').innerHTML = '<span class="conn-dot on"></span> Connected';
         }
       });
     }
+
+    // ── Room code badge: copy invite link ──
+    $('#room-code-badge').addEventListener('click', () => {
+      const url = location.origin + '/join?code=' + roomCode;
+      if (navigator.share) {
+        navigator.share({ title: 'Join Party Games!', text: 'Join my game room: ' + roomCode, url }).catch(() => {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => toast('Invite link copied!')).catch(() => toast('Code: ' + roomCode));
+      } else {
+        toast('Room code: ' + roomCode);
+      }
+    });
 
     // ── Rejoin button ──
     $('#btn-rejoin').addEventListener('click', () => {
@@ -386,6 +414,7 @@
         case 'join_success': {
           myId = payload.playerId;
           roomCode = payload.roomCode;
+          $('#display-room-code').textContent = roomCode;
           renderPlayerList(payload.players || []);
           showScreen('screen-waiting');
           toast('Joined room ' + payload.roomCode + '!');
@@ -394,10 +423,11 @@
         case 'rejoin_success': {
           myId = payload.playerId;
           roomCode = payload.roomCode;
+          $('#display-room-code').textContent = roomCode;
           showScreen('screen-waiting');
           toast('Reconnected!');
           $('#status-bar').className = 'status-bar connected';
-          $('#status-bar').textContent = 'Connected';
+          $('#status-bar').innerHTML = '<span class="conn-dot on"></span> Connected';
           break;
         }
         case 'error': {

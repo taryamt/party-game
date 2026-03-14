@@ -23,13 +23,16 @@ const io = new Server(server, {
 });
 
 app.use('/assets', express.static(path.join(__dirname, 'public/assets'), {
-  maxAge: 0,
-  etag: false,
-  lastModified: false,
-  setHeaders: (res) => {
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
+  maxAge: '1d',
+  etag: true,
+  lastModified: true,
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.png') || filePath.endsWith('.jpg')) {
+      res.setHeader('Cache-Control', 'public, max-age=86400, must-revalidate');
+    }
+    if (filePath.endsWith('.json')) {
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+    }
   }
 }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -454,6 +457,7 @@ io.on("connection", (socket) => {
       case "start_game": {
         const room = getRoom(currentRoom);
         if (!room || socket.id !== room.hostWsId) return;
+        room.currentPhase = "playing";
         room.phase = "playing";
         room.gameType = payload.gameType || room.gameType;
         room.settings = payload.settings || room.settings;
@@ -471,6 +475,7 @@ io.on("connection", (socket) => {
         const room = getRoom(currentRoom);
         if (!room || socket.id !== room.hostWsId) return;
         room.phase = payload.phase || room.phase;
+        room.currentPhase = room.phase;
         if (payload.gameState) Object.assign(room.gameState, payload.gameState);
         room.lastActivity = Date.now();
         broadcastToRoom(currentRoom, "phase_change", { phase: payload.phase, data: payload.data });

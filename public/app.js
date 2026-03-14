@@ -57,6 +57,14 @@ const _activeTimers = new Set();
 function safeInterval(fn, ms) { const id = setInterval(fn, ms); _activeTimers.add(id); return id; }
 function safeTimeout(fn, ms) { const id = setTimeout(() => { _activeTimers.delete(id); fn(); }, ms); _activeTimers.add(id); return id; }
 function clearAllTimers() { _activeTimers.forEach(id => { clearInterval(id); clearTimeout(id); }); _activeTimers.clear(); }
+// Double-click prevention: disables button during async operation
+function preventDoubleClick(btn, asyncFn) {
+  if (btn.disabled || btn._busy) return;
+  btn._busy = true; btn.disabled = true;
+  const orig = btn.textContent;
+  btn.textContent = 'Loading...';
+  asyncFn().catch(e => console.error('[DblClick guard]', e)).finally(() => { btn._busy = false; btn.disabled = false; btn.textContent = orig; });
+}
 const esc = s => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
 function shuffle(arr) { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function deepMerge(target, source) { for (const key of Object.keys(source)) { if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key]) && target[key] && typeof target[key] === 'object' && !Array.isArray(target[key])) { deepMerge(target[key], source[key]); } else { target[key] = source[key]; } } }
@@ -191,11 +199,11 @@ function updateBreadcrumb(id) {
 
 const SCREEN_SCENES = {
   'screen-home': ['backgrounds', 'warmCozy'],
-  'screen-session': ['backgrounds', 'darkStars'],
+  'screen-session': ['scenes', 'sessionBg'],
   'screen-loading': ['scenes', 'loadingBg'],
   'screen-imp-setup': ['scenes', 'impSetup'],
   'screen-imp-discuss': ['scenes', 'impDiscuss'],
-  'screen-imp-vote': ['backgrounds', 'mystery'],
+  'screen-imp-vote': ['scenes', 'votingBg'],
   'screen-imp-results': ['backgrounds', 'darkStars'],
   'screen-triv-setup': ['scenes', 'triviaSetup'],
   'screen-triv-question': ['scenes', 'triviaQuestion'],
@@ -269,7 +277,7 @@ function goHome() {
   gameState.imposter.votes = {}; gameState.imposter.individualVotes = {};
   gameState.trivia.answers = {}; gameState.hottake.choices = {};
   // Remove floating elements
-  document.querySelectorAll('.floating-emoji, .points-float, .confetti-piece').forEach(el => el.remove());
+  document.querySelectorAll('.floating-emoji, .points-float, .confetti-piece, .lottie-overlay').forEach(el => el.remove());
 }
 function updatePlayersCard() { const desc = $('#players-card-desc'); if (!desc) return; const n = allPlayers().length; desc.textContent = n > 0 ? n + ' player' + (n !== 1 ? 's' : '') + ' ready' : 'Add or manage players'; }
 
@@ -620,6 +628,28 @@ async function requestWakeLock() { try { if ('wakeLock' in navigator) wakeLock =
 function releaseWakeLock() { if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; } }
 
 /* ══════════════════════════════
+   HAPTIC FEEDBACK
+   ══════════════════════════════ */
+function haptic(pattern) { if (navigator.vibrate) navigator.vibrate(pattern || [50]); }
+
+/* ══════════════════════════════
+   HOME SUBTITLE ROTATION
+   ══════════════════════════════ */
+let subtitleRotationInterval = null;
+function startSubtitleRotation() {
+  if (subtitleRotationInterval) clearInterval(subtitleRotationInterval);
+  subtitleRotationInterval = setInterval(() => {
+    const sub = $('#home-subtitle');
+    if (!sub || gameState.currentScreen !== 'screen-home') return;
+    sub.style.opacity = '0';
+    setTimeout(() => {
+      sub.textContent = HOME_SUBTITLES[Math.floor(Math.random() * HOME_SUBTITLES.length)];
+      sub.style.opacity = '1';
+    }, 500);
+  }, 4000);
+}
+
+/* ══════════════════════════════
    ORIENTATION NUDGE
    ══════════════════════════════ */
 function checkOrientation() {
@@ -648,8 +678,8 @@ function showPhaseOverlay(text) {
    ══════════════════════════════ */
 const HOME_SUBTITLES = ['Trust no one.', 'Friendships will be tested.', 'May the best bluffer win.', 'Who will crack first?', 'Party time!', 'Knowledge is power.', 'Pick your side wisely.', 'The truth always comes out... eventually.', 'Someone in this room is lying. Probably.', 'Warning: may cause trust issues.', 'Your friends are not who you think they are.', 'Side effects include: paranoia, laughter, and broken friendships.'];
 const RESULT_FLAVORS = {
-  imposterCaught: ['The crew prevails!', 'Busted!', 'Nothing gets past this group!', 'The truth always comes out!', 'Detective work at its finest!', 'That poker face needed work.', 'The lies crumbled under pressure!', 'Justice is served!', 'Not today, imposter!', 'Elementary, my dear Watson.'],
-  imposterEscaped: ['The imposter walks free...', 'Better luck next time!', 'Fooled everyone!', 'The perfect crime.', 'Oscar-worthy performance!', 'The greatest con of all time.', 'They never saw it coming.', 'Trust nobody — especially that one.', 'Living among you this whole time...', 'A masterclass in deception.'],
+  imposterCaught: ['The crew prevails!', 'Busted!', 'Nothing gets past this group!', 'The truth always comes out!', 'Detective work at its finest!', 'That poker face needed work.', 'The lies crumbled under pressure!', 'Justice is served!', 'Not today, imposter!', 'Elementary, my dear Watson.', 'Nobody expects the obvious!', 'The crew prevails again!', 'Caught red-handed!', 'Your poker face needs work.', 'The magnifying glass never lies.', 'The walls have ears.', 'Teamwork makes the dream work!', 'You can run but you can\'t hide.'],
+  imposterEscaped: ['The imposter walks free...', 'Better luck next time!', 'Fooled everyone!', 'The perfect crime.', 'Oscar-worthy performance!', 'The greatest con of all time.', 'They never saw it coming.', 'Trust nobody — especially that one.', 'Living among you this whole time...', 'A masterclass in deception.', 'A ghost in the night...', 'Slippery as an eel!', 'The master of disguise strikes!', 'They walked right past you!', 'Hiding in plain sight.', 'The perfect crime... for now.', 'Better luck next time, detectives.', 'They fooled everyone. Respect.'],
   triviaClose: ['That was a close one!', 'Photo finish!', 'Down to the wire!'],
   triviaLandslide: ['Absolute domination!', 'Not even close!', 'A true trivia master!'],
   htSplit: ['Perfectly balanced!', 'Great minds think... differently!', 'Split right down the middle!', 'The ultimate stalemate!', 'Agree to disagree!'],
@@ -1475,7 +1505,7 @@ function handleClueConfirmed(payload) {
   const el = $('#imp-clue-pass-label');
   if (el) el.textContent = 'Clues sent! Waiting for players...\n' + clueConfirmCount + '/' + total + ' confirmed';
 }
-$('#btn-imp-start').addEventListener('click', async () => {
+$('#btn-imp-start').addEventListener('click', () => { preventDoubleClick($('#btn-imp-start'), async () => {
   const file = impGetFile(); if (!file) return;
   requestWakeLock(); checkOrientation();
   const data = await fetchPack('imposter', file).catch(() => null); if (!data || !data.rounds || !data.rounds.length) return;
@@ -1488,7 +1518,7 @@ $('#btn-imp-start').addEventListener('click', async () => {
   playerPool.forEach(p => { imp.votes[p.id] = 0; imp.individualVotes[p.id] = ''; }); imp.voterIdx = 0;
   if (isMultiDevice && socket) sendMsg('start_game', { gameType: 'imposter', settings: gameState.session.settings, gameState: { imposter: gameState.imposter } });
   impShowPass();
-});
+}); });
 
 const impScreen = $('#screen-imp-clue');
 
@@ -1622,6 +1652,8 @@ function impShowResults() {
   snapshotScores();
   const { caught, breakdown } = scoreImposterRound();
   playSound('imposterReveal');
+  haptic(caught ? [50, 30, 50] : [100, 50, 100]);
+  if (caught) { launchConfetti(); playLottieOverlay('confetti', 4000); } else { playLottieOverlay('ghost', 3000); }
   const sorted = Object.entries(imp.votes).filter(([,c]) => c > 0).sort((a, b) => b[1] - a[1]);
   const maxV = sorted.length > 0 ? sorted[0][1] : 0;
   const emojiEl = $('#imp-res-emoji'), textEl = $('#imp-res-text');
@@ -1666,7 +1698,7 @@ $('#btn-imp-again').addEventListener('click', () => showScreen('screen-imp-setup
    ════════════════════════════ */
 let trivTimerInterval = null;
 
-$('#btn-triv-start').addEventListener('click', async () => {
+$('#btn-triv-start').addEventListener('click', () => { preventDoubleClick($('#btn-triv-start'), async () => {
   const file = trivGetFile(); if (!file) return;
   requestWakeLock(); checkOrientation();
   const triv = gameState.trivia, settings = gameState.session.settings.trivia, qCount = settings.questionsPerRound;
@@ -1682,7 +1714,7 @@ $('#btn-triv-start').addEventListener('click', async () => {
   triv.questions = questions.slice(0, needCount); triv.qIdx = 0; triv.answers = {}; triv.roundNum++;
   gameState.currentGame = 'trivia'; nonHostPlayers().forEach(p => triv.answers[p.id] = []); gameState.scores.streaks = {};
   trivStartQuestion();
-});
+}); });
 
 function trivStartQuestion() {
   gameState.trivia.playerIdx = 0;
@@ -1774,7 +1806,7 @@ $('#btn-triv-ready').addEventListener('click', () => {
       if (trivTimerInterval) { clearInterval(trivTimerInterval); trivTimerInterval = null; }
       const idx = Number(btn.dataset.idx), correct = q.correct;
       grid.querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
-      if (idx === correct) { btn.classList.add('correct'); playSound('correct'); } else { btn.classList.add('wrong'); playSound('wrong'); grid.querySelector('.answer-btn[data-idx="' + correct + '"]').classList.add('correct'); }
+      if (idx === correct) { btn.classList.add('correct'); playSound('correct'); haptic([30]); } else { btn.classList.add('wrong'); playSound('wrong'); haptic([200]); grid.querySelector('.answer-btn[data-idx="' + correct + '"]').classList.add('correct'); }
       setTimeout(() => trivSubmitAnswer(idx), 600);
     }); });
   }
@@ -1852,7 +1884,7 @@ $('#btn-triv-again').addEventListener('click', () => showScreen('screen-triv-set
 /* ════════════════════════════
    HOT TAKE GAME
    ════════════════════════════ */
-$('#btn-ht-start').addEventListener('click', async () => { const file = htGetFile(); if (!file) return; requestWakeLock(); checkOrientation(); const data = await fetchPack('hottake', file); gameState.hottake.questions = shuffle(data.questions); gameState.hottake.roundNum++; gameState.hottake.htRoundCount = 0; gameState.hottake.choices = {}; gameState.currentGame = 'hottake'; htNextQuestion(); });
+$('#btn-ht-start').addEventListener('click', () => { preventDoubleClick($('#btn-ht-start'), async () => { const file = htGetFile(); if (!file) return; requestWakeLock(); checkOrientation(); const data = await fetchPack('hottake', file); gameState.hottake.questions = shuffle(data.questions); gameState.hottake.roundNum++; gameState.hottake.htRoundCount = 0; gameState.hottake.choices = {}; gameState.currentGame = 'hottake'; htNextQuestion(); }); });
 
 function htNextQuestion() { // MULTIPLAYER_HOOK: broadcast question to all player devices
   const ht = gameState.hottake, q = ht.questions[0]; ht.questions.push(ht.questions.shift()); ht.question = q.question; ht.optA = q.optionA; ht.optB = q.optionB; ht.htRoundCount++;
@@ -3014,7 +3046,13 @@ if ($('#btn-qa-done')) $('#btn-qa-done').addEventListener('click', () => {
 loadSettings();
 applyTheme(gameState.session.settings.global.theme);
 checkForSaves();
+startSubtitleRotation();
 // Load packs on app init since home screen is now the first screen
 (async () => { await loadPacks(); renderAllPackCards(); })();
+
+// Service worker registration
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
 
 })();
