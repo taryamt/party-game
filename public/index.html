@@ -6,6 +6,11 @@
 <title>Party Games</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<link rel="preload" as="image" href="/assets/characters/imp-crew.png">
+<link rel="preload" as="image" href="/assets/characters/imp-evil.png">
+<link rel="preload" as="image" href="/assets/scenes/home-bg.png">
+<link rel="preload" as="image" href="/assets/backgrounds/bg-dark-stars.png">
 </head>
 <body>
 <div class="phase-overlay" id="phase-overlay"><div class="phase-label" id="phase-label"></div></div>
@@ -19,6 +24,7 @@
      SESSION SETUP
      ══════════════════════════════ -->
 <div id="screen-session" class="screen">
+  <img src="/assets/doodles/doodles-sheet-2.png" class="doodle-bg" alt="" onerror="this.style.display='none'">
   <div id="continue-banner" class="continue-banner hidden">
     <div class="continue-banner-title">Resume Last Game →</div>
     <div class="continue-banner-meta" id="continue-meta"></div>
@@ -112,8 +118,11 @@
      HOME / GAME SELECTOR
      ══════════════════════════════ -->
 <div id="screen-home" class="screen active">
+  <img src="/assets/doodles/doodles-sheet-1.png" class="doodle-bg" alt="" onerror="this.style.display='none'">
   <button class="settings-gear" id="btn-global-settings" title="Settings">⚙️</button>
+  <div class="banner-wrapper"><img src="/assets/ui/banner-gold.png" class="banner-img" alt="" onerror="this.style.display='none'"></div>
   <h1>Party Games</h1>
+  <div class="divider-wrapper"><img src="/assets/ui/divider-stars.png" class="divider-img" alt="" onerror="this.style.display='none'"></div>
   <h2 id="home-subtitle">Pick a game</h2>
   <div id="home-player-strip" class="player-strip hidden"></div>
   <div id="home-session-btns" class="session-btns hidden">
@@ -129,7 +138,7 @@
       </div>
     </div>
     <div class="game-card" data-game="imposter">
-      <div class="game-card-emoji">🕵️</div>
+      <div class="game-card-emoji"><img src="/assets/characters/imp-crew.png" class="game-card-character" alt="Imposter" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">🕵️</span></div>
       <div class="game-card-info">
         <div class="game-card-title">Imposter</div>
         <div class="game-card-desc">One player gets a hint instead of the word. Find the fake!</div>
@@ -137,7 +146,7 @@
       </div>
     </div>
     <div class="game-card" data-game="trivia">
-      <div class="game-card-emoji">🧠</div>
+      <div class="game-card-emoji"><img src="/assets/characters/trivia.png" class="game-card-character" alt="Trivia" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">🧠</span></div>
       <div class="game-card-info">
         <div class="game-card-title">Trivia</div>
         <div class="game-card-desc">Answer questions to earn points. Streaks get bonuses!</div>
@@ -145,7 +154,7 @@
       </div>
     </div>
     <div class="game-card" data-game="hottake">
-      <div class="game-card-emoji">🔥</div>
+      <div class="game-card-emoji"><img src="/assets/characters/hottake-a.png" class="game-card-character" alt="Hot Take" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">🔥</span></div>
       <div class="game-card-info">
         <div class="game-card-title">Hot Take</div>
         <div class="game-card-desc">Pick a side on spicy questions. Rare opinions score!</div>
@@ -153,7 +162,7 @@
       </div>
     </div>
     <div class="game-card" data-game="mafia">
-      <div class="game-card-emoji">🎭</div>
+      <div class="game-card-emoji"><img src="/assets/characters/mafia.png" class="game-card-character" alt="Mafia" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">🎭</span></div>
       <div class="game-card-info">
         <div class="game-card-title">Mafia</div>
         <div class="game-card-desc">Night kills, investigations, and deception. Find the mafia!</div>
@@ -161,7 +170,7 @@
       </div>
     </div>
     <div class="game-card" data-game="millionaire">
-      <div class="game-card-emoji">💰</div>
+      <div class="game-card-emoji"><img src="/assets/characters/millionaire.png" class="game-card-character" alt="Millionaire" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">💰</span></div>
       <div class="game-card-info">
         <div class="game-card-title">Millionaire</div>
         <div class="game-card-desc">Answer 15 questions up the money ladder. Use lifelines wisely!</div>
@@ -169,7 +178,7 @@
       </div>
     </div>
     <div class="game-card" data-game="feud">
-      <div class="game-card-emoji">👨‍👩‍👧‍👦</div>
+      <div class="game-card-emoji"><img src="/assets/characters/feud.png" class="game-card-character" alt="Feud" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">👨‍👩‍👧‍👦</span></div>
       <div class="game-card-info">
         <div class="game-card-title">Family Feud</div>
         <div class="game-card-desc">Guess the top survey answers! 3 strikes and the other team steals.</div>
@@ -177,7 +186,7 @@
       </div>
     </div>
     <div class="game-card" data-game="wavelength">
-      <div class="game-card-emoji">〰️</div>
+      <div class="game-card-emoji"><img src="/assets/characters/wavelength.png" class="game-card-character" alt="Wavelength" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">〰️</span></div>
       <div class="game-card-info">
         <div class="game-card-title">Wavelength</div>
         <div class="game-card-desc">Give a clue on a spectrum. How well does your team read your mind?</div>
@@ -185,7 +194,7 @@
       </div>
     </div>
     <div class="game-card" data-game="alias">
-      <div class="game-card-emoji">🗣️</div>
+      <div class="game-card-emoji"><img src="/assets/characters/alias.png" class="game-card-character" alt="Alias" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">🗣️</span></div>
       <div class="game-card-info">
         <div class="game-card-title">Alias</div>
         <div class="game-card-desc">Describe the word without using the forbidden words!</div>
@@ -193,7 +202,7 @@
       </div>
     </div>
     <div class="game-card" data-game="drawing">
-      <div class="game-card-emoji">🎨</div>
+      <div class="game-card-emoji"><img src="/assets/characters/drawing.png" class="game-card-character" alt="Drawing" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">🎨</span></div>
       <div class="game-card-info">
         <div class="game-card-title">Drawing</div>
         <div class="game-card-desc">Draw the word and let others guess. No letters or numbers!</div>
@@ -227,6 +236,7 @@
 <div id="screen-loading" class="screen">
   <h1 id="loading-title">Loading...</h1>
   <div class="subtitle" id="loading-subtitle">Preparing the game</div>
+  <div id="loading-lottie" class="lottie-container lottie-lg"></div>
   <div class="spinner"></div>
 </div>
 
@@ -247,9 +257,11 @@
 
 <!-- IMPOSTER SCREENS -->
 <div id="screen-imp-setup" class="screen">
+  <img src="/assets/doodles/doodles-sheet-1.png" class="doodle-bg" alt="" onerror="this.style.display='none'">
   <button class="btn outline back-home" id="btn-imp-home">&#8592; Home</button>
   <button class="settings-btn" id="btn-imp-settings">&#9881;</button>
   <h1>🕵️ Imposter <button class="info-btn" id="btn-imp-info">?</button></h1>
+  <div class="character-container" id="imp-setup-character"></div>
   <h2>Pick a pack</h2>
   <div class="pack-cards" id="imp-packs"></div>
   <div class="pack-actions">
@@ -269,6 +281,7 @@
     <button class="btn big" id="btn-imp-show">Show My Clue</button>
   </div>
   <div id="imp-clue-show" class="hidden">
+    <div class="character-container" id="imp-clue-character"></div>
     <div id="imp-clue-display" class="clue-display">
       <div id="imp-clue-icon" class="clue-label"></div>
       <div id="imp-clue-main" class="clue-word"></div>
@@ -301,6 +314,8 @@
 
 <div id="screen-imp-vote" class="screen">
   <button class="btn outline back-btn" data-back="confirm" data-msg="Cancel voting?">&#8592; Back</button>
+  <img src="/assets/ui/vote-badge.png" class="score-badge-img" alt="" onerror="this.style.display='none'" style="margin-bottom:8px;">
+  <div id="imp-vote-lottie" class="lottie-container lottie-sm"></div>
   <h2 id="imp-vote-label">Waiting for</h2>
   <h1 id="imp-vote-name">Player's vote</h1>
   <div class="subtitle">Choose carefully — only one vote per player!</div>
@@ -316,6 +331,8 @@
 
 <div id="screen-imp-results" class="screen">
   <div id="imp-res-emoji" class="reveal-emoji"></div>
+  <div class="character-container" id="imp-results-character"></div>
+  <div id="imp-results-lottie" class="lottie-container lottie-lg"></div>
   <h1 id="imp-res-text" class="reveal-text"></h1>
   <div id="imp-res-imposter" class="subtitle"></div>
   <div id="imp-res-word" class="subtitle"></div>
@@ -332,6 +349,7 @@
   <button class="btn outline back-home" id="btn-triv-home">&#8592; Home</button>
   <button class="settings-btn" id="btn-triv-settings">&#9881;</button>
   <h1>🧠 Trivia <button class="info-btn" id="btn-triv-info">?</button></h1>
+  <div class="character-container" id="triv-setup-character"></div>
   <h2>Pick a pack</h2>
   <div class="pack-cards" id="triv-packs"></div>
   <div class="pack-actions">
@@ -377,6 +395,7 @@
 <div id="screen-triv-reveal" class="screen">
   <h2 id="triv-reveal-q-num">Question 1 of 5</h2>
   <div class="trivia-question" id="triv-reveal-q"></div>
+  <div id="triv-reveal-lottie" class="lottie-container lottie-sm"></div>
   <div id="triv-reveal-answer" style="font-size:1.4rem;font-weight:800;color:var(--green);margin-bottom:20px;text-align:center;"></div>
   <div id="triv-explanation" class="explanation-text hidden"></div>
   <div id="triv-reveal-results" class="results-list"></div>
@@ -402,6 +421,7 @@
   <button class="btn outline back-home" id="btn-ht-home">&#8592; Home</button>
   <button class="settings-btn" id="btn-ht-settings">&#9881;</button>
   <h1>🔥 Hot Take <button class="info-btn" id="btn-ht-info">?</button></h1>
+  <div class="character-container" id="ht-setup-character"></div>
   <h2>Pick a pack</h2>
   <div class="pack-cards" id="ht-packs"></div>
   <div class="gap"></div>
@@ -484,6 +504,7 @@
 <!-- SESSION STATS -->
 <div id="screen-session-stats" class="screen">
   <div class="reveal-emoji">🏆</div>
+  <div class="character-container" id="win-character"></div>
   <h1 class="reveal-text">Session Stats</h1>
   <div id="stats-awards" class="stats-awards"></div>
   <div class="divider"></div>
@@ -832,6 +853,7 @@
 
 <script src="/socket.io/socket.io.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
+<script src="assets.js" defer></script>
 <script src="app.js" defer></script>
 </body>
 </html>

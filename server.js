@@ -22,6 +22,10 @@ const io = new Server(server, {
   pingTimeout: 10000,
 });
 
+app.use('/assets', express.static(path.join(__dirname, 'public/assets'), {
+  maxAge: '7d',
+  etag: true
+}));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json({ limit: "1mb" }));
 

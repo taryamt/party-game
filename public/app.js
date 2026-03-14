@@ -189,6 +189,30 @@ function updateBreadcrumb(id) {
   }).join('');
 }
 
+const SCREEN_SCENES = {
+  'screen-home': ['backgrounds', 'warmCozy'],
+  'screen-session': ['backgrounds', 'darkStars'],
+  'screen-loading': ['scenes', 'loadingBg'],
+  'screen-imp-setup': ['scenes', 'impSetup'],
+  'screen-imp-discuss': ['scenes', 'impDiscuss'],
+  'screen-imp-vote': ['backgrounds', 'mystery'],
+  'screen-imp-results': ['backgrounds', 'darkStars'],
+  'screen-triv-setup': ['scenes', 'triviaSetup'],
+  'screen-triv-question': ['scenes', 'triviaQuestion'],
+  'screen-triv-results': ['scenes', 'winBg'],
+  'screen-ht-setup': ['scenes', 'hottakeSetup'],
+  'screen-ht-question': ['scenes', 'hottakeQuestion'],
+  'screen-ht-results': ['scenes', 'hottakeResults'],
+  'screen-mafia-setup': ['scenes', 'mafianight'],
+  'screen-mill-setup': ['scenes', 'millionaireSetup'],
+  'screen-mill-question': ['scenes', 'millionaireQuestion'],
+  'screen-feud-setup': ['scenes', 'feudSetup'],
+  'screen-wave-setup': ['scenes', 'wavelengthSetup'],
+  'screen-alias-setup': ['scenes', 'aliasSetup'],
+  'screen-draw-setup': ['scenes', 'drawingSetup'],
+  'screen-session-stats': ['scenes', 'scoreboardBg'],
+};
+
 function showScreen(id, direction) {
   const prev = gameState.currentScreen;
   const dir = direction || 'forward';
@@ -213,6 +237,20 @@ function showScreen(id, direction) {
   updateBreadcrumb(id);
   // Pause particles during active game screens for performance
   if (isGameScreen) pauseParticles(); else resumeParticles();
+  // Inject scene backgrounds for current screen
+  if (typeof setSceneBg === 'function') {
+    const sceneConfig = SCREEN_SCENES[id];
+    if (sceneConfig) setSceneBg(id, sceneConfig[1], sceneConfig[0]);
+  }
+  // Loading screen lottie
+  if (id === 'screen-loading' && typeof playLottie === 'function') playLottie('loading-lottie', 'loadingDots', true);
+  // Setup screen characters
+  if (typeof createCharacterImg === 'function') {
+    if (id === 'screen-imp-setup') { const el = $('#imp-setup-character'); if (el && !el.hasChildNodes()) { const img = createCharacterImg('impCrew', 'normal'); if (img) el.appendChild(img); } }
+    if (id === 'screen-triv-setup') { const el = $('#triv-setup-character'); if (el && !el.hasChildNodes()) { const img = createCharacterImg('trivia', 'normal'); if (img) el.appendChild(img); } }
+    if (id === 'screen-ht-setup') { const el = $('#ht-setup-character'); if (el && !el.hasChildNodes()) { el.style.display = 'flex'; el.style.gap = '16px'; el.style.justifyContent = 'center'; const imgA = createCharacterImg('hottakeA', 'normal'); const imgB = createCharacterImg('hottakeB', 'normal'); if (imgA) el.appendChild(imgA); if (imgB) el.appendChild(imgB); } }
+    if (id === 'screen-session-stats') { const el = $('#win-character'); if (el && !el.hasChildNodes()) { const img = createCharacterImg('win', 'large'); if (img) el.appendChild(img); } }
+  }
 }
 
 function goBack() {
@@ -284,7 +322,7 @@ function scoreImposterRound() { // MULTIPLAYER_HOOK: scoring runs on host only, 
 }
 
 function scoreTriviaQuestion(question, qIdx) {
-  const players = allPlayers(), answers = gameState.trivia.answers, cfg = gameState.session.settings.trivia;
+  const players = nonHostPlayers(), answers = gameState.trivia.answers, cfg = gameState.session.settings.trivia;
   const basePts = cfg.correctPts ?? 2, onlyBonus = cfg.onlyCorrectBonus ?? 1, streakBonus = cfg.streakBonus ?? 1;
   const correctPlayers = players.filter(p => answers[p.id] && answers[p.id][qIdx] === question.correct);
   const breakdown = [];
@@ -308,7 +346,7 @@ function scoreTriviaQuestion(question, qIdx) {
 }
 
 function scoreHotTakeQuestion() {
-  const players = allPlayers(), choices = gameState.hottake.choices, cfg = gameState.session.settings.hottake;
+  const players = nonHostPlayers(), choices = gameState.hottake.choices, cfg = gameState.session.settings.hottake;
   const minPts = cfg.minorityPts ?? 2, splPts = cfg.splitPts ?? 1;
   const aP = players.filter(p => choices[p.id] === 'A'), bP = players.filter(p => choices[p.id] === 'B');
   const breakdown = [];
@@ -326,7 +364,7 @@ function renderBreakdown(containerId, breakdown) {
   const el = $(containerId); if (!el) return;
   el.innerHTML = breakdown.map(b => {
     const p = playerById(b.id), name = p ? esc(p.name) : '?', pIdx = allPlayers().indexOf(p), color = playerColor(pIdx);
-    return '<div class="rb-row"><div class="rb-name" style="color:' + color + '">' + name + '</div><div class="rb-reasons">' + b.reasons.join(', ') + '</div><div class="rb-total">' + (b.pts > 0 ? '+' + b.pts : '0') + '</div></div>';
+    return '<div class="rb-row"><div class="rb-name" style="color:' + color + '">' + name + '</div><div class="rb-reasons">' + b.reasons.join(', ') + '</div><div class="rb-total">' + (b.pts > 0 ? '<img src="/assets/ui/score-badge.png" class="score-badge-img" alt="" onerror="this.style.display=\'none\'"> +' + b.pts : '0') + '</div></div>';
   }).join('');
 }
 
@@ -672,6 +710,7 @@ function showSessionStats() {
   sorted.forEach((p, i) => { const pts = scores.byPlayer[p.id] || 0; const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name">' + (i === 0 ? '👑 ' : i === sorted.length - 1 && sorted.length > 2 ? '💀 ' : '') + esc(p.name) + '</span><div class="result-bar-track"><div class="result-bar' + (i === 0 ? ' top' : '') + '" style="width:0%"></div></div><span class="result-count">' + pts + '</span>'; container.appendChild(row); });
 
   showScreen('screen-session-stats');
+  if (typeof playLottieOverlay === 'function') playLottieOverlay('confetti', 5000);
   playSound('fanfare'); launchConfetti();
   requestAnimationFrame(() => setTimeout(() => { container.querySelectorAll('.result-bar').forEach((bar, i) => { const pts = scores.byPlayer[sorted[i].id] || 0; bar.style.width = maxPts > 0 ? Math.max((pts / maxPts) * 100, 8) + '%' : '0%'; }); }, 100));
 }
@@ -690,7 +729,7 @@ function renderScoreboardWithTrends() {
     let trend = '', trendClass = 'same';
     if (total > prev) { trend = '▲'; trendClass = 'up'; } else if (total < prev) { trend = '▼'; trendClass = 'down'; } else { trend = '—'; }
     const parts = []; if (bg.imposter) parts.push('Imp:' + bg.imposter); if (bg.trivia) parts.push('Triv:' + bg.trivia); if (bg.hottake) parts.push('HT:' + bg.hottake);
-    const rankIcon = i === 0 ? '👑' : i === sorted.length - 1 && sorted.length > 2 ? '💀' : (i + 1);
+    const rankIcon = i === 0 ? '<img src="/assets/ui/crown-large.png" class="crown-img" alt="1st" onerror="this.outerHTML=\'👑\'">' : i === sorted.length - 1 && sorted.length > 2 ? '💀' : (i + 1);
     return '<div class="sb-row"><span class="sb-rank">' + rankIcon + '</span><div style="flex:1"><span class="sb-name" style="color:' + color + '">' + esc(p.name) + '</span><span class="sb-trend ' + trendClass + '">' + trend + '</span>' + (parts.length ? '<div class="sb-breakdown">' + parts.join(' | ') + '</div>' : '') + '</div><span class="sb-score">' + total + '</span></div>';
   }).join('');
 }
@@ -732,7 +771,7 @@ async function loadPacks() {
 function renderPackCards(containerId, gameType, btnId) {
   const container = $(containerId), btn = $(btnId), list = gameState.packs[gameType] || [];
   if (!list.length) { container.innerHTML = '<div class="empty-state">No packs available. Create one in Content Manager!</div>'; btn.disabled = true; return () => null; }
-  container.innerHTML = list.map((p, i) => '<div class="pack-card" data-idx="' + i + '" data-file="' + p.file + '"><span class="pack-card-emoji">' + p.emoji + '</span><div class="pack-card-info"><div class="pack-card-name">' + esc(p.pack) + '</div>' + (gameType !== 'imposter' ? '<div class="pack-card-count">' + p.count + ' questions</div>' : '') + '</div></div>').join('');
+  container.innerHTML = list.map((p, i) => '<div class="pack-card" data-idx="' + i + '" data-file="' + p.file + '"><img src="/assets/ui/pack-card-decoration.png" class="pack-card-deco" alt="" onerror="this.style.display=\'none\'"><span class="pack-card-emoji">' + p.emoji + '</span><div class="pack-card-info"><div class="pack-card-name">' + esc(p.pack) + '</div>' + (gameType !== 'imposter' ? '<div class="pack-card-count">' + p.count + ' questions</div>' : '') + '</div></div>').join('');
   btn.disabled = true; let selectedFile = null;
   container.querySelectorAll('.pack-card').forEach(card => { card.addEventListener('click', () => { container.querySelectorAll('.pack-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected'); selectedFile = card.dataset.file; btn.disabled = false; }); });
   return () => selectedFile;
@@ -954,7 +993,7 @@ function handleServerMsg(data) {
       gameState.hottake.choices[payload.playerId] = payload.choice;
       gameState.hottake.playerIdx++;
       updateHostWaitingCount('ht');
-      if (gameState.hottake.playerIdx >= allPlayers().filter(p => !p.isHost || gameState.session.players.length <= 3).length) htShowResults();
+      if (gameState.hottake.playerIdx >= nonHostPlayers().length) htShowResults();
       break;
     }
     case 'player_buzz': {
@@ -1477,7 +1516,7 @@ function impShowPass() {
   showScreen('screen-imp-clue');
   $('#imp-clue-pass').classList.remove('hidden'); $('#imp-clue-show').classList.add('hidden'); $('#imp-clue-hidden').classList.add('hidden');
   impScreen.classList.remove('showing-clue', 'crew', 'imposter');
-  const pIdx = gameState.imposter.clueIdx; $('#imp-clue-name').textContent = allPlayers()[pIdx].name;
+  const pIdx = gameState.imposter.clueIdx; $('#imp-clue-name').textContent = nonHostPlayers()[pIdx].name;
   $('#imp-clue-pass-label').textContent = pIdx === 0 ? 'Hand the device to' : 'Pass the device to';
 }
 
@@ -1498,12 +1537,16 @@ $('#btn-imp-show').addEventListener('click', () => {
     impScreen.classList.add('showing-clue'); impScreen.classList.add('crew'); impScreen.classList.remove('imposter');
     $('#imp-clue-icon').textContent = '🟢 Your word is:'; typewriterReveal($('#imp-clue-main'), imp.word.toUpperCase(), 80); $('#imp-clue-main').style.fontSize = ''; $('#imp-clue-sub').textContent = "Don't say it out loud!";
   }
+  // Dynamic scene bg for clue screen
+  if (typeof setSceneBg === 'function') setSceneBg('screen-imp-clue', isImp ? 'impImposterBg' : 'impCrewBg', 'scenes');
+  // Character based on role
+  if (typeof createCharacterImg === 'function') { const charEl = $('#imp-clue-character'); if (charEl) { charEl.innerHTML = ''; const img = createCharacterImg(isImp ? 'impEvil' : 'impCrew', 'large'); if (img) charEl.appendChild(img); } }
   requestAnimationFrame(() => display.classList.add('visible'));
 });
 $('#btn-imp-hide-pass').addEventListener('click', () => impShowHidden());
 
 function impShowHidden() {
-  const imp = gameState.imposter, players = allPlayers();
+  const imp = gameState.imposter, players = nonHostPlayers();
   $('#imp-clue-show').classList.add('hidden'); $('#imp-clue-hidden').classList.remove('hidden');
   impScreen.classList.remove('showing-clue', 'crew', 'imposter');
   const isLast = imp.clueIdx >= players.length - 1;
@@ -1512,7 +1555,7 @@ function impShowHidden() {
 }
 
 $('#btn-imp-next').addEventListener('click', () => {
-  gameState.imposter.clueIdx++; const players = allPlayers();
+  gameState.imposter.clueIdx++; const players = nonHostPlayers();
   if (gameState.imposter.clueIdx >= players.length) {
     $('#imp-discuss-players').innerHTML = players.map((p, i) => '<div class="chip" style="background:' + playerColor(i) + '22;color:' + playerColor(i) + '">' + esc(p.name) + '</div>').join('');
     handleDiscussionTimer(); showScreen('screen-imp-discuss');
@@ -1550,6 +1593,7 @@ $('#imp-confidence-slider').addEventListener('input', e => { $('#imp-confidence-
 
 $('#btn-imp-vote').addEventListener('click', () => {
   showPhaseOverlay('🗳️ VOTING');
+  if (typeof playLottie === 'function') playLottie('imp-vote-lottie', 'vote', false);
   gameState.imposter.voterIdx = 0;
   if (isMultiDevice && socket) { const np = nonHostPlayers(); sendMsg('host_update', { event: 'voting_open', players: np.map(p => ({ id: p.id, name: p.name })) }); showScreen('screen-imp-vote'); $('#imp-vote-label').textContent = '🗳️ Players are voting...'; $('#imp-vote-name').textContent = ''; $('#imp-vote-grid').innerHTML = '<div id="host-waiting-count" class="host-waiting">0/' + np.length + ' voted</div>'; return; }
   impShowVoter();
@@ -1603,6 +1647,12 @@ function impShowResults() {
     tally.after(voteDiv);
   }
   renderBreakdown('#imp-res-breakdown', breakdown); setupResultButtons('#btn-imp-home2', '#btn-imp-again', 'screen-imp-setup');
+  // Dynamic scene bg based on outcome
+  if (typeof setSceneBg === 'function') setSceneBg('screen-imp-results', caught ? 'impCaught' : 'impEscaped', 'scenes');
+  // Character based on outcome
+  if (typeof createCharacterImg === 'function') { const charEl = $('#imp-results-character'); if (charEl) { charEl.innerHTML = ''; const img = createCharacterImg(caught ? 'impCrew' : 'impEvil', 'large'); if (img) charEl.appendChild(img); } }
+  // Lottie animations
+  if (typeof playLottie === 'function') { if (caught) { playLottieOverlay('confetti', 4000); playLottie('imp-results-lottie', 'trophy', false); } else { playLottie('imp-results-lottie', 'ghost', false); } }
   showScreen('screen-imp-results'); autoSave(); checkWinCondition();
   requestAnimationFrame(() => { tally.querySelectorAll('.result-bar').forEach((bar, i) => { const count = allEntries[i][1], pct = maxV > 0 ? (count / maxV) * 100 : 0; safeTimeout(() => { bar.style.width = pct > 0 ? Math.max(pct, 8) + '%' : '0%'; }, 200 + i * 200); }); });
   if (isMultiDevice && socket) sendMsg('host_update', { event: 'round_result', data: { caught, breakdown, impNames, word: imp.word } });
@@ -1627,9 +1677,9 @@ $('#btn-triv-start').addEventListener('click', async () => {
     questions = shuffle(data.questions);
   }
   // For 'different' mode, need more questions (qCount * numPlayers)
-  const needCount = settings.questionMode === 'different' ? Math.min(qCount * allPlayers().length, questions.length) : qCount;
+  const needCount = settings.questionMode === 'different' ? Math.min(qCount * nonHostPlayers().length, questions.length) : qCount;
   triv.questions = questions.slice(0, needCount); triv.qIdx = 0; triv.answers = {}; triv.roundNum++;
-  gameState.currentGame = 'trivia'; allPlayers().forEach(p => triv.answers[p.id] = []); gameState.scores.streaks = {};
+  gameState.currentGame = 'trivia'; nonHostPlayers().forEach(p => triv.answers[p.id] = []); gameState.scores.streaks = {};
   trivStartQuestion();
 });
 
@@ -1641,7 +1691,7 @@ function trivStartQuestion() {
     const triv = gameState.trivia, q = triv.questions[triv.qIdx];
     const isFinal = triv.qIdx === triv.questions.length - 1;
     sendMsg('start_game', { gameType: 'trivia', settings: gameState.session.settings });
-    allPlayers().forEach(p => {
+    nonHostPlayers().forEach(p => {
       sendMsg('send_to_player', { playerId: p.id, event: 'trivia_question', data: { question: q.question, answers: q.answers, qNum: triv.qIdx + 1, total: triv.questions.length, timeLimit: gameState.session.settings.trivia.timeLimit } });
     });
     // Show question on host screen with all answers visible
@@ -1651,7 +1701,7 @@ function trivStartQuestion() {
     $('#triv-q-text').textContent = q.question;
     const grid = $('#triv-answers');
     grid.innerHTML = q.answers.map((opt, i) => '<button class="answer-btn" data-idx="' + i + '" disabled>' + esc(opt) + '</button>').join('') +
-      '<div id="host-waiting-count" class="host-waiting" style="margin-top:16px;">0/' + allPlayers().length + ' answered</div>';
+      '<div id="host-waiting-count" class="host-waiting" style="margin-top:16px;">0/' + nonHostPlayers().length + ' answered</div>';
     // Timer
     const settings = gameState.session.settings.trivia;
     const timerEl = $('#triv-timer'), barTrack = $('#triv-timer-bar-track'), bar = $('#triv-timer-bar');
@@ -1673,16 +1723,16 @@ function trivStartQuestion() {
 }
 function trivShowPass() {
   showScreen('screen-triv-pass'); const triv = gameState.trivia, settings = gameState.session.settings.trivia;
-  $('#triv-pass-name').textContent = allPlayers()[triv.playerIdx].name;
+  $('#triv-pass-name').textContent = nonHostPlayers()[triv.playerIdx].name;
   if (settings.questionMode === 'different') {
-    $('#triv-q-preview').textContent = 'Your question (' + (triv.playerIdx + 1) + ' of ' + allPlayers().length + ')';
+    $('#triv-q-preview').textContent = 'Your question (' + (triv.playerIdx + 1) + ' of ' + nonHostPlayers().length + ')';
   } else {
     $('#triv-q-preview').textContent = 'Question ' + (triv.qIdx + 1) + ' of ' + triv.questions.length;
   }
 }
 
 $('#btn-triv-ready').addEventListener('click', () => {
-  showScreen('screen-triv-question'); const triv = gameState.trivia, players = allPlayers(), q = triv.questions[triv.qIdx], settings = gameState.session.settings.trivia;
+  showScreen('screen-triv-question'); const triv = gameState.trivia, players = nonHostPlayers(), q = triv.questions[triv.qIdx], settings = gameState.session.settings.trivia;
   const isFinal = triv.qIdx === triv.questions.length - 1;
   $('#triv-final-banner').classList.toggle('hidden', !isFinal);
   $('#triv-q-num').textContent = 'Question ' + (triv.qIdx + 1) + ' of ' + triv.questions.length + ' — ' + players[triv.playerIdx].name + "'s turn";
@@ -1732,7 +1782,7 @@ $('#btn-triv-ready').addEventListener('click', () => {
 $('#btn-triv-skip').addEventListener('click', () => { if (trivTimerInterval) { clearInterval(trivTimerInterval); trivTimerInterval = null; } trivSubmitAnswer(-1); });
 
 function trivSubmitAnswer(ansIdx) { // MULTIPLAYER_HOOK: in remote mode, answers come via socket player_answer events
-  const triv = gameState.trivia, players = allPlayers(), settings = gameState.session.settings.trivia;
+  const triv = gameState.trivia, players = nonHostPlayers(), settings = gameState.session.settings.trivia;
   triv.answers[players[triv.playerIdx].id].push(ansIdx);
   if (settings.questionMode === 'different') {
     // In 'different' mode, each player gets a unique question — score immediately and advance
@@ -1750,7 +1800,7 @@ function trivSubmitAnswer(ansIdx) { // MULTIPLAYER_HOOK: in remote mode, answers
 function trivRevealQuestion() {
   const triv = gameState.trivia, q = triv.questions[triv.qIdx], settings = gameState.session.settings.trivia;
   if (!settings.showAnswerAfter) { snapshotScores(); scoreTriviaQuestion(q, triv.qIdx); triv.qIdx++; if (triv.qIdx >= triv.questions.length) trivShowFinalResults(); else trivStartQuestion(); return; }
-  const correct = q.correct, players = allPlayers();
+  const correct = q.correct, players = nonHostPlayers();
   $('#triv-reveal-q-num').textContent = 'Question ' + (triv.qIdx + 1) + ' of ' + triv.questions.length;
   $('#triv-reveal-q').textContent = q.question; $('#triv-reveal-answer').textContent = '✓ ' + q.answers[correct];
   // Show explanation if available
@@ -1770,6 +1820,10 @@ function trivRevealQuestion() {
   // Flash correct answer
   const flash = $('#answer-flash');
   if (flash) { flash.textContent = '✓ ' + q.answers[correct]; flash.className = 'answer-flash correct visible'; safeTimeout(() => flash.classList.remove('visible'), 800); }
+  // Lottie correct/wrong and dynamic scene bg
+  const anyCorrect = players.some(p => triv.answers[p.id][triv.qIdx] === correct);
+  if (typeof setSceneBg === 'function') setSceneBg('screen-triv-reveal', anyCorrect ? 'triviaCorrect' : 'triviaWrong', 'scenes');
+  if (typeof playLottie === 'function') { if (anyCorrect) { playLottieOverlay('stars', 1500); playLottie('triv-reveal-lottie', 'correct', false); } else { playLottie('triv-reveal-lottie', 'wrong', false); } }
   showScreen('screen-triv-reveal'); $('#triv-reveal-answer').classList.add('card-flip'); setTimeout(() => $('#triv-reveal-answer').classList.remove('card-flip'), 600);
   // Check for lead change → confetti
   const leader = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0))[0];
@@ -1797,7 +1851,7 @@ $('#btn-triv-again').addEventListener('click', () => showScreen('screen-triv-set
 /* ════════════════════════════
    HOT TAKE GAME
    ════════════════════════════ */
-$('#btn-ht-start').addEventListener('click', async () => { const file = htGetFile(); if (!file) return; requestWakeLock(); checkOrientation(); const data = await fetchPack('hottake', file); gameState.hottake.questions = shuffle(data.questions); gameState.hottake.roundNum++; gameState.hottake.htRoundCount = 0; gameState.currentGame = 'hottake'; htNextQuestion(); });
+$('#btn-ht-start').addEventListener('click', async () => { const file = htGetFile(); if (!file) return; requestWakeLock(); checkOrientation(); const data = await fetchPack('hottake', file); gameState.hottake.questions = shuffle(data.questions); gameState.hottake.roundNum++; gameState.hottake.htRoundCount = 0; gameState.hottake.choices = {}; gameState.currentGame = 'hottake'; htNextQuestion(); });
 
 function htNextQuestion() { // MULTIPLAYER_HOOK: broadcast question to all player devices
   const ht = gameState.hottake, q = ht.questions[0]; ht.questions.push(ht.questions.shift()); ht.question = q.question; ht.optA = q.optionA; ht.optB = q.optionB; ht.htRoundCount++;
@@ -1809,7 +1863,7 @@ $('#btn-ht-begin-vote').addEventListener('click', () => {
   gameState.hottake.playerIdx = 0;
   if (isMultiDevice && socket) {
     const ht = gameState.hottake;
-    allPlayers().forEach(p => {
+    nonHostPlayers().forEach(p => {
       sendMsg('send_to_player', { playerId: p.id, event: 'hottake_question', data: { question: ht.question, optionA: ht.optA, optionB: ht.optB } });
     });
     // Host screen: show question with choices + waiting count
@@ -1820,7 +1874,7 @@ $('#btn-ht-begin-vote').addEventListener('click', () => {
     const waitEl = document.createElement('div');
     waitEl.id = 'host-waiting-count';
     waitEl.className = 'host-waiting';
-    waitEl.textContent = '0/' + allPlayers().length + ' voted';
+    waitEl.textContent = '0/' + nonHostPlayers().length + ' voted';
     const btn = $('#btn-ht-begin-vote');
     btn.style.display = 'none';
     btn.parentNode.insertBefore(waitEl, btn);
@@ -1830,12 +1884,12 @@ $('#btn-ht-begin-vote').addEventListener('click', () => {
 });
 
 const htPassScreen = $('#screen-ht-pass');
-function htShowPass() { showScreen('screen-ht-pass'); $('#ht-pass-view').classList.remove('hidden'); $('#ht-choice-view').classList.add('hidden'); $('#ht-chosen-view').classList.add('hidden'); $('#ht-pass-next').classList.add('hidden'); htPassScreen.classList.remove('showing-clue', 'optA', 'optB'); $('#ht-pass-name').textContent = allPlayers()[gameState.hottake.playerIdx].name; }
+function htShowPass() { showScreen('screen-ht-pass'); $('#ht-pass-view').classList.remove('hidden'); $('#ht-choice-view').classList.add('hidden'); $('#ht-chosen-view').classList.add('hidden'); $('#ht-pass-next').classList.add('hidden'); htPassScreen.classList.remove('showing-clue', 'optA', 'optB'); $('#ht-pass-name').textContent = nonHostPlayers()[gameState.hottake.playerIdx].name; }
 
 $('#btn-ht-show-choice').addEventListener('click', () => { const ht = gameState.hottake; $('#ht-pass-view').classList.add('hidden'); $('#ht-choice-view').classList.remove('hidden'); const d = $('#ht-choice-display'); d.classList.remove('visible'); $('#ht-btn-a').textContent = '🅰️ ' + ht.optA; $('#ht-btn-b').textContent = '🅱️ ' + ht.optB; requestAnimationFrame(() => d.classList.add('visible')); });
 
 function htPickChoice(choice) {
-  const ht = gameState.hottake; ht.choices[allPlayers()[ht.playerIdx].id] = choice;
+  const ht = gameState.hottake; ht.choices[nonHostPlayers()[ht.playerIdx].id] = choice;
   $('#ht-choice-view').classList.add('hidden'); $('#ht-chosen-view').classList.remove('hidden');
   htPassScreen.classList.add('showing-clue'); htPassScreen.classList.toggle('optA', choice === 'A'); htPassScreen.classList.toggle('optB', choice === 'B');
   $('#ht-chosen-label').textContent = choice === 'A' ? '🅰️ You picked:' : '🅱️ You picked:';
@@ -1846,16 +1900,18 @@ $('#btn-ht-chosen-next').addEventListener('click', () => htShowPassNext());
 $('#ht-btn-a').addEventListener('click', () => htPickChoice('A'));
 $('#ht-btn-b').addEventListener('click', () => htPickChoice('B'));
 
-function htShowPassNext() { const ht = gameState.hottake, players = allPlayers(); $('#ht-chosen-view').classList.add('hidden'); $('#ht-pass-next').classList.remove('hidden'); htPassScreen.classList.remove('showing-clue', 'optA', 'optB'); const isLast = ht.playerIdx >= players.length - 1; $('#ht-pass-next-label').textContent = isLast ? 'All votes are in!' : 'Pass to ' + players[ht.playerIdx + 1].name; $('#btn-ht-next-player').textContent = isLast ? 'Reveal Results' : 'Next Player'; }
+function htShowPassNext() { const ht = gameState.hottake, players = nonHostPlayers(); $('#ht-chosen-view').classList.add('hidden'); $('#ht-pass-next').classList.remove('hidden'); htPassScreen.classList.remove('showing-clue', 'optA', 'optB'); const isLast = ht.playerIdx >= players.length - 1; $('#ht-pass-next-label').textContent = isLast ? 'All votes are in!' : 'Pass to ' + players[ht.playerIdx + 1].name; $('#btn-ht-next-player').textContent = isLast ? 'Reveal Results' : 'Next Player'; }
 
-$('#btn-ht-next-player').addEventListener('click', () => { gameState.hottake.playerIdx++; if (gameState.hottake.playerIdx >= allPlayers().length) htShowResults(); else htShowPass(); });
+$('#btn-ht-next-player').addEventListener('click', () => { gameState.hottake.playerIdx++; if (gameState.hottake.playerIdx >= nonHostPlayers().length) htShowResults(); else htShowPass(); });
 
 function htShowResults() {
+  console.log('[HotTake] htShowResults called, playerIdx:', gameState.hottake.playerIdx);
   showPhaseOverlay('🔥 REVEALING...');
-  safeTimeout(() => htShowResultsInner(), 1200);
+  // Show results screen immediately (overlay animates on top then fades)
+  htShowResultsInner();
 }
 function htShowResultsInner() {
-  const ht = gameState.hottake, players = allPlayers(), aP = players.filter(p => ht.choices[p.id] === 'A'), bP = players.filter(p => ht.choices[p.id] === 'B');
+  const ht = gameState.hottake, players = nonHostPlayers(), aP = players.filter(p => ht.choices[p.id] === 'A'), bP = players.filter(p => ht.choices[p.id] === 'B');
   $('#ht-res-question').textContent = ht.question; $('#ht-res-a-label').textContent = '🅰️ ' + ht.optA; $('#ht-res-b-label').textContent = '🅱️ ' + ht.optB;
   $('#ht-res-a-count').textContent = aP.length; $('#ht-res-b-count').textContent = bP.length;
   $('#ht-res-a-names').textContent = aP.map(p => p.name).join(', ') || 'Nobody'; $('#ht-res-b-names').textContent = bP.map(p => p.name).join(', ') || 'Nobody';
@@ -1896,8 +1952,8 @@ function htShowResultsInner() {
   // Mini leaderboard
   const lbEl = $('#ht-mini-leaderboard');
   if (lbEl) {
-    const sorted = [...players].sort((a, b) => (gameState.session.scores[b.id] || 0) - (gameState.session.scores[a.id] || 0));
-    lbEl.innerHTML = '<div class="vote-map-title">Leaderboard</div>' + sorted.map((p, i) => '<div class="vote-map-row"><span>' + (i === 0 ? '👑 ' : '') + esc(p.name) + '</span><span>' + (gameState.session.scores[p.id] || 0) + ' pts</span></div>').join('');
+    const sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
+    lbEl.innerHTML = '<div class="vote-map-title">Leaderboard</div>' + sorted.map((p, i) => '<div class="vote-map-row"><span>' + (i === 0 ? '👑 ' : '') + esc(p.name) + '</span><span>' + (gameState.scores.byPlayer[p.id] || 0) + ' pts</span></div>').join('');
   }
   renderBreakdown('#ht-res-breakdown', breakdown); autoSave();
   const maxQ = gameState.session.settings.hottake.questionsPerRound, againBtn = $('#btn-ht-again');
