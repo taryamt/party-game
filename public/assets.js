@@ -135,6 +135,7 @@ function setSceneBg(screenId, sceneKey, category) {
 function playLottie(containerId, lottieKey, loop) {
   var el = document.getElementById(containerId);
   if (!el) return;
+  if (typeof customElements === 'undefined' || !customElements.get('lottie-player')) return;
   var path = ASSETS.lottie[lottieKey];
   if (!path) return;
   el.innerHTML = '<lottie-player src="' + path + '" background="transparent" speed="1" style="width:100%;height:100%" ' + (loop ? 'loop ' : '') + 'autoplay></lottie-player>';
@@ -142,6 +143,7 @@ function playLottie(containerId, lottieKey, loop) {
 
 function playLottieOverlay(lottieKey, duration) {
   duration = duration || 3000;
+  if (typeof customElements === 'undefined' || !customElements.get('lottie-player')) return;
   var path = ASSETS.lottie[lottieKey];
   if (!path) return;
   var overlay = document.createElement('div');

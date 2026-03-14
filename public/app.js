@@ -1650,8 +1650,8 @@ function impShowResults() {
   renderBreakdown('#imp-res-breakdown', breakdown); setupResultButtons('#btn-imp-home2', '#btn-imp-again', 'screen-imp-setup');
   // Dynamic scene bg based on outcome
   if (typeof setSceneBg === 'function') setSceneBg('screen-imp-results', caught ? 'impCaught' : 'impEscaped', 'scenes');
-  // Character based on outcome
-  if (typeof createCharacterImg === 'function') { const charEl = $('#imp-results-character'); if (charEl) { charEl.innerHTML = ''; const img = createCharacterImg(caught ? 'impCrew' : 'impEvil', 'large'); if (img) charEl.appendChild(img); } }
+  // Character based on outcome — hide emoji when character loads
+  if (typeof createCharacterImg === 'function') { const charEl = $('#imp-results-character'); if (charEl) { charEl.innerHTML = ''; const img = createCharacterImg(caught ? 'impCrew' : 'impEvil', 'large'); if (img) { charEl.appendChild(img); emojiEl.style.display = 'none'; } } }
   // Lottie animations
   if (typeof playLottie === 'function') { if (caught) { playLottieOverlay('confetti', 4000); playLottie('imp-results-lottie', 'trophy', false); } else { playLottie('imp-results-lottie', 'ghost', false); } }
   showScreen('screen-imp-results'); autoSave(); checkWinCondition();

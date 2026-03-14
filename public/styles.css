@@ -149,7 +149,9 @@ h2 {
   display: inline-flex; align-items: center; justify-content: center;
   padding: 16px 36px; font-size: clamp(1rem, 3vw, 1.2rem); font-weight: 700;
   font-family: var(--font-body);
-  border: none; border-radius: var(--radius); cursor: pointer;
+  border: none; border-radius: 16px !important; cursor: pointer;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background: var(--accent); color: #1a1a2e;
   box-shadow: 0 6px 0 #c9a030, 0 8px 20px rgba(0,0,0,0.3);
   transition: transform .1s ease, box-shadow .1s ease, opacity .15s ease;
@@ -1383,7 +1385,7 @@ textarea { resize: vertical; min-height: 60px; }
   height: 100%;
   object-fit: cover;
   background: transparent;
-  opacity: 0.08;
+  opacity: 0.06 !important;
   pointer-events: none;
   z-index: 0;
   border-radius: inherit;
@@ -1444,12 +1446,13 @@ textarea { resize: vertical; min-height: 60px; }
 }
 /* Game card character icons */
 .game-card-character {
-  width: 64px !important;
-  height: 64px !important;
+  width: 72px !important;
+  height: 72px !important;
   object-fit: contain;
   background: transparent !important;
+  border-radius: 0 !important;
   image-rendering: crisp-edges;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.6)) drop-shadow(0 0 8px rgba(255,209,102,0.2));
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 .game-card:hover .game-card-character { transform: scale(1.1) translateY(-2px); }
@@ -1459,8 +1462,8 @@ textarea { resize: vertical; min-height: 60px; }
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
   margin: 0 auto 8px;
 }
 /* Lottie containers */
@@ -1574,6 +1577,51 @@ textarea { resize: vertical; min-height: 60px; }
 /* Smooth image loading */
 .scene-bg-img, .character-img, .game-card-character {
   transition: opacity 0.3s ease;
+}
+
+/* Imposter results screen layout */
+#screen-imp-results .reveal-emoji {
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+#screen-imp-results .character-container {
+  min-height: 160px;
+}
+#screen-imp-results .character-img.large {
+  width: 200px;
+  height: 200px;
+}
+/* Show My Clue / Next Player button styles */
+#btn-imp-show, #btn-imp-next {
+  min-width: 220px;
+  padding: 18px 40px;
+  font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+}
+/* Clue screen layout centering */
+#imp-clue-show {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 12px;
+}
+#imp-clue-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+/* Clue text readability */
+.clue-word {
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}
+.clue-label {
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 /* ══════════════════════════════
