@@ -23,8 +23,14 @@ const io = new Server(server, {
 });
 
 app.use('/assets', express.static(path.join(__dirname, 'public/assets'), {
-  maxAge: '7d',
-  etag: true
+  maxAge: 0,
+  etag: false,
+  lastModified: false,
+  setHeaders: (res) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
 }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json({ limit: "1mb" }));

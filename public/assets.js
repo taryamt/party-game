@@ -106,7 +106,7 @@ function createCharacterImg(key, size) {
   var path = ASSETS.characters[key];
   if (!path) return null;
   var img = document.createElement('img');
-  img.src = path;
+  img.src = path + '?v=' + Date.now();
   img.alt = key;
   img.className = 'character-img' +
     (size === 'large' ? ' large' : size === 'small' ? ' small' : '');
