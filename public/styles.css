@@ -275,7 +275,7 @@ textarea { resize: vertical; min-height: 60px; }
 /* ══════════════════════════════
    PACK CARDS
    ══════════════════════════════ */
-.pack-cards, .pack-grid { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 420px; margin: 16px 0; overflow-y: auto; max-height: 50vh; scroll-padding-top: 8px; }
+.pack-cards, .pack-grid { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 420px; margin: 16px 0; overflow-y: auto; max-height: 50vh; min-height: 120px; flex-shrink: 0; scroll-padding-top: 8px; }
 .pack-card {
   display: flex; align-items: center; gap: 14px;
   padding: 20px 24px; background: var(--surface); border: 2px solid var(--surface2);
@@ -1440,31 +1440,15 @@ textarea { resize: vertical; min-height: 60px; }
 }
 /* UI decorative elements */
 .divider-img {
-  width: 100%;
-  max-width: 400px;
-  height: 32px;
-  object-fit: contain;
-  opacity: 0.6;
-  margin: 8px auto;
-  display: block;
+  display: none;
 }
 .banner-img {
-  width: 100%;
-  max-width: 300px;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto 8px;
+  display: none;
 }
 .crown-img { width: 48px; height: 48px; object-fit: contain; }
 /* Pack card decoration */
 .pack-card-deco {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-  opacity: 0.5;
+  display: none;
 }
 .pack-card { position: relative; }
 /* Speech bubbles */
