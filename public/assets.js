@@ -46,6 +46,14 @@ const ASSETS = {
     loadingBg: '/assets/scenes/loading-bg.png',
     sessionBg: '/assets/scenes/session-bg.png',
     votingBg: '/assets/scenes/voting-bg.png',
+    /* Light theme scenes */
+    homeBgLight: '/assets/scenes/home-bg-light.png',
+    impPassLight: '/assets/scenes/imp-pass-light.png',
+    discussBgLight: '/assets/scenes/discuss-bg-light.png',
+    voteBgLight: '/assets/scenes/vote-bg-light.png',
+    resultsCaughtLight: '/assets/scenes/results-caught-light.png',
+    triviaBgLight: '/assets/scenes/trivia-bg-light.png',
+    hottakeBgLight: '/assets/scenes/hottake-bg-light.png',
   },
   lottie: {
     confetti: '/assets/lottie/confetti-partyyy.json',

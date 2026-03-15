@@ -17,7 +17,7 @@ function initParticles() {
     particles.push({
       x: Math.random() * cvs.width, y: Math.random() * cvs.height,
       size: Math.random() * 4 + 2, speedX: (Math.random() - 0.5) * 0.3, speedY: (Math.random() - 0.5) * 0.2,
-      opacity: Math.random() * 0.05 + 0.02, color: Math.random() > 0.5 ? '#FFD166' : '#EF6351',
+      opacity: Math.random() * 0.12 + 0.05, color: ['#F4A61D','#E8473F','#2ECC71','#7B4FD4'][Math.floor(Math.random()*4)],
       shape: Math.random() > 0.6 ? 'triangle' : 'circle'
     });
   }
@@ -69,7 +69,7 @@ const esc = s => { const d = document.createElement('div'); d.textContent = s; r
 function shuffle(arr) { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function deepMerge(target, source) { for (const key of Object.keys(source)) { if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key]) && target[key] && typeof target[key] === 'object' && !Array.isArray(target[key])) { deepMerge(target[key], source[key]); } else { target[key] = source[key]; } } }
 
-const PLAYER_COLORS = ['#FFD166','#EF6351','#06D6A0','#C1121F','#7c3aed','#06b6d4','#ec4899','#f97316','#22c55e','#eab308'];
+const PLAYER_COLORS = ['#F4A61D','#E8473F','#2ECC71','#7B4FD4','#17A8C4','#E84393','#F4621D','#1DB8A4','#9B6FE8','#eab308'];
 function playerColor(idx) { return PLAYER_COLORS[idx % PLAYER_COLORS.length]; }
 
 /* ══════════════════════════════
@@ -200,27 +200,27 @@ function updateBreadcrumb(id) {
 }
 
 const SCREEN_SCENES = {
-  'screen-home': ['backgrounds', 'warmCozy'],
+  'screen-home': ['scenes', 'homeBgLight'],
   'screen-session': ['scenes', 'sessionBg'],
   'screen-loading': ['scenes', 'loadingBg'],
   'screen-imp-setup': ['scenes', 'impSetup'],
-  'screen-imp-discuss': ['scenes', 'impDiscuss'],
-  'screen-imp-vote': ['scenes', 'votingBg'],
-  'screen-imp-results': ['backgrounds', 'darkStars'],
-  'screen-triv-setup': ['scenes', 'triviaSetup'],
-  'screen-triv-question': ['scenes', 'triviaQuestion'],
-  'screen-triv-results': ['scenes', 'winBg'],
-  'screen-ht-setup': ['scenes', 'hottakeSetup'],
-  'screen-ht-question': ['scenes', 'hottakeQuestion'],
-  'screen-ht-results': ['scenes', 'hottakeResults'],
-  'screen-mafia-setup': ['scenes', 'mafianight'],
+  'screen-imp-discuss': ['scenes', 'discussBgLight'],
+  'screen-imp-vote': ['scenes', 'voteBgLight'],
+  'screen-imp-results': ['scenes', 'resultsCaughtLight'],
+  'screen-triv-setup': ['scenes', 'triviaBgLight'],
+  'screen-triv-question': ['scenes', 'triviaBgLight'],
+  'screen-triv-results': ['scenes', 'resultsCaughtLight'],
+  'screen-ht-setup': ['scenes', 'hottakeBgLight'],
+  'screen-ht-question': ['scenes', 'hottakeBgLight'],
+  'screen-ht-results': ['scenes', 'resultsCaughtLight'],
+  'screen-mafia-setup': ['scenes', 'impSetup'],
   'screen-mill-setup': ['scenes', 'millionaireSetup'],
   'screen-mill-question': ['scenes', 'millionaireQuestion'],
   'screen-feud-setup': ['scenes', 'feudSetup'],
   'screen-wave-setup': ['scenes', 'wavelengthSetup'],
   'screen-alias-setup': ['scenes', 'aliasSetup'],
   'screen-draw-setup': ['scenes', 'drawingSetup'],
-  'screen-session-stats': ['scenes', 'scoreboardBg'],
+  'screen-session-stats': ['scenes', 'resultsCaughtLight'],
 };
 
 function showScreen(id, direction) {
@@ -536,7 +536,7 @@ function rangeSetting(label, path, current, min, max) {
   return '<div class="setting-row"><div class="setting-label">' + label + '</div><div class="setting-range"><input type="range" min="' + min + '" max="' + max + '" value="' + current + '" data-path="' + path + '"><span class="range-val">' + current + '</span></div></div>';
 }
 
-function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme || 'dark'); }
+function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme || 'light'); }
 
 /* ══════════════════════════════
    STRINGS (i18n prep)
@@ -1639,7 +1639,14 @@ function impShowVoter() { // MULTIPLAYER_HOOK: in remote mode, voting happens on
   const progress = $('#imp-vote-progress'); if (progress) progress.textContent = 'Vote ' + (imp.voterIdx + 1) + ' of ' + players.length;
   const confirm = $('#imp-vote-confirm'); if (confirm) confirm.classList.add('hidden');
   const grid = $('#imp-vote-grid');
-  grid.innerHTML = players.filter(p => p.id !== voter.id).map(p => '<button class="vote-btn" data-id="' + p.id + '">' + esc(p.name) + '</button>').join('');
+  grid.innerHTML = players.filter(p => p.id !== voter.id).map((p, i) => {
+    const color = playerColor(players.indexOf(p));
+    const initials = p.name.substring(0,2).toUpperCase();
+    return '<button class="vote-btn" data-id="' + p.id + '" style="border-left-color:' + color + '">' +
+      '<div class="vote-btn-dot" style="background:' + color + '">' + initials + '</div>' +
+      '<span>' + esc(p.name) + '</span>' +
+      '</button>';
+  }).join('');
   grid.querySelectorAll('.vote-btn').forEach(btn => { btn.addEventListener('click', () => {
     const targetName = btn.textContent;
     imp.votes[btn.dataset.id] = (imp.votes[btn.dataset.id] || 0) + 1; imp.individualVotes[voter.id] = btn.dataset.id;
