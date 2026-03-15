@@ -30,14 +30,15 @@
     <div class="continue-banner-meta" id="continue-meta"></div>
   </div>
   <button class="btn outline back-home" id="btn-session-back" style="align-self:flex-start;">&#8592; Back</button>
-  <h1>Player Setup</h1>
-  <h2 id="session-subtitle">Who's playing?</h2>
+  <h1>Who's Playing? 🎮</h1>
+  <h2 id="session-subtitle">Add players to get started</h2>
   <div id="local-setup">
     <div class="inline-row">
       <input type="text" id="session-player-input" placeholder="Enter player name..." maxlength="20" autocomplete="off" autofocus>
       <button class="btn" id="btn-session-add" style="min-width:auto;padding:14px 20px;">Add</button>
     </div>
     <div id="session-player-error" class="error hidden"></div>
+    <div class="session-chips-label" style="font-size:0.75rem;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:8px;">Players joining tonight:</div>
     <div id="session-chips" class="player-list"></div>
     <div id="session-count" class="count-badge hidden"></div>
   </div>
@@ -73,7 +74,7 @@
     </div>
   </div>
   <div class="gap"></div>
-  <button class="btn big green" id="btn-session-start" disabled>Let's Go!</button>
+  <button class="btn big green" id="btn-session-start" disabled style="width:100%;max-width:440px;">Let's Go!</button>
 </div>
 
 <!-- ══════════════════════════════
@@ -130,106 +131,154 @@
     <button class="btn sm outline" id="btn-end-session">🚪 End Session</button>
   </div>
   <div class="game-cards">
+    <!-- MULTI-GAME NIGHT -->
     <div class="game-card playlist-card" data-game="playlist">
-      <div class="game-card-emoji">🎯</div>
-      <div class="game-card-info">
+      <div class="game-card-character-wrap">
+        <span style="font-size:2rem">🎯</span>
+      </div>
+      <div class="game-card-nameplate">
         <div class="game-card-title">MULTI-GAME NIGHT</div>
         <div class="game-card-desc">Queue up multiple games and play them in order!</div>
       </div>
     </div>
+    <!-- IMPOSTER -->
     <div class="game-card" data-game="imposter">
-      <div class="game-card-emoji"><img src="/assets/characters/imp-crew.png?v=2" class="game-card-character" alt="Imposter" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">🕵️</span></div>
-      <div class="game-card-info">
+      <img src="/assets/cards/card-imposter.png" class="game-card-bg" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div class="game-card-overlay"></div>
+      <div class="game-card-character-wrap">
+        <img src="/assets/characters/imp-crew.png" class="game-card-character" alt="Imposter" onerror="this.style.display='none'">
+      </div>
+      <div class="game-card-nameplate">
         <div class="game-card-title">Imposter</div>
-        <div class="game-card-desc">One player gets a hint instead of the word. Find the fake!</div>
-        <div class="game-card-meta">3-10 players</div>
+        <div class="game-card-meta">3–10 players · ~15 min</div>
       </div>
     </div>
+    <!-- TRIVIA -->
     <div class="game-card" data-game="trivia">
-      <div class="game-card-emoji"><img src="/assets/characters/trivia.png?v=2" class="game-card-character" alt="Trivia" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">🧠</span></div>
-      <div class="game-card-info">
+      <img src="/assets/cards/card-trivia.png" class="game-card-bg" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div class="game-card-overlay"></div>
+      <div class="game-card-character-wrap">
+        <img src="/assets/characters/trivia.png" class="game-card-character" alt="Trivia" onerror="this.style.display='none'">
+      </div>
+      <div class="game-card-nameplate">
         <div class="game-card-title">Trivia</div>
-        <div class="game-card-desc">Answer questions to earn points. Streaks get bonuses!</div>
-        <div class="game-card-meta">2-10 players</div>
+        <div class="game-card-meta">2–10 players · ~20 min</div>
       </div>
     </div>
+    <!-- HOT TAKE -->
     <div class="game-card" data-game="hottake">
-      <div class="game-card-emoji"><img src="/assets/characters/hottake-a.png?v=2" class="game-card-character" alt="Hot Take" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">🔥</span></div>
-      <div class="game-card-info">
+      <img src="/assets/cards/card-hottake.png" class="game-card-bg" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div class="game-card-overlay"></div>
+      <div class="game-card-character-wrap">
+        <img src="/assets/characters/hottake-b.png" class="game-card-character" alt="Hot Take" onerror="this.style.display='none'">
+      </div>
+      <div class="game-card-nameplate">
         <div class="game-card-title">Hot Take</div>
-        <div class="game-card-desc">Pick a side on spicy questions. Rare opinions score!</div>
-        <div class="game-card-meta">3-10 players</div>
+        <div class="game-card-meta">3–10 players · ~15 min</div>
       </div>
     </div>
+    <!-- MAFIA -->
     <div class="game-card" data-game="mafia">
-      <div class="game-card-emoji"><img src="/assets/characters/mafia.png?v=2" class="game-card-character" alt="Mafia" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">🎭</span></div>
-      <div class="game-card-info">
+      <img src="/assets/cards/card-mafia.png" class="game-card-bg" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div class="game-card-overlay"></div>
+      <div class="game-card-character-wrap">
+        <img src="/assets/characters/mafia.png" class="game-card-character" alt="Mafia" onerror="this.style.display='none'">
+      </div>
+      <div class="game-card-nameplate">
         <div class="game-card-title">Mafia</div>
-        <div class="game-card-desc">Night kills, investigations, and deception. Find the mafia!</div>
-        <div class="game-card-meta">5-10 players · ~20 min</div>
+        <div class="game-card-meta">5–10 players · ~20 min</div>
       </div>
     </div>
+    <!-- MILLIONAIRE -->
     <div class="game-card" data-game="millionaire">
-      <div class="game-card-emoji"><img src="/assets/characters/millionaire.png?v=2" class="game-card-character" alt="Millionaire" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">💰</span></div>
-      <div class="game-card-info">
+      <img src="/assets/cards/card-millionaire.png" class="game-card-bg" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div class="game-card-overlay"></div>
+      <div class="game-card-character-wrap">
+        <img src="/assets/characters/millionaire.png" class="game-card-character" alt="Millionaire" onerror="this.style.display='none'">
+      </div>
+      <div class="game-card-nameplate">
         <div class="game-card-title">Millionaire</div>
-        <div class="game-card-desc">Answer 15 questions up the money ladder. Use lifelines wisely!</div>
-        <div class="game-card-meta">2-10 players · ~15 min</div>
+        <div class="game-card-meta">2–10 players · ~15 min</div>
       </div>
     </div>
+    <!-- FAMILY FEUD -->
     <div class="game-card" data-game="feud">
-      <div class="game-card-emoji"><img src="/assets/characters/feud.png?v=2" class="game-card-character" alt="Feud" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">👨‍👩‍👧‍👦</span></div>
-      <div class="game-card-info">
+      <img src="/assets/cards/card-feud.png" class="game-card-bg" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div class="game-card-overlay"></div>
+      <div class="game-card-character-wrap">
+        <img src="/assets/characters/feud.png" class="game-card-character" alt="Family Feud" onerror="this.style.display='none'">
+      </div>
+      <div class="game-card-nameplate">
         <div class="game-card-title">Family Feud</div>
-        <div class="game-card-desc">Guess the top survey answers! 3 strikes and the other team steals.</div>
-        <div class="game-card-meta">4-10 players · ~20 min</div>
+        <div class="game-card-meta">4–10 players · ~20 min</div>
       </div>
     </div>
+    <!-- WAVELENGTH -->
     <div class="game-card" data-game="wavelength">
-      <div class="game-card-emoji"><img src="/assets/characters/wavelength.png?v=2" class="game-card-character" alt="Wavelength" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">〰️</span></div>
-      <div class="game-card-info">
+      <img src="/assets/cards/card-wavelength.png" class="game-card-bg" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div class="game-card-overlay"></div>
+      <div class="game-card-character-wrap">
+        <img src="/assets/characters/wavelength.png" class="game-card-character" alt="Wavelength" onerror="this.style.display='none'">
+      </div>
+      <div class="game-card-nameplate">
         <div class="game-card-title">Wavelength</div>
-        <div class="game-card-desc">Give a clue on a spectrum. How well does your team read your mind?</div>
-        <div class="game-card-meta">4-10 players · ~15 min</div>
+        <div class="game-card-meta">4–10 players · ~15 min</div>
       </div>
     </div>
+    <!-- ALIAS -->
     <div class="game-card" data-game="alias">
-      <div class="game-card-emoji"><img src="/assets/characters/alias.png?v=2" class="game-card-character" alt="Alias" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">🗣️</span></div>
-      <div class="game-card-info">
+      <img src="/assets/cards/card-alias.png" class="game-card-bg" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div class="game-card-overlay"></div>
+      <div class="game-card-character-wrap">
+        <img src="/assets/characters/alias.png" class="game-card-character" alt="Alias" onerror="this.style.display='none'">
+      </div>
+      <div class="game-card-nameplate">
         <div class="game-card-title">Alias</div>
-        <div class="game-card-desc">Describe the word without using the forbidden words!</div>
-        <div class="game-card-meta">4-10 players · ~15 min</div>
+        <div class="game-card-meta">4–10 players · ~15 min</div>
       </div>
     </div>
+    <!-- DRAWING -->
     <div class="game-card" data-game="drawing">
-      <div class="game-card-emoji"><img src="/assets/characters/drawing.png?v=2" class="game-card-character" alt="Drawing" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:2.2rem">🎨</span></div>
-      <div class="game-card-info">
+      <img src="/assets/cards/card-drawing.png" class="game-card-bg" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div class="game-card-overlay"></div>
+      <div class="game-card-character-wrap">
+        <img src="/assets/characters/drawing.png" class="game-card-character" alt="Drawing" onerror="this.style.display='none'">
+      </div>
+      <div class="game-card-nameplate">
         <div class="game-card-title">Drawing</div>
-        <div class="game-card-desc">Draw the word and let others guess. No letters or numbers!</div>
-        <div class="game-card-meta">3-10 players · ~15 min</div>
+        <div class="game-card-meta">3–10 players · ~15 min</div>
       </div>
     </div>
-  <div class="game-card" id="btn-multiplayer-mode" data-game="multiplayer">
-    <div class="game-card-emoji">📡</div>
-    <div class="game-card-info">
-      <div class="game-card-title">Multiplayer Mode</div>
-      <div class="game-card-desc">Host a room for players to join on their phones</div>
+    <!-- MULTIPLAYER MODE -->
+    <div class="game-card" id="btn-multiplayer-mode" data-game="multiplayer">
+      <div class="game-card-character-wrap">
+        <span style="font-size:2rem">📡</span>
+      </div>
+      <div class="game-card-nameplate">
+        <div class="game-card-title">Multiplayer Mode</div>
+        <div class="game-card-desc">Host a room for players to join on their phones</div>
+      </div>
     </div>
-  </div>
-  <div class="game-card" id="btn-edit-players">
-    <div class="game-card-emoji">👥</div>
-    <div class="game-card-info">
-      <div class="game-card-title">Players</div>
-      <div class="game-card-desc" id="players-card-desc">Add or manage players</div>
+    <!-- PLAYERS -->
+    <div class="game-card" id="btn-edit-players">
+      <div class="game-card-character-wrap">
+        <span style="font-size:2rem">👥</span>
+      </div>
+      <div class="game-card-nameplate">
+        <div class="game-card-title">Players</div>
+        <div class="game-card-desc" id="players-card-desc">Add or manage players</div>
+      </div>
     </div>
-  </div>
-  <div class="game-card cm-card" id="btn-content-mgr">
-    <div class="game-card-emoji">📦</div>
-    <div class="game-card-info">
-      <div class="game-card-title">Manage Packs</div>
-      <div class="game-card-desc">Create, edit, import & export content packs</div>
+    <!-- MANAGE PACKS -->
+    <div class="game-card cm-card" id="btn-content-mgr">
+      <div class="game-card-character-wrap">
+        <span style="font-size:2rem">📦</span>
+      </div>
+      <div class="game-card-nameplate">
+        <div class="game-card-title">Manage Packs</div>
+        <div class="game-card-desc">Create, edit, import & export content packs</div>
+      </div>
     </div>
-  </div>
   </div>
 </div>
 

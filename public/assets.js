@@ -105,6 +105,17 @@ const ASSETS = {
     mystery: '/assets/backgrounds/bg-mystery.png',
     patternGold: '/assets/backgrounds/bg-pattern-gold.png',
   },
+  cards: {
+    imposter: '/assets/cards/card-imposter.png',
+    trivia: '/assets/cards/card-trivia.png',
+    hottake: '/assets/cards/card-hottake.png',
+    mafia: '/assets/cards/card-mafia.png',
+    millionaire: '/assets/cards/card-millionaire.png',
+    feud: '/assets/cards/card-feud.png',
+    wavelength: '/assets/cards/card-wavelength.png',
+    alias: '/assets/cards/card-alias.png',
+    drawing: '/assets/cards/card-drawing.png',
+  },
   doodles: {
     sheet1: '/assets/doodles/doodles-sheet-1.png',
     sheet2: '/assets/doodles/doodles-sheet-2.png',

@@ -47,7 +47,62 @@
   --teal: #1DB8A4;
   --secondary: #E84393;
 
-  /* Game-specific legacy colors */
+  /* IMPOSTER */
+  --imp-primary: #E8473F;
+  --imp-dark: #B83030;
+  --imp-light: #FFF0F0;
+  --imp-text: #E8473F;
+  --imp-bg: linear-gradient(160deg, #1a0505 0%, #2d0f0f 100%);
+  /* TRIVIA */
+  --triv-primary: #2ECC71;
+  --triv-dark: #1A9950;
+  --triv-light: #F0FFF7;
+  --triv-text: #1A9950;
+  --triv-bg: linear-gradient(160deg, #05150f 0%, #0a2d1a 100%);
+  /* HOT TAKE */
+  --ht-primary: #F4621D;
+  --ht-dark: #C04010;
+  --ht-light: #FFF5F0;
+  --ht-text: #C04010;
+  --ht-bg: linear-gradient(160deg, #1a0800 0%, #2d1200 100%);
+  /* MAFIA */
+  --mafia-primary: #7B4FD4;
+  --mafia-dark: #5A35B0;
+  --mafia-light: #F8F5FF;
+  --mafia-text: #5A35B0;
+  --mafia-bg: linear-gradient(160deg, #0d0518 0%, #180a2d 100%);
+  /* MILLIONAIRE */
+  --mill-primary: #F4A61D;
+  --mill-dark: #D4880A;
+  --mill-light: #FFFBF0;
+  --mill-text: #D4880A;
+  --mill-bg: linear-gradient(160deg, #1a1400 0%, #2d2200 100%);
+  /* FEUD */
+  --feud-primary: #17A8C4;
+  --feud-dark: #0E7A8E;
+  --feud-light: #F0FBFF;
+  --feud-text: #0E7A8E;
+  --feud-bg: linear-gradient(160deg, #001518 0%, #002228 100%);
+  /* WAVELENGTH */
+  --wave-primary: #9B6FE8;
+  --wave-dark: #7A50C0;
+  --wave-light: #FAF5FF;
+  --wave-text: #7A50C0;
+  --wave-bg: linear-gradient(160deg, #0a0018 0%, #15002d 100%);
+  /* ALIAS */
+  --alias-primary: #E84393;
+  --alias-dark: #B01E6A;
+  --alias-light: #FFF0F8;
+  --alias-text: #B01E6A;
+  --alias-bg: linear-gradient(160deg, #180010 0%, #280018 100%);
+  /* DRAWING */
+  --draw-primary: #F4621D;
+  --draw-dark: #C04010;
+  --draw-light: #FFF8F0;
+  --draw-text: #C04010;
+  --draw-bg: linear-gradient(160deg, #180800 0%, #281400 100%);
+
+  /* Legacy aliases */
   --imp-color: #E8473F;
   --imp-glow: rgba(232,71,63,0.2);
   --triv-color: #2ECC71;
@@ -575,14 +630,13 @@ button:disabled, .btn:disabled {
 /* Home title */
 #screen-home h1 {
   font-family: var(--font-heading);
-  font-size: clamp(3.5rem, 12vw, 6rem);
+  font-size: clamp(4rem, 14vw, 7rem);
   color: var(--text);
   line-height: 0.95;
   margin: 0 0 8px;
-  text-shadow: 3px 3px 0px rgba(0,0,0,0.08);
+  text-shadow: 4px 4px 0px rgba(0,0,0,0.06), 2px 2px 0px rgba(0,0,0,0.04);
   position: relative;
   display: inline-block;
-  /* Remove old gradient clip */
   background: none;
   -webkit-background-clip: unset;
   -webkit-text-fill-color: unset;
@@ -592,10 +646,17 @@ button:disabled, .btn:disabled {
 #screen-home h1::after {
   content: '';
   display: block;
-  height: 6px;
-  border-radius: 3px;
-  background: linear-gradient(90deg, var(--red), var(--gold), var(--green), var(--purple));
-  margin-top: 4px;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg,
+    #E8473F 0%,
+    #F4621D 15%,
+    #F4A61D 30%,
+    #2ECC71 50%,
+    #17A8C4 65%,
+    #7B4FD4 80%,
+    #E84393 100%);
+  margin-top: 6px;
 }
 
 /* Divider wrapper */
@@ -621,8 +682,8 @@ button:disabled, .btn:disabled {
 /* Home subtitle */
 #home-subtitle {
   font-family: var(--font-body);
-  font-size: 1.05rem;
-  color: var(--text-dim);
+  font-size: 1.1rem;
+  color: #6B5E6A;
   font-weight: 700;
   margin: 12px 0 0;
   min-height: 28px;
@@ -637,132 +698,264 @@ button:disabled, .btn:disabled {
 .game-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-bottom: 14px;
+  gap: 16px;
   width: 100%;
-  max-width: 640px;
-  padding: 0 16px 40px;
+  max-width: 660px;
+  padding: 0 4px;
+  margin-bottom: 16px;
 }
-@media (max-width: 520px) {
-  .game-cards { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-}
-@media (max-width: 340px) {
-  .game-cards { grid-template-columns: 1fr; }
+@media (max-width: 540px) {
+  .game-cards { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
 
-/* THE GAME CARDS — Jackbox style */
+/* THE NEW CARD — illustrated poster style */
 .game-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 16px 10px 14px;
+  position: relative;
   border-radius: var(--radius-lg);
   cursor: pointer;
-  border: 3px solid transparent;
-  border-bottom: 5px solid transparent;
-  background: var(--surface);
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  display: flex;
+  flex-direction: column;
+  border: 3px solid rgba(0,0,0,0.15);
+  box-shadow: 0 6px 0px rgba(0,0,0,0.15), var(--shadow);
   transition: transform 0.1s ease, box-shadow 0.1s ease;
-  position: relative;
-  gap: 6px;
-  box-shadow: var(--shadow);
-  touch-action: manipulation;
-  min-height: 44px;
+  text-decoration: none;
+  user-select: none;
 }
-/* Each game card gets its own color border */
-.game-card[data-game="imposter"] { border-color: #E8473F; border-bottom-color: #B83030; background: linear-gradient(180deg, #FFF5F5 0%, #FFFFFF 100%); }
-.game-card[data-game="trivia"] { border-color: #2ECC71; border-bottom-color: #1A9950; background: linear-gradient(180deg, #F0FFF7 0%, #FFFFFF 100%); }
-.game-card[data-game="hottake"] { border-color: #F4621D; border-bottom-color: #C04010; background: linear-gradient(180deg, #FFF5F0 0%, #FFFFFF 100%); }
-.game-card[data-game="mafia"] { border-color: #7B4FD4; border-bottom-color: #5A35B0; background: linear-gradient(180deg, #F8F5FF 0%, #FFFFFF 100%); }
-.game-card[data-game="millionaire"] { border-color: #F4A61D; border-bottom-color: #D4880A; background: linear-gradient(180deg, #FFFBF0 0%, #FFFFFF 100%); }
-.game-card[data-game="feud"] { border-color: #17A8C4; border-bottom-color: #0E7A8E; background: linear-gradient(180deg, #F0FBFF 0%, #FFFFFF 100%); }
-.game-card[data-game="wavelength"] { border-color: #9B6FE8; border-bottom-color: #7A50C0; background: linear-gradient(180deg, #FAF5FF 0%, #FFFFFF 100%); }
-.game-card[data-game="alias"] { border-color: #E84393; border-bottom-color: #B01E6A; background: linear-gradient(180deg, #FFF0F8 0%, #FFFFFF 100%); }
-.game-card[data-game="drawing"] { border-color: #F4621D; border-bottom-color: #C04010; background: linear-gradient(180deg, #FFF8F0 0%, #FFFFFF 100%); }
-.game-card[data-game="multiplayer"] { border-color: var(--gold); border-bottom-color: var(--gold-dark); background: linear-gradient(180deg, #FFFBF0 0%, #FFFFFF 100%); }
-
-/* Jackbox press effect */
 @media (hover: hover) {
-  .game-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-  .game-card:hover .game-card-character { transform: scale(1.1) translateY(-2px); }
+  .game-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 0px rgba(0,0,0,0.15), var(--shadow-lg);
+  }
 }
 .game-card:active {
-  transform: translateY(3px) !important;
-  box-shadow: var(--shadow-sm) !important;
-  border-bottom-width: 3px !important;
+  transform: translateY(4px) !important;
+  box-shadow: 0 2px 0px rgba(0,0,0,0.15), var(--shadow-sm) !important;
 }
-.game-card-emoji {
-  width: 80px;
-  height: 80px;
+
+/* Card background image */
+.game-card-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  transition: transform 0.3s ease;
+}
+.game-card:hover .game-card-bg {
+  transform: scale(1.05);
+}
+
+/* Dark gradient overlay so text is readable */
+.game-card-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 35%,
+    rgba(0,0,0,0.3) 55%,
+    rgba(0,0,0,0.85) 100%
+  );
+}
+
+/* Character image floats above background */
+.game-card-character-wrap {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  width: 75%;
+  aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: visible;
-  background: transparent !important;
-  border-radius: 0 !important;
-  margin: 0 auto 8px;
 }
-.game-card-info { display: flex; flex-direction: column; gap: 2px; }
+.game-card-character {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+  background: transparent !important;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.4));
+  border-radius: 0 !important;
+  transition: transform 0.3s ease;
+}
+.game-card:hover .game-card-character {
+  transform: translateY(-4px) scale(1.05);
+}
+
+/* Bottom nameplate */
+.game-card-nameplate {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  padding: 10px 12px 12px;
+  text-align: center;
+}
 .game-card-title {
   font-family: var(--font-heading);
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
   font-weight: 400;
-  color: var(--text);
+  color: white;
   line-height: 1.1;
-}
-.game-card-desc {
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  font-weight: 600;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  margin-bottom: 3px;
 }
 .game-card-meta {
-  font-size: 0.68rem;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
   font-weight: 800;
-  margin-top: auto;
-  padding-top: 4px;
+  color: rgba(255,255,255,0.75);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  letter-spacing: 0.3px;
 }
-.game-card[data-game="imposter"] .game-card-meta { color: #E8473F; }
-.game-card[data-game="trivia"] .game-card-meta { color: #2ECC71; }
-.game-card[data-game="hottake"] .game-card-meta { color: #F4621D; }
-.game-card[data-game="mafia"] .game-card-meta { color: #7B4FD4; }
-.game-card[data-game="millionaire"] .game-card-meta { color: #F4A61D; }
-.game-card[data-game="feud"] .game-card-meta { color: #17A8C4; }
-.game-card[data-game="wavelength"] .game-card-meta { color: #9B6FE8; }
-.game-card[data-game="alias"] .game-card-meta { color: #E84393; }
-.game-card[data-game="drawing"] .game-card-meta { color: #F4621D; }
+/* Hide description on new card style */
+.game-card-desc { display: none; }
 
-/* Multi-game night */
+/* Colored bottom accent per game */
+.game-card[data-game="imposter"] .game-card-nameplate { background: linear-gradient(transparent, rgba(232,71,63,0.9)); }
+.game-card[data-game="trivia"] .game-card-nameplate { background: linear-gradient(transparent, rgba(46,204,113,0.9)); }
+.game-card[data-game="hottake"] .game-card-nameplate { background: linear-gradient(transparent, rgba(244,98,29,0.9)); }
+.game-card[data-game="mafia"] .game-card-nameplate { background: linear-gradient(transparent, rgba(123,79,212,0.9)); }
+.game-card[data-game="millionaire"] .game-card-nameplate { background: linear-gradient(transparent, rgba(244,166,29,0.9)); }
+.game-card[data-game="feud"] .game-card-nameplate { background: linear-gradient(transparent, rgba(23,168,196,0.9)); }
+.game-card[data-game="wavelength"] .game-card-nameplate { background: linear-gradient(transparent, rgba(155,111,232,0.9)); }
+.game-card[data-game="alias"] .game-card-nameplate { background: linear-gradient(transparent, rgba(232,67,147,0.9)); }
+.game-card[data-game="drawing"] .game-card-nameplate { background: linear-gradient(transparent, rgba(244,98,29,0.9)); }
+
+/* Multi-game night card — full width, horizontal */
 .game-card.playlist-card {
-  grid-column: 1 / -1;
+  aspect-ratio: unset;
   flex-direction: row;
-  text-align: left;
-  gap: 16px;
   padding: 16px 20px;
   background: linear-gradient(135deg, #FFF8DC 0%, #FFFFFF 100%);
-  border-color: var(--gold);
-  border-bottom-color: var(--gold-dark);
+  border: 3px solid var(--gold);
+  box-shadow: 0 4px 0px var(--gold-dark), var(--shadow);
+  overflow: visible;
+  align-items: center;
+  gap: 14px;
+  grid-column: 1 / -1;
 }
-.game-card.playlist-card .game-card-title { color: var(--gold-dark); font-size: 1.2rem; }
-.game-card.playlist-card .game-card-emoji { font-size: 2rem; width: 48px; height: 48px; }
+.game-card.playlist-card .game-card-bg { display: none; }
+.game-card.playlist-card .game-card-overlay { display: none; }
+.game-card.playlist-card .game-card-character-wrap {
+  position: static;
+  transform: none;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+.game-card.playlist-card .game-card-character {
+  filter: none;
+}
+.game-card.playlist-card .game-card-nameplate {
+  position: static;
+  background: none;
+  text-align: left;
+  padding: 0;
+  flex: 1;
+}
+.game-card.playlist-card .game-card-title {
+  color: var(--gold-dark);
+  font-size: 1.2rem;
+  text-shadow: none;
+  margin-bottom: 2px;
+}
+.game-card.playlist-card .game-card-meta {
+  color: var(--text-dim);
+  text-shadow: none;
+  font-size: 0.75rem;
+}
+.game-card.playlist-card .game-card-desc {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
 
 /* Content manager card */
 .game-card.cm-card {
-  grid-column: 1 / -1;
+  aspect-ratio: unset;
   flex-direction: row;
-  text-align: left;
-  gap: 16px;
   padding: 12px 20px;
-  background: var(--surface2) !important;
-  border-color: var(--border-strong) !important;
-  border-bottom-color: var(--border-strong) !important;
-  opacity: 0.8;
+  background: var(--surface2);
+  border: 2px solid var(--border-strong);
+  box-shadow: 0 3px 0px var(--border-strong);
+  overflow: visible;
+  align-items: center;
+  gap: 14px;
+  grid-column: 1 / -1;
+  opacity: 0.85;
 }
-.cm-card .game-card-title { color: var(--gold-dark); }
+.game-card.cm-card .game-card-bg,
+.game-card.cm-card .game-card-overlay { display: none; }
+.game-card.cm-card .game-card-character-wrap {
+  position: static;
+  transform: none;
+  width: 40px;
+  height: 40px;
+}
+.game-card.cm-card .game-card-nameplate {
+  position: static;
+  background: none;
+  text-align: left;
+  padding: 0;
+}
+.game-card.cm-card .game-card-title {
+  color: var(--text);
+  font-size: 1rem;
+  text-shadow: none;
+}
+
+/* Utility cards (multiplayer, players) — horizontal like cm-card */
+.game-card[data-game="multiplayer"],
+.game-card#btn-edit-players {
+  aspect-ratio: unset;
+  flex-direction: row;
+  padding: 12px 20px;
+  background: var(--surface);
+  border: 2px solid var(--border-strong);
+  box-shadow: 0 3px 0px var(--border-strong);
+  overflow: visible;
+  align-items: center;
+  gap: 14px;
+  grid-column: 1 / -1;
+}
+.game-card[data-game="multiplayer"] .game-card-bg,
+.game-card[data-game="multiplayer"] .game-card-overlay,
+.game-card#btn-edit-players .game-card-bg,
+.game-card#btn-edit-players .game-card-overlay { display: none; }
+.game-card[data-game="multiplayer"] .game-card-character-wrap,
+.game-card#btn-edit-players .game-card-character-wrap {
+  position: static;
+  transform: none;
+  width: 40px;
+  height: 40px;
+}
+.game-card[data-game="multiplayer"] .game-card-nameplate,
+.game-card#btn-edit-players .game-card-nameplate {
+  position: static;
+  background: none;
+  text-align: left;
+  padding: 0;
+}
+.game-card[data-game="multiplayer"] .game-card-title,
+.game-card#btn-edit-players .game-card-title {
+  color: var(--text);
+  font-size: 1rem;
+  text-shadow: none;
+}
+.game-card[data-game="multiplayer"] .game-card-desc,
+.game-card#btn-edit-players .game-card-desc {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
 
 /* ══════════════════════════════
    PART 4 — SESSION SETUP
@@ -778,9 +971,9 @@ button:disabled, .btn:disabled {
 }
 
 .session-panel {
-  background: var(--surface);
-  border: 3px solid var(--border);
-  border-bottom: 5px solid var(--border);
+  background: white;
+  border: 3px solid rgba(0,0,0,0.1);
+  border-bottom: 5px solid rgba(0,0,0,0.1);
   border-radius: var(--radius-xl);
   padding: 24px;
   width: 100%;
@@ -1001,46 +1194,57 @@ input::placeholder, textarea::placeholder {
   max-width: 480px;
   min-height: 80vh;
 }
+#imp-clue-pass {
+  background: transparent;
+}
 .pass-eyebrow {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 800;
-  color: var(--text-muted);
-  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
   letter-spacing: 4px;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 800;
+  font-family: var(--font-body);
 }
 #imp-clue-name {
   font-family: var(--font-heading);
-  font-size: clamp(4rem, 15vw, 7rem);
-  color: var(--text);
+  font-size: clamp(3.5rem, 14vw, 7rem);
+  color: white;
   line-height: 0.95;
   margin: 0;
-  text-shadow: 4px 4px 0px rgba(0,0,0,0.08), 2px 2px 0px rgba(0,0,0,0.05);
+  text-shadow:
+    4px 4px 0px rgba(0,0,0,0.3),
+    0 0 60px rgba(232,71,63,0.3);
 }
 .pass-decoration {
   display: flex;
   align-items: center;
   gap: 16px;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.2);
 }
 .pass-decoration::before,
 .pass-decoration::after {
   content: '';
   flex: 1;
   height: 2px;
-  background: var(--border-strong);
+  background: rgba(255,255,255,0.15);
   border-radius: 1px;
   width: 60px;
 }
 .pass-look-away {
   font-family: var(--font-body);
   font-size: 1rem;
-  color: var(--text-dim);
+  color: rgba(255,255,255,0.6);
   font-weight: 700;
-  background: var(--surface);
-  border: 2px solid var(--border-strong);
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.15);
   border-radius: 100px;
   padding: 8px 20px;
+}
+#btn-imp-show {
+  background: var(--imp-primary);
+  border-color: var(--imp-dark);
+  box-shadow: 0 4px 0px var(--imp-dark);
+  color: white;
 }
 
 /* Radial glow on pass screen */
@@ -1052,16 +1256,17 @@ input::placeholder, textarea::placeholder {
   transform: translate(-50%, -50%);
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, var(--gold-dim) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(232,71,63,0.12) 0%, transparent 70%);
   pointer-events: none;
   z-index: 1;
 }
 
-/* Crew/Imposter theme variants */
-#screen-imp-clue.crew { background: linear-gradient(180deg, #F0FFF7 0%, var(--bg) 100%); }
-#screen-imp-clue.crew::before { background: radial-gradient(circle, rgba(46,204,113,0.1) 0%, transparent 70%); }
-#screen-imp-clue.imposter { background: linear-gradient(180deg, #FFF0F0 0%, var(--bg) 100%); }
-#screen-imp-clue.imposter::before { background: radial-gradient(circle, rgba(232,71,63,0.1) 0%, transparent 70%); }
+/* Crew/Imposter theme variants on dark background */
+#screen-imp-clue.crew { background: linear-gradient(180deg, #05150f 0%, #020a06 100%); }
+#screen-imp-clue.crew::before { background: radial-gradient(circle, rgba(46,204,113,0.15) 0%, transparent 70%); }
+#screen-imp-clue.crew #imp-clue-name { text-shadow: 4px 4px 0px rgba(0,0,0,0.3), 0 0 60px rgba(46,204,113,0.3); }
+#screen-imp-clue.imposter { background: linear-gradient(180deg, #1a0505 0%, #0d0202 100%); }
+#screen-imp-clue.imposter::before { background: radial-gradient(circle, rgba(232,71,63,0.15) 0%, transparent 70%); }
 
 /* Role badge */
 .clue-role-badge {
@@ -2284,10 +2489,251 @@ input::placeholder, textarea::placeholder {
 }
 
 /* ══════════════════════════════
+   PER-GAME SCREEN THEMING
+   ══════════════════════════════ */
+
+/* IMPOSTER SCREENS — dark mysterious */
+#screen-imp-setup,
+#screen-imp-clue,
+#screen-imp-discuss,
+#screen-imp-vote,
+#screen-imp-results {
+  background: linear-gradient(180deg, #1a0505 0%, #0d0202 100%);
+  color: white;
+}
+#screen-imp-setup h1,
+#screen-imp-discuss h1,
+#screen-imp-vote h1,
+#screen-imp-results h1 { color: white; }
+#screen-imp-setup h2,
+#screen-imp-discuss h2 { color: rgba(255,255,255,0.6); }
+[id^="screen-imp"] .btn.big:not(.outline) {
+  background: var(--imp-primary);
+  border-color: var(--imp-dark);
+  box-shadow: 0 4px 0px var(--imp-dark);
+  color: white;
+}
+[id^="screen-imp"] .pack-card {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.1);
+  color: white;
+}
+[id^="screen-imp"] .pack-card:hover {
+  border-color: var(--imp-primary);
+  background: rgba(232,71,63,0.1);
+}
+[id^="screen-imp"] .pack-card.selected {
+  border-color: var(--imp-primary);
+  background: rgba(232,71,63,0.15);
+}
+[id^="screen-imp"] .pack-card-name { color: white; }
+[id^="screen-imp"] h2.pack-subtitle { color: rgba(255,255,255,0.5); }
+
+/* TRIVIA SCREENS — bright quiz show */
+#screen-triv-setup,
+#screen-triv-pass,
+#screen-triv-question,
+#screen-triv-reveal,
+#screen-triv-results {
+  background: linear-gradient(180deg, #05150f 0%, #020a06 100%);
+  color: white;
+}
+[id^="screen-triv"] h1 { color: white; }
+[id^="screen-triv"] h2 { color: rgba(255,255,255,0.6); }
+[id^="screen-triv"] .btn.big:not(.outline) {
+  background: var(--triv-primary);
+  border-color: var(--triv-dark);
+  box-shadow: 0 4px 0px var(--triv-dark);
+  color: white;
+}
+[id^="screen-triv"] .pack-card {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.1);
+}
+[id^="screen-triv"] .pack-card:hover {
+  border-color: var(--triv-primary);
+}
+[id^="screen-triv"] .pack-card-name { color: white; }
+[id^="screen-triv"] .answer-btn {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.12);
+  color: white;
+}
+[id^="screen-triv"] .answer-btn:hover {
+  background: rgba(46,204,113,0.15);
+  border-color: var(--triv-primary);
+}
+
+/* HOT TAKE SCREENS — fiery orange */
+#screen-ht-setup,
+#screen-ht-question,
+#screen-ht-pass,
+#screen-ht-results {
+  background: linear-gradient(180deg, #1a0800 0%, #0d0400 100%);
+  color: white;
+}
+[id^="screen-ht"] h1 { color: white; }
+[id^="screen-ht"] h2 { color: rgba(255,255,255,0.6); }
+[id^="screen-ht"] .btn.big:not(.outline) {
+  background: var(--ht-primary);
+  border-color: var(--ht-dark);
+  box-shadow: 0 4px 0px var(--ht-dark);
+  color: white;
+}
+[id^="screen-ht"] .pack-card {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.1);
+}
+[id^="screen-ht"] .pack-card:hover {
+  border-color: var(--ht-primary);
+}
+[id^="screen-ht"] .pack-card-name { color: white; }
+
+/* MAFIA SCREENS — deep purple mystery */
+[id^="screen-mafia"] {
+  background: linear-gradient(180deg, #0d0518 0%, #07020e 100%);
+  color: white;
+}
+[id^="screen-mafia"] h1 { color: white; }
+[id^="screen-mafia"] .btn.big:not(.outline) {
+  background: var(--mafia-primary);
+  border-color: var(--mafia-dark);
+  box-shadow: 0 4px 0px var(--mafia-dark);
+  color: white;
+}
+
+/* MILLIONAIRE SCREENS — gold luxury */
+[id^="screen-mill"] {
+  background: linear-gradient(180deg, #1a1400 0%, #0d0a00 100%);
+  color: white;
+}
+[id^="screen-mill"] h1 { color: var(--gold-light); }
+[id^="screen-mill"] .btn.big:not(.outline) {
+  background: var(--mill-primary);
+  border-color: var(--mill-dark);
+  box-shadow: 0 4px 0px var(--mill-dark);
+  color: var(--text);
+}
+
+/* FEUD SCREENS — cyan energy */
+[id^="screen-feud"] {
+  background: linear-gradient(180deg, #001518 0%, #000a0d 100%);
+  color: white;
+}
+[id^="screen-feud"] h1 { color: white; }
+[id^="screen-feud"] .btn.big:not(.outline) {
+  background: var(--feud-primary);
+  border-color: var(--feud-dark);
+  box-shadow: 0 4px 0px var(--feud-dark);
+  color: white;
+}
+
+/* WAVELENGTH SCREENS — cosmic purple */
+[id^="screen-wave"] {
+  background: linear-gradient(180deg, #0a0018 0%, #050010 100%);
+  color: white;
+}
+[id^="screen-wave"] h1 { color: white; }
+[id^="screen-wave"] .btn.big:not(.outline) {
+  background: var(--wave-primary);
+  border-color: var(--wave-dark);
+  box-shadow: 0 4px 0px var(--wave-dark);
+  color: white;
+}
+
+/* ALIAS SCREENS — pink playful */
+[id^="screen-alias"] {
+  background: linear-gradient(180deg, #180010 0%, #0d0009 100%);
+  color: white;
+}
+[id^="screen-alias"] h1 { color: white; }
+[id^="screen-alias"] .btn.big:not(.outline) {
+  background: var(--alias-primary);
+  border-color: var(--alias-dark);
+  box-shadow: 0 4px 0px var(--alias-dark);
+  color: white;
+}
+
+/* DRAWING SCREENS — colorful chaos */
+[id^="screen-draw"] {
+  background: linear-gradient(180deg, #180800 0%, #0d0400 100%);
+  color: white;
+}
+[id^="screen-draw"] h1 { color: white; }
+[id^="screen-draw"] .btn.big:not(.outline) {
+  background: var(--draw-primary);
+  border-color: var(--draw-dark);
+  box-shadow: 0 4px 0px var(--draw-dark);
+  color: white;
+}
+
+/* Dark screen text fixes — back/settings buttons */
+[id^="screen-imp"] .back-btn,
+[id^="screen-triv"] .back-btn,
+[id^="screen-ht"] .back-btn,
+[id^="screen-mafia"] .back-btn,
+[id^="screen-mill"] .back-btn,
+[id^="screen-feud"] .back-btn,
+[id^="screen-wave"] .back-btn,
+[id^="screen-alias"] .back-btn,
+[id^="screen-draw"] .back-btn,
+[id^="screen-imp"] .back-home,
+[id^="screen-triv"] .back-home,
+[id^="screen-ht"] .back-home,
+[id^="screen-mafia"] .back-home,
+[id^="screen-mill"] .back-home,
+[id^="screen-feud"] .back-home,
+[id^="screen-wave"] .back-home,
+[id^="screen-alias"] .back-home,
+[id^="screen-draw"] .back-home {
+  background: rgba(255,255,255,0.1) !important;
+  border-color: rgba(255,255,255,0.2) !important;
+  color: rgba(255,255,255,0.7) !important;
+}
+[id^="screen-imp"] .settings-btn,
+[id^="screen-triv"] .settings-btn,
+[id^="screen-ht"] .settings-btn,
+[id^="screen-mafia"] .settings-btn,
+[id^="screen-mill"] .settings-btn,
+[id^="screen-feud"] .settings-btn,
+[id^="screen-wave"] .settings-btn,
+[id^="screen-alias"] .settings-btn,
+[id^="screen-draw"] .settings-btn {
+  background: rgba(255,255,255,0.1) !important;
+  border-color: rgba(255,255,255,0.2) !important;
+  color: rgba(255,255,255,0.7) !important;
+}
+
+/* Subtitle text on dark screens */
+[id^="screen-imp"] .subtitle,
+[id^="screen-triv"] .subtitle,
+[id^="screen-ht"] .subtitle,
+[id^="screen-mafia"] .subtitle,
+[id^="screen-mill"] .subtitle,
+[id^="screen-feud"] .subtitle,
+[id^="screen-wave"] .subtitle,
+[id^="screen-alias"] .subtitle,
+[id^="screen-draw"] .subtitle {
+  color: rgba(255,255,255,0.55);
+}
+
+/* Pack cards on dark screens */
+[id^="screen-imp"] .pack-cards,
+[id^="screen-triv"] .pack-cards,
+[id^="screen-ht"] .pack-cards,
+[id^="screen-mafia"] .pack-cards,
+[id^="screen-mill"] .pack-cards,
+[id^="screen-feud"] .pack-cards,
+[id^="screen-wave"] .pack-cards,
+[id^="screen-alias"] .pack-cards,
+[id^="screen-draw"] .pack-cards {
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+
+/* ══════════════════════════════
    RESPONSIVE
    ══════════════════════════════ */
 @media (max-width: 480px) {
-  .game-card { padding: 14px 8px 12px; }
   .overlay-panel { padding: 24px 20px; border-radius: 20px; width: 95%; }
   .btn.big { padding: 16px 28px; min-width: 200px; }
   .room-code-big { letter-spacing: 8px; }
@@ -2295,7 +2741,6 @@ input::placeholder, textarea::placeholder {
 }
 @media (max-width: 600px) {
   .vote-btn, .answer-btn, .ht-choice { min-height: 56px; }
-  .game-card { min-height: 140px; }
 }
 
 /* Double tap prevention */
