@@ -121,6 +121,8 @@ function playerNames() { return gameState.session.players.map(p => p.name); }
 function playerById(id) { return gameState.session.players.find(p => p.id === id); }
 function allPlayers() { return gameState.session.players; }
 function nonHostPlayers() { return isMultiDevice ? allPlayers().filter(p => !p.isHost) : allPlayers(); }
+function isHostScreen() { return isMultiDevice && socket && gameState.session.players.some(p => p.isHost && p.id === hostPlayerId); }
+function gamePlayerCount() { return nonHostPlayers().length; }
 
 /* ══════════════════════════════
    SCREEN MANAGEMENT
@@ -560,7 +562,7 @@ function setSettingByPath(path, val) { const parts = path.split('.'); let obj = 
    SCOREBOARD
    ══════════════════════════════ */
 function renderScoreboard() {
-  const players = allPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
+  const players = nonHostPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
   $('#scoreboard-rows').innerHTML = sorted.map((p, i) => {
     const total = gameState.scores.byPlayer[p.id] || 0, bg = gameState.scores.byGame[p.id] || {}, color = playerColor(allPlayers().indexOf(p));
     const parts = []; if (bg.imposter) parts.push('Imp:' + bg.imposter); if (bg.trivia) parts.push('Triv:' + bg.trivia); if (bg.hottake) parts.push('HT:' + bg.hottake);
@@ -641,11 +643,11 @@ function startSubtitleRotation() {
   subtitleRotationInterval = setInterval(() => {
     const sub = $('#home-subtitle');
     if (!sub || gameState.currentScreen !== 'screen-home') return;
-    sub.style.opacity = '0';
+    sub.classList.add('fade-out');
     setTimeout(() => {
       sub.textContent = HOME_SUBTITLES[Math.floor(Math.random() * HOME_SUBTITLES.length)];
-      sub.style.opacity = '1';
-    }, 500);
+      sub.classList.remove('fade-out');
+    }, 400);
   }, 4000);
 }
 
@@ -706,7 +708,7 @@ function numberRoll(el, target, duration) {
    SESSION STATS & AWARDS
    ══════════════════════════════ */
 function showSessionStats() {
-  const players = allPlayers(), scores = gameState.scores, history = scores.history;
+  const players = nonHostPlayers(), scores = gameState.scores, history = scores.history;
   const awards = [];
   // MVP
   const sorted = [...players].sort((a, b) => (scores.byPlayer[b.id] || 0) - (scores.byPlayer[a.id] || 0));
@@ -752,7 +754,7 @@ $('#btn-stats-home').addEventListener('click', goHome);
 let previousScores = {};
 
 function renderScoreboardWithTrends() {
-  const players = allPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
+  const players = nonHostPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
   $('#scoreboard-rows').innerHTML = sorted.map((p, i) => {
     const total = gameState.scores.byPlayer[p.id] || 0, bg = gameState.scores.byGame[p.id] || {}, color = playerColor(allPlayers().indexOf(p));
     const prev = previousScores[p.id] || 0;
@@ -764,12 +766,12 @@ function renderScoreboardWithTrends() {
   }).join('');
 }
 
-function snapshotScores() { previousScores = {}; allPlayers().forEach(p => { previousScores[p.id] = gameState.scores.byPlayer[p.id] || 0; }); }
+function snapshotScores() { previousScores = {}; nonHostPlayers().forEach(p => { previousScores[p.id] = gameState.scores.byPlayer[p.id] || 0; }); }
 
 function checkWinCondition() {
   const ptw = gameState.session.settings.global.pointsToWin;
   if (!ptw || ptw <= 0) return false;
-  const winner = allPlayers().find(p => (gameState.scores.byPlayer[p.id] || 0) >= ptw);
+  const winner = nonHostPlayers().find(p => (gameState.scores.byPlayer[p.id] || 0) >= ptw);
   if (winner) {
     showToast('🏆 ' + winner.name + ' wins with ' + gameState.scores.byPlayer[winner.id] + ' points!', 'success');
     playSound('fanfare'); launchConfetti();
@@ -1119,16 +1121,17 @@ function updateHostWaitingCount(game) {
 }
 
 function showToast(msg, type) {
-  const ICONS = { success: '✅ ', warning: '⚠️ ', error: '❌ ', info: 'ℹ️ ' };
-  // Stack toasts — limit to 3 visible
+  const ICONS = { success: '✅', warning: '⚠️', error: '❌', info: 'ℹ️' };
   const existing = document.querySelectorAll('.toast-notification');
   if (existing.length >= 3) existing[0].remove();
   const toast = document.createElement('div');
   toast.className = 'toast-notification' + (type ? ' ' + type : '');
-  toast.textContent = (type && ICONS[type] ? ICONS[type] : '') + msg;
+  const icon = type && ICONS[type] ? ICONS[type] + ' ' : '';
+  toast.textContent = icon + msg;
+  if (type) toast.style.borderLeft = '4px solid var(--' + (type === 'success' ? 'green' : type === 'error' ? 'red' : type === 'warning' ? 'gold' : 'accent') + ')';
   document.body.appendChild(toast);
-  setTimeout(() => toast.classList.add('show'), 10);
-  setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+  requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
+  setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 350); }, 3000);
 }
 
 function showFloatingEmoji(emoji) {
@@ -1218,7 +1221,7 @@ let teamMode = false, teamCount = 2, teams = {}; // teams: { 0: [playerId,...], 
 function initTeamSection() {
   const section = $('#team-section');
   if (!section) return;
-  const players = allPlayers();
+  const players = nonHostPlayers();
   // Show team section when 4+ players
   if (players.length >= 4) section.classList.remove('hidden');
   else { section.classList.add('hidden'); teamMode = false; return; }
@@ -1241,7 +1244,7 @@ $$('.team-count-btn').forEach(btn => btn.addEventListener('click', () => {
 }));
 
 $('#btn-team-random')?.addEventListener('click', () => {
-  const players = shuffle(allPlayers());
+  const players = shuffle(nonHostPlayers());
   teams = {};
   for (let t = 0; t < teamCount; t++) teams[t] = [];
   players.forEach((p, i) => teams[i % teamCount].push(p.id));
@@ -1252,7 +1255,7 @@ $('#btn-team-random')?.addEventListener('click', () => {
 
 $('#btn-team-balanced')?.addEventListener('click', () => {
   // Balanced: sort by score descending, snake-draft
-  const players = [...allPlayers()].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
+  const players = [...nonHostPlayers()].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
   teams = {};
   for (let t = 0; t < teamCount; t++) teams[t] = [];
   let forward = true;
@@ -1272,7 +1275,7 @@ $('#btn-team-clear')?.addEventListener('click', () => { clearTeams(); renderTeam
 function clearTeams() {
   teams = {};
   for (let t = 0; t < teamCount; t++) teams[t] = [];
-  allPlayers().forEach(p => { p.teamId = null; });
+  nonHostPlayers().forEach(p => { p.teamId = null; });
 }
 
 function syncTeamsToServer() {
@@ -1293,7 +1296,7 @@ function syncTeamsToServer() {
 function renderTeamPools() {
   const container = $('#team-pools');
   if (!container) return;
-  const players = allPlayers();
+  const players = nonHostPlayers();
   const assigned = new Set();
   Object.values(teams).forEach(arr => arr.forEach(id => assigned.add(id)));
 
@@ -1412,7 +1415,7 @@ $$('.game-card').forEach(card => {
       return;
     }
     const min = MIN_PLAYERS[g];
-    if (min && allPlayers().length < min) {
+    if (min && nonHostPlayers().length < min) {
       showToast('Need at least ' + min + ' players for ' + g.charAt(0).toUpperCase() + g.slice(1) + '!');
       return;
     }
@@ -1478,7 +1481,7 @@ function startPlaylistGame() {
 function advancePlaylist() { gameState.playlistIdx++; if (gameState.playlistIdx >= gameState.playlist.length) showPlaylistComplete(); else startPlaylistGame(); }
 
 function showPlaylistComplete() {
-  const players = allPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
+  const players = nonHostPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
   const maxPts = gameState.scores.byPlayer[sorted[0]?.id] || 1, container = $('#pl-final-scores'); container.innerHTML = '';
   sorted.forEach((p, i) => { const pts = gameState.scores.byPlayer[p.id] || 0; const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name">' + (i === 0 ? '👑 ' : '') + esc(p.name) + '</span><div class="result-bar-track"><div class="result-bar' + (i === 0 ? ' top' : '') + '" style="width:0%"></div></div><span class="result-count">' + pts + '</span>'; container.appendChild(row); });
   showScreen('screen-playlist-complete'); playSound('fanfare'); launchConfetti();
@@ -1868,7 +1871,7 @@ function trivRevealQuestion() {
 $('#btn-triv-next-q').addEventListener('click', () => { gameState.trivia.qIdx++; if (gameState.trivia.qIdx >= gameState.trivia.questions.length) trivShowFinalResults(); else trivStartQuestion(); });
 
 function trivShowFinalResults() {
-  const players = allPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
+  const players = nonHostPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
   const topPts = gameState.scores.byPlayer[sorted[0]?.id] || 0, secondPts = gameState.scores.byPlayer[sorted[1]?.id] || 0;
   const flavorKey = (topPts - secondPts) > 3 ? 'triviaLandslide' : 'triviaClose';
   $('#triv-res-summary').textContent = sorted[0].name + ' leads with ' + topPts + ' total points! ' + randomFlavor(flavorKey);
@@ -2002,7 +2005,7 @@ const mafiaState = { roles: {}, alive: [], phase: 'night', nightNum: 0, mafiaTar
 
 $('#btn-mafia-start').addEventListener('click', async () => {
   const file = mafiaGetFile && mafiaGetFile(); if (!file) return;
-  gameState.currentGame = 'mafia'; const players = allPlayers();
+  gameState.currentGame = 'mafia'; const players = nonHostPlayers();
   if (players.length < 5) { alert('Mafia needs at least 5 players'); return; }
   // Assign roles
   const shuffled = shuffle([...players]); mafiaState.roles = {}; mafiaState.alive = players.map(p => p.id); mafiaState.eliminated = []; mafiaState.nightNum = 0;
@@ -2014,7 +2017,7 @@ $('#btn-mafia-start').addEventListener('click', async () => {
   shuffled.forEach((p, i) => { mafiaState.roles[p.id] = shuffledRoles[i]; });
   if (isMultiDevice && socket) {
     sendMsg('start_game', { gameType: 'mafia', settings: gameState.session.settings });
-    // Send role assignments to each player
+    // Send role assignments to each player (non-host only)
     players.forEach(p => {
       sendMsg('send_to_player', { playerId: p.id, event: 'your_clue', data: { role: mafiaState.roles[p.id], text: mafiaState.roles[p.id].toUpperCase(), sub: mafiaState.roles[p.id] === 'mafia' ? 'Eliminate the town!' : mafiaState.roles[p.id] === 'doctor' ? 'Save someone each night' : mafiaState.roles[p.id] === 'detective' ? 'Investigate one player per night' : 'Find the mafia!' } });
     });
@@ -2159,7 +2162,7 @@ $('#btn-mafia-nominate').addEventListener('click', () => {
 
 function notifyPlayersGameEnd(title) {
   if (!isMultiDevice || !socket) return;
-  allPlayers().forEach(p => {
+  nonHostPlayers().forEach(p => {
     sendMsg('send_to_player', { playerId: p.id, event: 'game_ended', data: { title: title || 'Game Over!' } });
   });
 }
@@ -2169,8 +2172,8 @@ function mafiaShowResults(winner, jesterId) {
   const titles = { town: 'Town Wins!', mafia: 'Mafia Wins!', jester: 'Jester Wins!' };
   $('#mafia-res-emoji').textContent = emoji; $('#mafia-res-title').textContent = titles[winner];
   $('#mafia-res-detail').textContent = winner === 'town' ? 'All mafia members were eliminated!' : winner === 'mafia' ? 'The mafia has taken over!' : (playerById(jesterId)?.name || '?') + ' fooled everyone!';
-  // Show all roles
-  const players = allPlayers();
+  // Show all roles (only players who had roles, not host)
+  const players = nonHostPlayers();
   $('#mafia-res-roles').innerHTML = '<div class="setting-group-title" style="margin-top:12px;">All Roles</div>' + players.map(p => {
     const role = mafiaState.roles[p.id] || 'civilian'; const alive = mafiaState.alive.includes(p.id);
     return '<div class="result-row"><span class="result-name" style="' + (!alive ? 'text-decoration:line-through;opacity:0.5;' : '') + '">' + esc(p.name) + '</span><span>' + role.charAt(0).toUpperCase() + role.slice(1) + '</span></div>';
@@ -2201,17 +2204,17 @@ $('#btn-mill-start').addEventListener('click', async () => {
   millState.questions = [...easy, ...med, ...hard].slice(0, 15);
   if (millState.questions.length < 5) { millState.questions = shuffle(data.questions).slice(0, 15); }
   millState.playerIdx = 0; millState.winnings = {};
-  allPlayers().forEach(p => { millState.winnings[p.id] = 0; });
+  nonHostPlayers().forEach(p => { millState.winnings[p.id] = 0; });
   millStartTurn();
 });
 
 function millStartTurn() {
   millState.qIdx = 0; millState.lifelines = { fiftyFifty: false, phoneFriend: false, audiencePoll: false };
   if (isMultiDevice && socket) {
-    const player = allPlayers()[millState.playerIdx];
+    const player = nonHostPlayers()[millState.playerIdx];
     sendMsg('start_game', { gameType: 'millionaire', settings: gameState.session.settings });
     // Tell other players to watch the host screen
-    allPlayers().forEach(p => {
+    nonHostPlayers().forEach(p => {
       if (p.id !== player.id) sendMsg('send_to_player', { playerId: p.id, event: 'host_update', data: { event: 'show_idle', title: '💰 ' + player.name + "'s Turn", subtitle: 'Watch the host screen!' } });
     });
     // Current player gets trivia questions on their phone
@@ -2239,7 +2242,7 @@ function millRenderQuestion() {
   $('#ll-5050').addEventListener('click', () => { if (ll.fiftyFifty) return; ll.fiftyFifty = true; const wrong = [0,1,2,3].filter(i => i !== q.correct); const toRemove = shuffle(wrong).slice(0, 2); toRemove.forEach(i => { const btn = $('#mill-answers').querySelector('[data-idx="' + i + '"]'); if (btn) btn.classList.add('dimmed'); }); $('#ll-5050').classList.add('used'); });
   $('#ll-phone').addEventListener('click', () => { if (ll.phoneFriend) return; ll.phoneFriend = true; alert('Your friend thinks the answer is: ' + q.answers[q.correct]); $('#ll-phone').classList.add('used'); });
   $('#ll-audience').addEventListener('click', () => { if (ll.audiencePoll) return; ll.audiencePoll = true; const pcts = [0,0,0,0]; pcts[q.correct] = 40 + Math.floor(Math.random() * 30); let rem = 100 - pcts[q.correct]; [0,1,2,3].forEach(i => { if (i !== q.correct) { const p = Math.floor(Math.random() * rem); pcts[i] = p; rem -= p; } }); alert('Audience: A:' + pcts[0] + '% B:' + pcts[1] + '% C:' + pcts[2] + '% D:' + pcts[3] + '%'); $('#ll-audience').classList.add('used'); });
-  const player = allPlayers()[millState.playerIdx];
+  const player = nonHostPlayers()[millState.playerIdx];
   $('#mill-q-text').textContent = (player ? player.name + ': ' : '') + q.question;
   const labels = ['A', 'B', 'C', 'D'];
   $('#mill-answers').innerHTML = q.answers.map((a, i) => '<button class="mill-answer-btn" data-idx="' + i + '">' + labels[i] + ': ' + esc(a) + '</button>').join('');
@@ -2256,7 +2259,7 @@ function millRenderQuestion() {
 function millGetSafeMoney() { for (let i = SAFE_HAVENS.length - 1; i >= 0; i--) { if (millState.qIdx > SAFE_HAVENS[i]) return MONEY_LADDER[SAFE_HAVENS[i]]; } return '$0'; }
 
 function millEndTurn(money) {
-  const player = allPlayers()[millState.playerIdx];
+  const player = nonHostPlayers()[millState.playerIdx];
   const pts = MONEY_LADDER.indexOf(money) + 1;
   if (pts > 0 && player) { addPoints(player.id, pts, 'millionaire', 'Won ' + money); millState.winnings[player.id] = money; }
   $('#mill-res-emoji').textContent = pts >= 10 ? '🤑' : pts > 0 ? '💰' : '😢';
@@ -2264,13 +2267,13 @@ function millEndTurn(money) {
   $('#mill-res-detail').textContent = pts > 0 ? '+' + pts + ' points' : 'Better luck next time!';
   playSound(pts > 0 ? 'fanfare' : 'wrong');
   showScreen('screen-mill-result');
-  $('#btn-mill-next').textContent = millState.playerIdx >= allPlayers().length - 1 ? 'See Final Results' : 'Next Player';
+  $('#btn-mill-next').textContent = millState.playerIdx >= nonHostPlayers().length - 1 ? 'See Final Results' : 'Next Player';
 }
 
-$('#btn-mill-next').addEventListener('click', () => { millState.playerIdx++; if (millState.playerIdx >= allPlayers().length) millShowFinal(); else millStartTurn(); });
+$('#btn-mill-next').addEventListener('click', () => { millState.playerIdx++; if (millState.playerIdx >= nonHostPlayers().length) millShowFinal(); else millStartTurn(); });
 
 function millShowFinal() {
-  const players = allPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
+  const players = nonHostPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
   const maxPts = gameState.scores.byPlayer[sorted[0]?.id] || 1, container = $('#mill-final-scores'); container.innerHTML = '';
   sorted.forEach((p, i) => { const pts = gameState.scores.byPlayer[p.id] || 0; const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name">' + (i === 0 ? '👑 ' : '') + esc(p.name) + ' (' + (millState.winnings[p.id] || '$0') + ')</span><div class="result-bar-track"><div class="result-bar' + (i === 0 ? ' top' : '') + '" style="width:0%"></div></div><span class="result-count">' + pts + '</span>'; container.appendChild(row); });
   setupResultButtons('#btn-mill-home', '#btn-mill-again', 'screen-mill-setup');
@@ -2309,8 +2312,8 @@ function feudStartRound() {
   $('#feud-team-info').textContent = feudTeamLabel + ' is playing! (Strikes: 0/3)';
   showScreen('screen-feud-board');
   if (isMultiDevice && socket) {
-    // Send the question and buzz prompt to all players
-    allPlayers().forEach(p => {
+    // Send the question and buzz prompt to all players (non-host)
+    nonHostPlayers().forEach(p => {
       sendMsg('send_to_player', { playerId: p.id, event: 'feud_faceoff', data: { question: q.question } });
     });
   }
@@ -2349,7 +2352,7 @@ $('#btn-feud-strike').addEventListener('click', () => {
 });
 
 function feudShowResults() {
-  const players = allPlayers();
+  const players = nonHostPlayers();
   let team1, team2;
   if (teamMode && teams[0] && teams[1]) {
     team1 = getTeamPlayers(0); team2 = getTeamPlayers(1);
@@ -2378,14 +2381,14 @@ $('#btn-wave-start').addEventListener('click', async () => {
   const file = waveGetFile && waveGetFile(); if (!file) return;
   const data = await fetchPack('wavelength', file); gameState.currentGame = 'wavelength';
   waveState.spectrums = shuffle(data.spectrums); waveState.sIdx = 0; waveState.psychicIdx = 0; waveState.roundScores = {};
-  allPlayers().forEach(p => { waveState.roundScores[p.id] = 0; });
+  nonHostPlayers().forEach(p => { waveState.roundScores[p.id] = 0; });
   waveStartRound();
 });
 
 function waveStartRound() {
   const spec = waveState.spectrums[waveState.sIdx]; if (!spec || waveState.sIdx >= 10) { waveShowResults(); return; }
   waveState.target = Math.floor(Math.random() * 80) + 10; // 10-90
-  const psychic = allPlayers()[waveState.psychicIdx % allPlayers().length];
+  const psychic = nonHostPlayers()[waveState.psychicIdx % nonHostPlayers().length];
   $('#wave-psychic-name').textContent = psychic.name + ' is the psychic!';
   $('#wave-left').textContent = spec.left; $('#wave-right').textContent = spec.right;
   $('#wave-target').style.left = waveState.target + '%';
@@ -2398,7 +2401,7 @@ function handleWaveSlider(payload) {
   waveSliderValues[payload.playerId] = payload.value;
   waveSliderCount++;
   const el = $('#host-waiting-count');
-  const total = allPlayers().length - 1; // exclude psychic
+  const total = nonHostPlayers().length - 1; // exclude psychic
   if (el) el.textContent = waveSliderCount + '/' + total + ' guessed';
   if (waveSliderCount >= total) {
     // Average the guesses
@@ -2419,8 +2422,8 @@ $('#btn-wave-clue-done').addEventListener('click', () => {
   if (isMultiDevice && socket) {
     // Send clue to all players except psychic, ask them to guess on slider
     waveSliderValues = {}; waveSliderCount = 0;
-    const psychic = allPlayers()[waveState.psychicIdx % allPlayers().length];
-    allPlayers().forEach(p => {
+    const psychic = nonHostPlayers()[waveState.psychicIdx % nonHostPlayers().length];
+    nonHostPlayers().forEach(p => {
       if (p.id === psychic.id) {
         sendMsg('send_to_player', { playerId: p.id, event: 'host_update', data: { event: 'show_idle', title: 'Your clue: "' + waveState.clue + '"', subtitle: 'Waiting for team to guess...' } });
       } else {
@@ -2432,7 +2435,7 @@ $('#btn-wave-clue-done').addEventListener('click', () => {
     const guessArea = document.createElement('div');
     guessArea.id = 'host-waiting-count';
     guessArea.className = 'host-waiting';
-    guessArea.textContent = '0/' + (allPlayers().length - 1) + ' guessed';
+    guessArea.textContent = '0/' + (nonHostPlayers().length - 1) + ' guessed';
     $('#wave-slider').parentNode.parentNode.appendChild(guessArea);
     return;
   }
@@ -2449,7 +2452,7 @@ $('#btn-wave-guess-done').addEventListener('click', () => {
   else if (diff <= 25) { pts = 2; msg = 'Not bad! +2'; }
   else { pts = 0; msg = 'Way off!'; }
   // Award to psychic + all guessers
-  if (pts > 0) { allPlayers().forEach(p => addPoints(p.id, pts, 'wavelength', msg)); }
+  if (pts > 0) { nonHostPlayers().forEach(p => addPoints(p.id, pts, 'wavelength', msg)); }
   $('#wave-rev-left').textContent = spec.left; $('#wave-rev-right').textContent = spec.right;
   $('#wave-rev-target').style.left = target + '%'; $('#wave-rev-guess').style.left = guess + '%';
   $('#wave-rev-score').textContent = msg + (pts > 0 ? ' (Target: ' + target + '%, Guess: ' + guess + '%)' : ' (Target: ' + target + '%, Guess: ' + guess + '%)');
@@ -2460,7 +2463,7 @@ $('#btn-wave-guess-done').addEventListener('click', () => {
 $('#btn-wave-next').addEventListener('click', () => { waveState.sIdx++; waveState.psychicIdx++; waveStartRound(); });
 
 function waveShowResults() {
-  const players = allPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
+  const players = nonHostPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
   // Reuse the session stats or just go home
   setupResultButtons('#btn-wave-next', null, 'screen-wave-setup');
   playSound('fanfare'); autoSave(); goHome();
@@ -2479,16 +2482,16 @@ $('#btn-alias-start').addEventListener('click', async () => {
 });
 
 function aliasStartTurn() {
-  if (aliasState.totalRounds >= allPlayers().length * 2) { aliasShowResults(); return; }
+  if (aliasState.totalRounds >= nonHostPlayers().length * 2) { aliasShowResults(); return; }
   aliasState.roundScore = 0; aliasState.timeLeft = 60;
-  const player = allPlayers()[aliasState.playerIdx % allPlayers().length];
+  const player = nonHostPlayers()[aliasState.playerIdx % nonHostPlayers().length];
   $('#alias-describer').textContent = player.name + ' is describing!';
 
   if (isMultiDevice && socket) {
     // Send word to describer's phone, others get idle
     const w = aliasState.words[aliasState.wIdx % aliasState.words.length];
     sendMsg('send_to_player', { playerId: player.id, event: 'host_update', data: { event: 'show_idle', title: '🗣️ Describe: ' + w.word, subtitle: 'Forbidden: ' + (w.forbidden || []).join(', ') } });
-    allPlayers().filter(p => p.id !== player.id).forEach(p => {
+    nonHostPlayers().filter(p => p.id !== player.id).forEach(p => {
       sendMsg('send_to_player', { playerId: p.id, event: 'host_update', data: { event: 'show_idle', title: '🗣️ ' + player.name + ' is describing!', subtitle: 'Listen and guess!' } });
     });
   }
@@ -2524,16 +2527,16 @@ $('#btn-alias-skip').addEventListener('click', () => {
 });
 
 function aliasEndTurn() {
-  const player = allPlayers()[aliasState.playerIdx % allPlayers().length];
+  const player = nonHostPlayers()[aliasState.playerIdx % nonHostPlayers().length];
   if (aliasState.roundScore > 0) addPoints(player.id, aliasState.roundScore, 'alias', aliasState.roundScore + ' words');
   aliasState.playerIdx++; aliasState.totalRounds++;
-  if (aliasState.totalRounds >= allPlayers().length * 2) { aliasShowResults(); return; }
+  if (aliasState.totalRounds >= nonHostPlayers().length * 2) { aliasShowResults(); return; }
   aliasStartTurn();
 }
 
 function aliasShowResults() {
   if (aliasState.timer) { clearInterval(aliasState.timer); aliasState.timer = null; }
-  const players = allPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
+  const players = nonHostPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
   const maxPts = gameState.scores.byPlayer[sorted[0]?.id] || 1, container = $('#alias-final-scores'); container.innerHTML = '';
   sorted.forEach((p, i) => { const pts = gameState.scores.byPlayer[p.id] || 0; const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name">' + (i === 0 ? '👑 ' : '') + esc(p.name) + '</span><div class="result-bar-track"><div class="result-bar' + (i === 0 ? ' top' : '') + '" style="width:0%"></div></div><span class="result-count">' + pts + '</span>'; container.appendChild(row); });
   setupResultButtons('#btn-alias-home', '#btn-alias-again', 'screen-alias-setup');
@@ -2569,9 +2572,9 @@ function handlePlayerGuess(payload) {
 }
 
 function drawStartTurn() {
-  if (drawState.totalRounds >= allPlayers().length * 2) { drawShowResults(); return; }
+  if (drawState.totalRounds >= nonHostPlayers().length * 2) { drawShowResults(); return; }
   drawState.timeLeft = 90; drawGuessHandled = false;
-  const player = allPlayers()[drawState.playerIdx % allPlayers().length];
+  const player = nonHostPlayers()[drawState.playerIdx % nonHostPlayers().length];
   const w = drawState.words[drawState.wIdx % drawState.words.length];
   $('#draw-player-name').textContent = player.name + ' is drawing!';
   $('#draw-word-display').textContent = 'Draw: ' + w.word;
@@ -2581,7 +2584,7 @@ function drawStartTurn() {
     // Tell drawer the word on their phone
     sendMsg('send_to_player', { playerId: player.id, event: 'host_update', data: { event: 'show_idle', title: '🎨 Draw: ' + w.word, subtitle: 'Draw on the host screen!' } });
     // Tell others to guess
-    allPlayers().filter(p => p.id !== player.id).forEach(p => {
+    nonHostPlayers().filter(p => p.id !== player.id).forEach(p => {
       sendMsg('send_to_player', { playerId: p.id, event: 'guess_prompt', data: { title: '🎨 Guess what ' + player.name + ' is drawing!', hint: 'Hint: ' + hint } });
     });
   }
@@ -2621,16 +2624,16 @@ $('#btn-draw-skip').addEventListener('click', () => drawEndTurn(false));
 
 function drawEndTurn(guessed) {
   if (drawState.timer) { clearInterval(drawState.timer); drawState.timer = null; }
-  const player = allPlayers()[drawState.playerIdx % allPlayers().length];
+  const player = nonHostPlayers()[drawState.playerIdx % nonHostPlayers().length];
   if (guessed) { addPoints(player.id, 2, 'drawing', 'Drew correctly'); playSound('correct'); }
   else playSound('wrong');
   drawState.wIdx++; drawState.playerIdx++; drawState.totalRounds++;
-  if (drawState.totalRounds >= allPlayers().length * 2) { drawShowResults(); return; }
+  if (drawState.totalRounds >= nonHostPlayers().length * 2) { drawShowResults(); return; }
   drawStartTurn();
 }
 
 function drawShowResults() {
-  const players = allPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
+  const players = nonHostPlayers(), sorted = [...players].sort((a, b) => (gameState.scores.byPlayer[b.id] || 0) - (gameState.scores.byPlayer[a.id] || 0));
   const maxPts = gameState.scores.byPlayer[sorted[0]?.id] || 1, container = $('#draw-final-scores'); container.innerHTML = '';
   sorted.forEach((p, i) => { const pts = gameState.scores.byPlayer[p.id] || 0; const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name">' + (i === 0 ? '👑 ' : '') + esc(p.name) + '</span><div class="result-bar-track"><div class="result-bar' + (i === 0 ? ' top' : '') + '" style="width:0%"></div></div><span class="result-count">' + pts + '</span>'; container.appendChild(row); });
   setupResultButtons('#btn-draw-home', '#btn-draw-again', 'screen-draw-setup');
@@ -2993,7 +2996,10 @@ function updateHomePlayerStrip() {
   if (!strip || !btns) return;
   if (players.length === 0) { strip.classList.add('hidden'); btns.classList.add('hidden'); return; }
   strip.classList.remove('hidden'); btns.classList.remove('hidden');
-  strip.innerHTML = players.map((p, i) => '<span class="player-pip" style="background:' + playerColor(i) + '">' + esc(p.name) + '</span>').join('');
+  strip.innerHTML = players.map((p, i) => {
+    const c = playerColor(i);
+    return '<span class="player-dot" style="border-color:' + c + '"><span style="width:8px;height:8px;border-radius:50%;background:' + c + ';display:inline-block"></span>' + esc(p.name) + '</span>';
+  }).join('');
 }
 const resetBtn = $('#btn-reset-scores');
 if (resetBtn) resetBtn.addEventListener('click', () => {
