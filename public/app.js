@@ -1063,7 +1063,7 @@ function handleServerMsg(data) {
       const players = nonHostPlayers();
       $('#btn-imp-show').style.display = '';
       showScreen('screen-imp-discuss');
-      $('#imp-discuss-players').innerHTML = players.map((p, i) => '<div class="chip" style="background:' + playerColor(i) + '22;color:' + playerColor(i) + '">' + esc(p.name) + '</div>').join('');
+      $('#imp-discuss-players').innerHTML = players.map((p, i) => { const c = playerColor(i); return '<div class="suspect-card" data-idx="' + i + '"><div class="suspect-dot" style="background:' + c + '">' + esc(p.name.substring(0,2).toUpperCase()) + '</div><span class="suspect-name">' + esc(p.name) + '</span><span class="suspect-status"></span></div>'; }).join('');
       handleDiscussionTimer();
       sendMsg('next_phase', { phase: 'discussion', data: { players: players.map(p => ({ id: p.id, name: p.name })) } });
       break;
@@ -1571,10 +1571,9 @@ $('#btn-imp-show').addEventListener('click', () => {
     impScreen.classList.add('showing-clue'); impScreen.classList.add('crew'); impScreen.classList.remove('imposter');
     $('#imp-clue-icon').textContent = '🟢 Your word is:'; typewriterReveal($('#imp-clue-main'), imp.word.toUpperCase(), 80); $('#imp-clue-main').style.fontSize = ''; $('#imp-clue-sub').textContent = "Don't say it out loud!";
   }
-  // Dynamic scene bg for clue screen
-  if (typeof setSceneBg === 'function') setSceneBg('screen-imp-clue', isImp ? 'impImposterBg' : 'impCrewBg', 'scenes');
-  // Character based on role
-  if (typeof createCharacterImg === 'function') { const charEl = $('#imp-clue-character'); if (charEl) { charEl.innerHTML = ''; const img = createCharacterImg(isImp ? 'impEvil' : 'impCrew', 'large'); if (img) charEl.appendChild(img); } }
+  // Role badge
+  const roleBadge = $('#imp-role-badge');
+  if (roleBadge) { roleBadge.className = 'imp-role-badge ' + (isImp ? 'imposter' : 'crew'); roleBadge.textContent = isImp ? '🔴 IMPOSTER' : '🟢 CREW'; }
   requestAnimationFrame(() => display.classList.add('visible'));
 });
 $('#btn-imp-hide-pass').addEventListener('click', () => impShowHidden());
@@ -1591,7 +1590,7 @@ function impShowHidden() {
 $('#btn-imp-next').addEventListener('click', () => {
   gameState.imposter.clueIdx++; const players = nonHostPlayers();
   if (gameState.imposter.clueIdx >= players.length) {
-    $('#imp-discuss-players').innerHTML = players.map((p, i) => '<div class="chip" style="background:' + playerColor(i) + '22;color:' + playerColor(i) + '">' + esc(p.name) + '</div>').join('');
+    $('#imp-discuss-players').innerHTML = players.map((p, i) => { const c = playerColor(i); return '<div class="suspect-card" data-idx="' + i + '"><div class="suspect-dot" style="background:' + c + '">' + esc(p.name.substring(0,2).toUpperCase()) + '</div><span class="suspect-name">' + esc(p.name) + '</span><span class="suspect-status"></span></div>'; }).join('');
     handleDiscussionTimer(); showScreen('screen-imp-discuss');
   } else impShowPass();
 });
@@ -1618,8 +1617,8 @@ function handleDiscussionTimer() {
 
 // Safe player toggle during discussion
 $('#imp-discuss-players').addEventListener('click', e => {
-  const chip = e.target.closest('.chip');
-  if (chip) chip.classList.toggle('safe');
+  const card = e.target.closest('.suspect-card');
+  if (card) { card.classList.toggle('safe'); const status = card.querySelector('.suspect-status'); if (status) status.textContent = card.classList.contains('safe') ? '✓' : ''; }
 });
 
 // Confidence slider
@@ -1666,36 +1665,36 @@ function impShowResults() {
   if (caught) { launchConfetti(); playLottieOverlay('confetti', 4000); } else { playLottieOverlay('ghost', 3000); }
   const sorted = Object.entries(imp.votes).filter(([,c]) => c > 0).sort((a, b) => b[1] - a[1]);
   const maxV = sorted.length > 0 ? sorted[0][1] : 0;
-  const emojiEl = $('#imp-res-emoji'), textEl = $('#imp-res-text');
-  emojiEl.textContent = caught ? '🎉' : '😈'; textEl.textContent = (caught ? 'Imposter caught!' : 'Imposter escaped!') + ' ' + randomFlavor(caught ? 'imposterCaught' : 'imposterEscaped');
-  emojiEl.classList.remove('dramatic-reveal'); textEl.classList.remove('dramatic-reveal');
-  void emojiEl.offsetWidth; emojiEl.classList.add('dramatic-reveal'); textEl.classList.add('dramatic-reveal');
+  // Stamp image
+  const stampEl = $('#imp-result-stamp');
+  if (stampEl) { stampEl.src = '/assets/imposter/' + (caught ? 'stamp-caught.png' : 'stamp-escaped.png'); stampEl.classList.remove('hidden'); }
+  const textEl = $('#imp-res-text');
+  textEl.textContent = (caught ? 'Imposter caught!' : 'Imposter escaped!') + ' ' + randomFlavor(caught ? 'imposterCaught' : 'imposterEscaped');
+  textEl.classList.remove('dramatic-reveal'); void textEl.offsetWidth; textEl.classList.add('dramatic-reveal');
   $('#imp-res-imposter').textContent = 'The imposter' + (imposterPlayers.length > 1 ? 's were' : ' was') + ': ' + impNames;
-  const wordEl = $('#imp-res-word'); wordEl.textContent = '';
-  typewriterReveal(wordEl, 'The secret word was: ' + imp.word.toUpperCase(), 50);
+  // Word reveal box
+  const wordReveal = $('#imp-word-reveal'), wordValue = $('#imp-word-value');
+  if (wordReveal && wordValue) { wordValue.textContent = imp.word.toUpperCase(); wordReveal.classList.remove('hidden'); }
+  // Result bars with player colors
   const tally = $('#imp-res-tally'); tally.innerHTML = '';
   const allEntries = players.map(p => [p, imp.votes[p.id] || 0]);
-  allEntries.forEach(([p, count]) => { const isTop = count === maxV && count > 0, isImp = imp.imposterIndices.includes(players.indexOf(p)); const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name">' + esc(p.name) + (isImp ? ' 🔴' : '') + '</span><div class="result-bar-track"><div class="result-bar' + (isTop ? ' top' : '') + '" style="width:0%"></div></div><span class="result-count">' + count + '</span>'; tally.appendChild(row); });
-  // Show who voted for whom
+  allEntries.forEach(([p, count]) => { const pIdx = players.indexOf(p); const isTop = count === maxV && count > 0, isImp = imp.imposterIndices.includes(pIdx); const c = playerColor(pIdx); const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name">' + esc(p.name) + (isImp ? ' <span class="result-imp-marker"></span>' : '') + '</span><div class="result-bar-track"><div class="result-bar' + (isTop ? ' top' : '') + '" style="width:0%;background:' + (isTop ? '' : c + '66') + '"></div></div><span class="result-count">' + count + '</span>'; tally.appendChild(row); });
+  // Vote breakdown
   const voteEntries = Object.entries(imp.individualVotes).filter(([,t]) => t);
-  if (voteEntries.length > 0) {
-    const voteDiv = document.createElement('div'); voteDiv.className = 'vote-map';
-    voteDiv.innerHTML = '<div class="vote-map-title">Who voted for whom</div>' +
-      voteEntries.map(([voterId, targetId]) => {
-        const v = players.find(p => p.id === voterId), t = players.find(p => p.id === targetId);
-        if (!v || !t) return '';
-        const isImpTarget = imp.imposterIndices.includes(players.indexOf(t));
-        return '<div class="vote-map-row"><span>' + esc(v.name) + '</span><span>→</span><span' + (isImpTarget ? ' style="color:var(--red)"' : '') + '>' + esc(t.name) + (isImpTarget ? ' 🔴' : '') + '</span></div>';
-      }).filter(Boolean).join('');
-    tally.after(voteDiv);
+  const vbContainer = $('#imp-vote-breakdown'), vbRows = $('#imp-vb-rows');
+  if (voteEntries.length > 0 && vbContainer && vbRows) {
+    vbRows.innerHTML = voteEntries.map(([voterId, targetId]) => {
+      const v = players.find(p => p.id === voterId), t = players.find(p => p.id === targetId);
+      if (!v || !t) return '';
+      const isCorrect = imp.imposterIndices.includes(players.indexOf(t));
+      return '<div class="imp-vb-row ' + (isCorrect ? 'correct' : 'wrong') + '"><span>' + esc(v.name) + '</span><span class="imp-vb-arrow">→</span><span>' + esc(t.name) + '</span></div>';
+    }).filter(Boolean).join('');
+    vbContainer.classList.remove('hidden');
   }
+  // Tie indicator
+  const tieEl = $('#imp-res-tie');
+  if (tieEl && sorted.length >= 2 && sorted[0][1] === sorted[1][1]) { tieEl.textContent = 'It was a tie!'; tieEl.classList.remove('hidden'); } else if (tieEl) { tieEl.classList.add('hidden'); }
   renderBreakdown('#imp-res-breakdown', breakdown); setupResultButtons('#btn-imp-home2', '#btn-imp-again', 'screen-imp-setup');
-  // Dynamic scene bg based on outcome
-  if (typeof setSceneBg === 'function') setSceneBg('screen-imp-results', caught ? 'impCaught' : 'impEscaped', 'scenes');
-  // Character based on outcome — hide emoji when character loads
-  if (typeof createCharacterImg === 'function') { const charEl = $('#imp-results-character'); if (charEl) { charEl.innerHTML = ''; const img = createCharacterImg(caught ? 'impCrew' : 'impEvil', 'large'); if (img) { charEl.appendChild(img); emojiEl.style.display = 'none'; } } }
-  // Lottie animations
-  if (typeof playLottie === 'function') { if (caught) { playLottieOverlay('confetti', 4000); playLottie('imp-results-lottie', 'trophy', false); } else { playLottie('imp-results-lottie', 'ghost', false); } }
   showScreen('screen-imp-results'); autoSave(); checkWinCondition();
   requestAnimationFrame(() => { tally.querySelectorAll('.result-bar').forEach((bar, i) => { const count = allEntries[i][1], pct = maxV > 0 ? (count / maxV) * 100 : 0; safeTimeout(() => { bar.style.width = pct > 0 ? Math.max(pct, 8) + '%' : '0%'; }, 200 + i * 200); }); });
   if (isMultiDevice && socket) sendMsg('host_update', { event: 'round_result', data: { caught, breakdown, impNames, word: imp.word } });

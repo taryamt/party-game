@@ -143,12 +143,9 @@
     </div>
     <!-- IMPOSTER -->
     <div class="game-card" data-game="imposter">
-      <img src="/assets/cards/card-imposter.png" class="game-card-bg" alt="" loading="lazy" onerror="this.style.display='none'">
+      <img src="/assets/imposter/card-bg.png" class="game-card-bg" alt="" loading="lazy" onerror="this.style.display='none'">
       <div class="game-card-overlay"></div>
-      <div class="game-card-character-wrap">
-        <img src="/assets/characters/imp-crew.png" class="game-card-character" alt="Imposter" onerror="this.style.display='none'">
-      </div>
-      <div class="game-card-nameplate">
+      <div class="game-card-nameplate" style="background:linear-gradient(transparent, rgba(26,5,5,0.95));">
         <div class="game-card-title">Imposter</div>
         <div class="game-card-meta">3–10 players · ~15 min</div>
       </div>
@@ -306,16 +303,17 @@
 
 <!-- IMPOSTER SCREENS -->
 <div id="screen-imp-setup" class="screen">
-  <img src="/assets/doodles/doodles-sheet-1.png" class="doodle-bg" alt="" onerror="this.style.display='none'">
   <button class="btn outline back-home" id="btn-imp-home">&#8592; Home</button>
   <button class="settings-btn" id="btn-imp-settings">&#9881;</button>
-  <h1>🕵️ Imposter <button class="info-btn" id="btn-imp-info">?</button></h1>
-  <div class="character-container" id="imp-setup-character"></div>
+  <div class="imp-title-area">
+    <div class="imp-title-eyebrow">FIND THE</div>
+    <h1>Imposter <button class="info-btn" id="btn-imp-info">?</button></h1>
+  </div>
   <h2>Pick a pack</h2>
   <div class="pack-cards" id="imp-packs"></div>
   <div class="pack-actions">
-    <button class="btn sm outline" id="btn-imp-import">📥 Import Pack</button>
-    <button class="btn sm outline" id="btn-imp-create">✏️ Create Pack</button>
+    <button class="btn sm outline" id="btn-imp-import">Import Pack</button>
+    <button class="btn sm outline" id="btn-imp-create">Create Pack</button>
   </div>
   <div class="gap"></div>
   <button class="btn big red" id="btn-imp-start" disabled>Start Round</button>
@@ -323,48 +321,48 @@
 
 <div id="screen-imp-clue" class="screen clue-reveal">
   <div id="imp-clue-pass">
-    <h2 id="imp-clue-pass-label">Pass the device to</h2>
+    <img src="/assets/imposter/eye-hero.png" class="imp-eye-hero" alt="" onerror="this.style.display='none'">
+    <div class="imp-pass-eyebrow">PASS TO</div>
     <h1 id="imp-clue-name">Player</h1>
-    <div class="subtitle">Everyone else, look away!</div>
+    <div class="imp-pass-divider"></div>
+    <div class="imp-pass-instruction">Everyone else, look away!</div>
     <div class="gap"></div>
     <button class="btn big" id="btn-imp-show">Show My Clue</button>
   </div>
   <div id="imp-clue-show" class="hidden">
-    <div class="character-container" id="imp-clue-character"></div>
+    <div class="imp-role-badge" id="imp-role-badge"></div>
     <div id="imp-clue-display" class="clue-display">
-      <div id="imp-clue-icon" class="clue-label"></div>
+      <div id="imp-clue-icon" class="clue-sublabel"></div>
       <div id="imp-clue-main" class="clue-word"></div>
-      <div id="imp-clue-sub" class="clue-label"></div>
+      <div id="imp-clue-sub" class="clue-sublabel"></div>
       <div id="imp-clue-timer" class="clue-timer hidden"></div>
     </div>
-  <div class="gap"></div>
-  <button class="btn big" id="btn-imp-hide-pass">Hide & Pass →</button>
+    <div class="gap"></div>
+    <button class="btn-imp-hide-pass" id="btn-imp-hide-pass">Hide & Pass</button>
   </div>
   <div id="imp-clue-hidden" class="hidden">
+    <div class="imp-hidden-check">&#10003;</div>
     <h1>Clue Hidden</h1>
     <div class="subtitle" id="imp-clue-next-label">Pass to the next player</div>
     <div class="gap"></div>
-    <button class="btn big" id="btn-imp-next">Next Player</button>
+    <button id="btn-imp-next">Next Player</button>
   </div>
 </div>
 
 <div id="screen-imp-discuss" class="screen">
-  <button class="btn outline back-btn" data-back="confirm" data-msg="End discussion and go back?">&#8592; Back</button>
-  <h1>Discussion Time</h1>
-  <div class="round-badge" id="imp-discuss-round"></div>
-  <h2>Who seems clueless?</h2>
-  <div class="subtitle">Talk, ask questions, describe things related to the word.<br>Tap a name to mark them as "safe"</div>
+  <img src="/assets/imposter/discussion-header.png" class="imp-discuss-header-img" alt="" onerror="this.style.display='none'">
+  <div class="imp-round-badge" id="imp-discuss-round"></div>
+  <h1>Discussion</h1>
+  <div class="subtitle">Talk, ask questions, describe things related to the word.</div>
   <div id="imp-discuss-timer" class="discuss-timer hidden"></div>
   <div class="timer-bar-track hidden" id="imp-discuss-bar-track"><div class="timer-bar" id="imp-discuss-bar" style="width:100%;"></div></div>
-  <div id="imp-discuss-players" class="player-list"></div>
+  <div id="imp-discuss-players"></div>
   <div class="gap"></div>
-  <button class="btn big gold" id="btn-imp-vote">Start Voting</button>
+  <button id="btn-imp-vote">Start Voting</button>
 </div>
 
 <div id="screen-imp-vote" class="screen">
-  <button class="btn outline back-btn" data-back="confirm" data-msg="Cancel voting?">&#8592; Back</button>
-  <img src="/assets/ui/vote-badge.png?v=2" class="score-badge-img" alt="" onerror="this.style.display='none'" style="margin-bottom:8px;">
-  <div id="imp-vote-lottie" class="lottie-container lottie-sm"></div>
+  <div class="imp-vote-eyebrow">VOTE</div>
   <h2 id="imp-vote-label">Waiting for</h2>
   <h1 id="imp-vote-name">Player's vote</h1>
   <div class="subtitle">Choose carefully — only one vote per player!</div>
@@ -379,17 +377,23 @@
 </div>
 
 <div id="screen-imp-results" class="screen">
-  <div id="imp-res-emoji" class="reveal-emoji"></div>
-  <div class="character-container" id="imp-results-character"></div>
-  <div id="imp-results-lottie" class="lottie-container lottie-lg"></div>
+  <img id="imp-result-stamp" class="imp-result-stamp hidden" alt="" onerror="this.style.display='none'">
   <h1 id="imp-res-text" class="reveal-text"></h1>
   <div id="imp-res-imposter" class="subtitle"></div>
-  <div id="imp-res-word" class="subtitle"></div>
+  <div class="imp-word-reveal hidden" id="imp-word-reveal">
+    <div class="imp-word-label">THE WORD WAS</div>
+    <div class="imp-word-value" id="imp-word-value"></div>
+  </div>
   <div class="results-list" id="imp-res-tally"></div>
+  <div class="imp-vote-breakdown hidden" id="imp-vote-breakdown">
+    <div class="imp-vb-title">Vote Breakdown</div>
+    <div id="imp-vb-rows"></div>
+  </div>
   <div id="imp-res-breakdown" class="round-breakdown"></div>
+  <div id="imp-res-tie" class="hidden"></div>
   <div class="btn-row" id="imp-res-btns">
-    <button class="btn red" id="btn-imp-again">Play Again</button>
-    <button class="btn outline" id="btn-imp-home2">Home</button>
+    <button id="btn-imp-again">Play Again</button>
+    <button id="btn-imp-home2">Home</button>
   </div>
 </div>
 
