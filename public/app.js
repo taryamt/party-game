@@ -1678,7 +1678,7 @@ function impShowResults() {
   // Result bars with player colors
   const tally = $('#imp-res-tally'); tally.innerHTML = '';
   const allEntries = players.map(p => [p, imp.votes[p.id] || 0]);
-  allEntries.forEach(([p, count]) => { const pIdx = players.indexOf(p); const isTop = count === maxV && count > 0, isImp = imp.imposterIndices.includes(pIdx); const c = playerColor(pIdx); const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name">' + esc(p.name) + (isImp ? ' <span class="result-imp-marker"></span>' : '') + '</span><div class="result-bar-track"><div class="result-bar' + (isTop ? ' top' : '') + '" style="width:0%;background:' + (isTop ? '' : c + '66') + '"></div></div><span class="result-count">' + count + '</span>'; tally.appendChild(row); });
+  allEntries.forEach(([p, count]) => { const pIdx = players.indexOf(p); const isTop = count === maxV && count > 0, isImp = imp.imposterIndices.includes(pIdx); const c = playerColor(pIdx); const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name">' + esc(p.name) + (isImp ? ' <span class="result-imp-marker"></span>' : '') + '</span><div class="result-bar-track"><div class="result-bar' + (isTop ? ' top' : '') + '" style="width:0%;background:' + (isTop ? c + 'CC' : c + '60') + '"></div></div><span class="result-count">' + count + '</span>'; tally.appendChild(row); });
   // Vote breakdown
   const voteEntries = Object.entries(imp.individualVotes).filter(([,t]) => t);
   const vbContainer = $('#imp-vote-breakdown'), vbRows = $('#imp-vb-rows');
