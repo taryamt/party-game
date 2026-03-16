@@ -374,7 +374,7 @@ function renderBreakdown(containerId, breakdown) {
   const el = $(containerId); if (!el) return;
   el.innerHTML = breakdown.map(b => {
     const p = playerById(b.id), name = p ? esc(p.name) : '?', pIdx = allPlayers().indexOf(p), color = playerColor(pIdx);
-    return '<div class="rb-row"><div class="rb-name" style="color:' + color + '">' + name + '</div><div class="rb-reasons">' + b.reasons.join(', ') + '</div><div class="rb-total">' + (b.pts > 0 ? '<img src="/assets/ui/score-badge.png" class="score-badge-img" alt="" onerror="this.style.display=\'none\'"> +' + b.pts : '0') + '</div></div>';
+    return '<div class="rb-row"><div class="rb-name" style="color:' + color + '">' + name + '</div><div class="rb-reasons">' + b.reasons.join(', ') + '</div><div class="rb-total">' + (b.pts > 0 ? '+' + b.pts : '0') + '</div></div>';
   }).join('');
 }
 
@@ -1678,7 +1678,7 @@ function impShowResults() {
   // Result bars with player colors
   const tally = $('#imp-res-tally'); tally.innerHTML = '';
   const allEntries = players.map(p => [p, imp.votes[p.id] || 0]);
-  allEntries.forEach(([p, count]) => { const pIdx = players.indexOf(p); const isTop = count === maxV && count > 0, isImp = imp.imposterIndices.includes(pIdx); const c = playerColor(pIdx); const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name">' + esc(p.name) + (isImp ? ' <span class="result-imp-marker"></span>' : '') + '</span><div class="result-bar-track"><div class="result-bar' + (isTop ? ' top' : '') + '" style="width:0%;background:' + (isTop ? c + 'CC' : c + '60') + '"></div></div><span class="result-count">' + count + '</span>'; tally.appendChild(row); });
+  allEntries.forEach(([p, count]) => { const pIdx = players.indexOf(p); const isTop = count === maxV && count > 0, isImp = imp.imposterIndices.includes(pIdx); const c = playerColor(pIdx); const row = document.createElement('div'); row.className = 'result-row'; row.innerHTML = '<span class="result-name" style="color:' + c + '">' + esc(p.name) + (isImp ? ' 🔴' : '') + '</span><div class="result-bar-track"><div class="result-bar' + (isTop ? ' top' : '') + '" style="width:0%;background:' + (isTop ? c + 'CC' : c + '60') + '"></div></div><span class="result-count">' + count + '</span>'; tally.appendChild(row); });
   // Vote breakdown
   const voteEntries = Object.entries(imp.individualVotes).filter(([,t]) => t);
   const vbContainer = $('#imp-vote-breakdown'), vbRows = $('#imp-vb-rows');
@@ -1692,8 +1692,12 @@ function impShowResults() {
     vbContainer.classList.remove('hidden');
   }
   // Tie indicator
+  // Tie indicator — only show when genuinely tied AND imposter not caught
   const tieEl = $('#imp-res-tie');
-  if (tieEl && sorted.length >= 2 && sorted[0][1] === sorted[1][1]) { tieEl.textContent = 'It was a tie!'; tieEl.classList.remove('hidden'); } else if (tieEl) { tieEl.classList.add('hidden'); }
+  if (tieEl) {
+    const isTie = !caught && sorted.length >= 2 && sorted[0][1] === sorted[1][1];
+    if (isTie) { tieEl.textContent = 'It was a tie!'; tieEl.classList.remove('hidden'); } else { tieEl.classList.add('hidden'); }
+  }
   renderBreakdown('#imp-res-breakdown', breakdown); setupResultButtons('#btn-imp-home2', '#btn-imp-again', 'screen-imp-setup');
   showScreen('screen-imp-results'); autoSave(); checkWinCondition();
   requestAnimationFrame(() => { tally.querySelectorAll('.result-bar').forEach((bar, i) => { const count = allEntries[i][1], pct = maxV > 0 ? (count / maxV) * 100 : 0; safeTimeout(() => { bar.style.width = pct > 0 ? Math.max(pct, 8) + '%' : '0%'; }, 200 + i * 200); }); });
