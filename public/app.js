@@ -1551,7 +1551,7 @@ function impShowPass() {
   $('#imp-clue-pass').classList.remove('hidden'); $('#imp-clue-show').classList.add('hidden'); $('#imp-clue-hidden').classList.add('hidden');
   impScreen.classList.remove('showing-clue', 'crew', 'imposter');
   const pIdx = gameState.imposter.clueIdx; $('#imp-clue-name').textContent = nonHostPlayers()[pIdx].name;
-  $('#imp-clue-pass-label').textContent = pIdx === 0 ? 'Hand the device to' : 'Pass the device to';
+  const passLabel = $('.imp-pass-eyebrow'); if (passLabel) passLabel.textContent = pIdx === 0 ? 'HAND TO' : 'PASS TO';
 }
 
 $('#btn-imp-show').addEventListener('click', () => {
