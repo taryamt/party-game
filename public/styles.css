@@ -2466,13 +2466,23 @@ input::placeholder, textarea::placeholder {
 #btn-imp-start:active { transform: translateY(3px); border-bottom-width: 2px; }
 #btn-imp-start:disabled { opacity: 0.35; transform: none; }
 #screen-imp-setup .btn.outline,
-#btn-imp-import,
-#btn-imp-create {
-  background: rgba(255,255,255,0.06) !important;
-  border: 1px solid rgba(255,255,255,0.15) !important;
-  border-bottom: 3px solid rgba(255,255,255,0.2) !important;
-  color: rgba(255,255,255,0.6) !important;
-  font-family: var(--font-heading) !important;
+#screen-imp-setup #btn-imp-import,
+#screen-imp-setup #btn-imp-create {
+  background: rgba(255,255,255,0.07) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  border-bottom: 3px solid rgba(0,0,0,0.3) !important;
+  color: rgba(255,255,255,0.65) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  padding: 10px 20px !important;
+  border-radius: 12px !important;
+  transition: all 0.1s !important;
+}
+#screen-imp-setup #btn-imp-import:hover,
+#screen-imp-setup #btn-imp-create:hover {
+  background: rgba(255,255,255,0.12) !important;
+  color: white !important;
 }
 
 /* ── CLUE PASS SCREEN ── */
@@ -2580,20 +2590,23 @@ input::placeholder, textarea::placeholder {
   min-height: 100vh;
 }
 .imp-discuss-header-wrap {
-  width: 100%; max-width: 600px; overflow: hidden;
+  width: 100% !important; overflow: visible !important;
   margin-bottom: -20px; position: relative; z-index: 2;
+  border-radius: 0 !important;
 }
 .imp-discuss-header-img {
-  width: min(500px, 90vw) !important; max-width: 500px !important; height: 110px !important;
+  width: min(560px, 95vw) !important; height: 120px !important;
   object-fit: cover !important; object-position: center center !important;
-  display: block !important; margin: 0 auto !important; border-radius: 12px !important;
-  opacity: 0.85 !important;
-  mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%),
-    linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%) !important;
-  mask-composite: intersect !important;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%),
-    linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%) !important;
+  display: block !important; margin: 0 auto !important;
+  opacity: 0.9 !important;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%) !important;
   -webkit-mask-composite: source-in !important;
+  mask-image:
+    linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%) !important;
+  mask-composite: intersect !important;
 }
 .imp-discuss-header-img:not([src]),
 .imp-discuss-header-img[src=""] { display: none; }
@@ -2736,7 +2749,7 @@ input::placeholder, textarea::placeholder {
 #screen-imp-results {
   flex-direction: column;
   justify-content: flex-start !important; align-items: center !important;
-  gap: 16px !important; padding: 32px 20px 80px !important;
+  gap: 14px !important; padding: 28px 20px 80px !important;
   min-height: 100vh; overflow-y: auto !important;
 }
 /* Prevent lottie from overlapping content */
@@ -2756,16 +2769,19 @@ input::placeholder, textarea::placeholder {
   z-index: 5 !important;
 }
 .imp-result-stamp {
-  width: min(280px, 65vw) !important; height: min(280px, 65vw) !important;
+  width: 180px !important; height: 180px !important;
+  max-width: 40vw !important; max-height: 40vw !important;
   object-fit: contain !important;
-  animation: stampIn 0.5s cubic-bezier(0.68,-0.55,0.265,1.55) both !important;
-  display: block !important; margin: 0 auto 8px !important; flex-shrink: 0 !important;
-  mix-blend-mode: screen !important;
-  filter: contrast(1.1) brightness(1.1) !important;
+  animation: stampIn 0.4s cubic-bezier(0.68,-0.55,0.265,1.55) both !important;
+  display: block !important; margin: 0 auto !important; flex-shrink: 0 !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  opacity: 1 !important;
+  border-radius: 50% !important;
 }
 @keyframes stampIn {
-  0% { transform: scale(3) rotate(-20deg); opacity: 0; filter: blur(4px); }
-  60% { transform: scale(0.9) rotate(4deg); opacity: 1; filter: blur(0); }
+  0% { transform: scale(2.5) rotate(-15deg); opacity: 0; }
+  60% { transform: scale(0.92) rotate(3deg); opacity: 1; }
   100% { transform: scale(1) rotate(0deg); }
 }
 #imp-res-text {
