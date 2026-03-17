@@ -1272,7 +1272,7 @@ input::placeholder, textarea::placeholder {
   position: relative; z-index: 2;
 }
 /* Clue show/hidden */
-#imp-clue-show {
+#imp-clue-show:not(.hidden) {
   display: flex !important; flex-direction: column !important; align-items: center !important;
   justify-content: center !important; min-height: 100vh !important; width: 100% !important;
   padding: 60px 32px !important; gap: 28px !important; text-align: center !important;
@@ -1292,7 +1292,7 @@ input::placeholder, textarea::placeholder {
   box-shadow: none !important; margin-top: 8px !important;
 }
 .btn-imp-hide-pass:active { transform: translateY(3px); border-bottom-width: 2px; }
-#imp-clue-hidden {
+#imp-clue-hidden:not(.hidden) {
   display: flex !important; flex-direction: column !important; align-items: center !important;
   justify-content: center !important; text-align: center !important;
   gap: 24px !important; min-height: 100vh !important; width: 100% !important;
