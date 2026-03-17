@@ -349,7 +349,9 @@
 </div>
 
 <div id="screen-imp-discuss" class="screen">
-  <img src="/assets/imposter/discussion-header.png" class="imp-discuss-header-img" alt="" onerror="this.style.display='none'">
+  <div class="imp-discuss-header-wrap">
+    <img src="/assets/imposter/discussion-header.png" class="imp-discuss-header-img" alt="" onerror="this.parentElement.style.display='none'">
+  </div>
   <div class="imp-round-badge" id="imp-discuss-round"></div>
   <h1>Discussion</h1>
   <div class="subtitle">Talk, ask questions, describe things related to the word.</div>

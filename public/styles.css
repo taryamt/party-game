@@ -1241,22 +1241,30 @@ input::placeholder, textarea::placeholder {
 }
 /* Clue display */
 .clue-display { text-align: center; max-width: 400px; margin: 0 auto; }
-.clue-word {
-  font-family: var(--font-heading);
-  font-size: clamp(3rem, 12vw, 6rem);
-  font-weight: 400; text-align: center; line-height: 1;
-  color: white; text-shadow: 3px 3px 0px rgba(0,0,0,0.4);
+.clue-word,
+#imp-clue-main {
+  font-family: var(--font-heading) !important;
+  font-size: clamp(3.5rem, 12vw, 6rem) !important;
+  font-weight: 400; text-align: center; line-height: 1.1 !important;
+  color: white !important; text-shadow: 0 0 60px rgba(255,255,255,0.1), 3px 3px 0px rgba(0,0,0,0.6) !important;
   position: relative; z-index: 2;
+  max-width: 600px !important; word-break: break-word !important;
 }
-.clue-sublabel {
-  font-size: 0.85rem; font-weight: 800; letter-spacing: 3px;
-  text-transform: uppercase; color: rgba(255,255,255,0.35);
+.clue-sublabel,
+#imp-clue-icon {
+  font-size: 0.85rem !important; font-weight: 800 !important; letter-spacing: 4px !important;
+  text-transform: uppercase !important; color: rgba(255,255,255,0.4) !important;
   position: relative; z-index: 2;
 }
 .clue-label {
   font-family: var(--font-body); font-size: 0.9rem;
   color: rgba(255,255,255,0.5); font-weight: 700;
   text-transform: uppercase; letter-spacing: 2px;
+}
+#imp-clue-sub {
+  font-size: 0.85rem !important; font-weight: 800 !important;
+  letter-spacing: 3px !important; text-transform: uppercase !important;
+  color: rgba(232,71,63,0.6) !important;
 }
 .clue-timer {
   font-size: 2rem; font-weight: 800;
@@ -1265,9 +1273,9 @@ input::placeholder, textarea::placeholder {
 }
 /* Clue show/hidden */
 #imp-clue-show {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; width: 100%; gap: 20px;
-  min-height: 100vh; padding: 40px 24px;
+  display: flex !important; flex-direction: column !important; align-items: center !important;
+  justify-content: center !important; min-height: 100vh !important; width: 100% !important;
+  padding: 60px 32px !important; gap: 28px !important; text-align: center !important;
 }
 #imp-clue-display {
   display: flex; flex-direction: column; align-items: center;
@@ -1275,12 +1283,13 @@ input::placeholder, textarea::placeholder {
   width: 100%; max-width: 400px; margin: 0 auto;
 }
 .btn-imp-hide-pass {
-  background: #E8473F; border: 2px solid #B83030;
-  border-bottom: 5px solid #8A2020; color: white;
-  font-family: var(--font-heading); font-size: 1.3rem;
-  min-width: 260px; padding: 16px 36px;
-  border-radius: var(--radius-lg); cursor: pointer;
+  background: #E8473F !important; border: 2px solid #8A2020 !important;
+  border-bottom: 5px solid #8A2020 !important; color: white !important;
+  font-family: var(--font-heading); font-size: 1.3rem !important;
+  min-width: 260px !important; padding: 18px 40px !important;
+  border-radius: 100px !important; cursor: pointer !important;
   transition: transform 0.1s; position: relative; z-index: 2;
+  box-shadow: none !important; margin-top: 8px !important;
 }
 .btn-imp-hide-pass:active { transform: translateY(3px); border-bottom-width: 2px; }
 #imp-clue-hidden {
@@ -2309,6 +2318,31 @@ input::placeholder, textarea::placeholder {
   border-color: rgba(255,255,255,0.15) !important;
   color: rgba(255,255,255,0.6) !important;
 }
+/* ── GLOBAL TEXT HARMONY ── */
+[id^="screen-imp"] {
+  --section-gap: 24px;
+  --item-gap: 12px;
+  --label-gap: 8px;
+}
+[id^="screen-imp"] .subtitle,
+[id^="screen-imp"] p {
+  color: rgba(255,255,255,0.45) !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  max-width: 420px !important;
+  line-height: 1.6 !important;
+  margin: 0 !important;
+}
+[id^="screen-imp"] .imp-pass-eyebrow,
+[id^="screen-imp"] .imp-vote-eyebrow,
+[id^="screen-imp"] .vote-progress {
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 4px !important;
+  text-transform: uppercase !important;
+  color: rgba(255,255,255,0.3) !important;
+}
 /* Game menu button on dark screens */
 #screen-imp-setup ~ #game-menu-btn,
 [id^="screen-imp"].active ~ #game-menu-btn {
@@ -2392,26 +2426,35 @@ input::placeholder, textarea::placeholder {
   scrollbar-width: thin; scrollbar-color: rgba(232,71,63,0.4) transparent;
 }
 #screen-imp-setup .pack-card {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-bottom: 3px solid rgba(255,255,255,0.15);
-  color: white; min-height: 56px; transition: all 0.1s;
+  background: rgba(255,255,255,0.06) !important;
+  border: none !important;
+  border-bottom: 3px solid rgba(0,0,0,0.3) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3),
+              inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  color: white; min-height: 56px; transition: all 0.15s ease !important;
 }
 #screen-imp-setup .pack-card:hover {
-  background: rgba(232,71,63,0.15);
-  border-color: rgba(232,71,63,0.5);
-  border-bottom-color: rgba(184,48,48,0.7);
-  transform: translateY(-1px);
+  background: rgba(232,71,63,0.12) !important;
+  box-shadow: 0 4px 16px rgba(232,71,63,0.2),
+              inset 0 1px 0 rgba(255,255,255,0.08) !important;
+  transform: translateY(-2px) !important;
+  border-bottom-color: rgba(232,71,63,0.4) !important;
 }
 #screen-imp-setup .pack-card:active { transform: translateY(2px); border-bottom-width: 1px; }
 #screen-imp-setup .pack-card.selected {
-  background: rgba(232,71,63,0.2);
-  border-color: #E8473F;
-  border-bottom-color: #B83030;
-  box-shadow: 0 0 0 1px rgba(232,71,63,0.3);
+  background: rgba(232,71,63,0.18) !important;
+  box-shadow: 0 0 0 2px rgba(232,71,63,0.6),
+              0 4px 16px rgba(232,71,63,0.25),
+              inset 0 1px 0 rgba(255,255,255,0.1) !important;
+  border-bottom-color: rgba(184,48,48,0.6) !important;
 }
 #screen-imp-setup .pack-card.selected::after { content: '✓'; color: #E8473F; }
-#screen-imp-setup .pack-card-name { color: white; }
+#screen-imp-setup .pack-card-name {
+  color: rgba(255,255,255,0.9) !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+}
 #btn-imp-start {
   background: #E8473F; border: 2px solid #B83030;
   border-bottom: 5px solid #8A2020; color: white;
@@ -2457,21 +2500,23 @@ input::placeholder, textarea::placeholder {
 /* ── CLUE SHOW SCREEN ── */
 .imp-role-badge {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 8px 24px; border-radius: 100px;
-  font-family: var(--font-heading); font-size: 1.1rem;
-  letter-spacing: 1px; position: relative; z-index: 2;
+  padding: 10px 28px !important; border-radius: 100px !important;
+  font-family: var(--font-heading); font-size: 1.1rem !important;
+  letter-spacing: 3px !important; position: relative; z-index: 2;
 }
 .imp-role-badge.crew {
-  background: rgba(46,204,113,0.15);
-  border: 2px solid rgba(46,204,113,0.4);
-  border-bottom: 3px solid rgba(26,153,80,0.6);
-  color: #2ECC71;
+  background: rgba(46,204,113,0.15) !important;
+  border: 2px solid rgba(46,204,113,0.5) !important;
+  border-bottom: 3px solid rgba(26,153,80,0.7) !important;
+  color: #2ECC71 !important;
+  box-shadow: 0 4px 20px rgba(46,204,113,0.15) !important;
 }
 .imp-role-badge.imposter {
-  background: rgba(232,71,63,0.15);
-  border: 2px solid rgba(232,71,63,0.4);
-  border-bottom: 3px solid rgba(184,48,48,0.6);
-  color: #E8473F;
+  background: rgba(232,71,63,0.15) !important;
+  border: 2px solid rgba(232,71,63,0.5) !important;
+  border-bottom: 3px solid rgba(184,48,48,0.7) !important;
+  color: #E8473F !important;
+  box-shadow: 0 4px 20px rgba(232,71,63,0.2) !important;
 }
 #screen-imp-clue.crew {
   background-color: #051a0a;
@@ -2534,11 +2579,21 @@ input::placeholder, textarea::placeholder {
   gap: 12px; padding: 60px 20px 40px;
   min-height: 100vh;
 }
+.imp-discuss-header-wrap {
+  width: 100%; max-width: 600px; overflow: hidden;
+  margin-bottom: -20px; position: relative; z-index: 2;
+}
 .imp-discuss-header-img {
-  width: 100%; max-width: 500px; height: 100px;
-  object-fit: cover; object-position: center center;
-  opacity: 0.6; border-radius: var(--radius) var(--radius) 0 0;
-  display: block;
+  width: min(500px, 90vw) !important; max-width: 500px !important; height: 110px !important;
+  object-fit: cover !important; object-position: center center !important;
+  display: block !important; margin: 0 auto !important; border-radius: 12px !important;
+  opacity: 0.85 !important;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%),
+    linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%) !important;
+  mask-composite: intersect !important;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%),
+    linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%) !important;
+  -webkit-mask-composite: source-in !important;
 }
 .imp-discuss-header-img:not([src]),
 .imp-discuss-header-img[src=""] { display: none; }
@@ -2559,17 +2614,23 @@ input::placeholder, textarea::placeholder {
 }
 .suspect-card {
   display: flex; align-items: center; gap: 14px;
-  padding: 14px 18px;
-  background: rgba(20, 5, 5, 0.7) !important;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-left: 4px solid transparent;
-  border-bottom: 3px solid rgba(255,255,255,0.12);
-  border-radius: var(--radius); cursor: pointer;
-  transition: all 0.1s; min-height: 56px;
+  padding: 14px 18px !important;
+  background: rgba(15,3,3,0.6) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-left: 4px solid transparent !important;
+  border-bottom: 2px solid rgba(0,0,0,0.4) !important;
+  border-radius: 14px !important; cursor: pointer;
+  transition: all 0.1s; min-height: 60px !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3) !important;
 }
-.suspect-card:hover { background: rgba(40, 10, 10, 0.85) !important; transform: translateX(4px); }
+.suspect-card:hover {
+  background: rgba(30,5,5,0.75) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+  transform: translateX(4px) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+}
 .suspect-card:active { transform: translateY(1px); }
 .suspect-card.suspect {
   background: rgba(232,71,63,0.12) !important;
@@ -2640,13 +2701,43 @@ input::placeholder, textarea::placeholder {
   border-color: rgba(255,255,255,0.2) !important;
   transform: translateX(6px) !important;
 }
+/* Multiplayer host waiting views */
+.imp-host-vote-waiting {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 24px; min-height: 100vh;
+  width: 100%; text-align: center; padding: 40px 24px;
+}
+.imp-vote-count-display {
+  font-family: var(--font-heading); font-size: clamp(3rem, 10vw, 5rem);
+  color: white; line-height: 1; text-shadow: 3px 3px 0px rgba(0,0,0,0.5);
+}
+.imp-vote-count-label {
+  font-size: 0.8rem; font-weight: 800; letter-spacing: 4px;
+  text-transform: uppercase; color: rgba(255,255,255,0.3);
+}
+.imp-vote-log {
+  width: 100%; max-width: 400px; display: flex;
+  flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto;
+}
+.imp-vote-log-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; background: rgba(46,204,113,0.08);
+  border: 1px solid rgba(46,204,113,0.15); border-radius: 100px;
+  font-size: 0.9rem; font-weight: 700; color: rgba(255,255,255,0.7);
+  animation: voteLogIn 0.3s ease;
+}
+@keyframes voteLogIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.imp-vote-log-check { color: #2ECC71; font-size: 1rem; }
 
 /* ── RESULTS SCREEN ── */
 #screen-imp-results {
   flex-direction: column;
-  justify-content: flex-start; align-items: center;
-  gap: 16px; padding: 40px 20px 60px;
-  min-height: 100vh; overflow-y: auto;
+  justify-content: flex-start !important; align-items: center !important;
+  gap: 16px !important; padding: 32px 20px 80px !important;
+  min-height: 100vh; overflow-y: auto !important;
 }
 /* Prevent lottie from overlapping content */
 #screen-imp-results lottie-player,
@@ -2665,23 +2756,34 @@ input::placeholder, textarea::placeholder {
   z-index: 5 !important;
 }
 .imp-result-stamp {
-  width: min(260px, 60vw) !important; height: min(260px, 60vw) !important;
+  width: min(280px, 65vw) !important; height: min(280px, 65vw) !important;
   object-fit: contain !important;
   animation: stampIn 0.5s cubic-bezier(0.68,-0.55,0.265,1.55) both !important;
-  display: block !important; margin: 0 auto !important; flex-shrink: 0 !important;
+  display: block !important; margin: 0 auto 8px !important; flex-shrink: 0 !important;
+  mix-blend-mode: screen !important;
+  filter: contrast(1.1) brightness(1.1) !important;
 }
 @keyframes stampIn {
   0% { transform: scale(3) rotate(-20deg); opacity: 0; filter: blur(4px); }
   60% { transform: scale(0.9) rotate(4deg); opacity: 1; filter: blur(0); }
   100% { transform: scale(1) rotate(0deg); }
 }
+#imp-res-text {
+  font-family: var(--font-heading) !important;
+  font-size: clamp(1.5rem, 4vw, 2.2rem) !important;
+  color: white !important; text-align: center !important;
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.5) !important;
+  max-width: 600px !important; line-height: 1.3 !important; margin: 0 !important;
+}
 .imp-word-reveal {
-  background: rgba(244,166,29,0.08) !important;
-  border: 2px solid rgba(244,166,29,0.3) !important;
+  background: rgba(20,10,0,0.6) !important;
+  border: 2px solid rgba(244,166,29,0.35) !important;
   border-bottom: 4px solid rgba(212,136,10,0.5) !important;
-  border-radius: var(--radius-lg);
-  padding: 16px 32px; text-align: center;
-  width: 100%; max-width: 420px;
+  border-radius: 16px !important;
+  padding: 16px 32px !important; text-align: center;
+  width: 100%; max-width: 420px !important;
+  box-shadow: 0 4px 24px rgba(244,166,29,0.1),
+              inset 0 1px 0 rgba(255,255,255,0.05) !important;
 }
 .imp-word-label {
   font-size: 0.7rem; font-weight: 800; letter-spacing: 4px;

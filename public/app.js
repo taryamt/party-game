@@ -292,7 +292,7 @@ function addPoints(playerId, pts, game, reason) {
   if (!gameState.scores.byGame[playerId]) gameState.scores.byGame[playerId] = {};
   gameState.scores.byGame[playerId][game] = (gameState.scores.byGame[playerId][game] || 0) + pts;
   gameState.scores.history.push({ game, playerId, points: pts, reason, timestamp: Date.now() });
-  if (gameState.session.settings.global.animationSpeed !== 'off') animatePoints(pts);
+  if (gameState.session.settings.global.animationSpeed !== 'off' && !gameState.currentScreen.includes('-results')) animatePoints(pts);
 }
 
 function animatePoints(pts) {
@@ -1002,6 +1002,9 @@ function handleServerMsg(data) {
         imp.individualVotes[payload.playerId] = payload.targetId;
         imp.voterIdx++;
         updateHostWaitingCount('imp');
+        // Add vote log entry
+        const vLog = $('#imp-vote-log');
+        if (vLog) { const vp = playerById(payload.playerId); const item = document.createElement('div'); item.className = 'imp-vote-log-item'; item.innerHTML = '<span class="imp-vote-log-check">✓</span><span>' + esc(vp ? vp.name : '?') + ' has voted</span>'; vLog.appendChild(item); }
         if (imp.voterIdx >= nonHostPlayers().length) impShowResults();
       }
       break;
@@ -1054,8 +1057,8 @@ function handleServerMsg(data) {
       break;
     }
     case 'clue_confirm_count': {
-      const el = $('#imp-clue-pass-label');
-      if (el) el.textContent = 'Clues sent! Waiting for players...\n' + payload.confirmed + '/' + payload.total + ' confirmed';
+      const el = $('#imp-clue-confirm-count') || $('#imp-clue-pass-label');
+      if (el) el.textContent = payload.confirmed + '/' + payload.total + ' ready';
       break;
     }
     case 'all_clues_confirmed': {
@@ -1111,13 +1114,15 @@ function handleServerMsg(data) {
 }
 
 function updateHostWaitingCount(game) {
-  const el = $('#host-waiting-count');
-  if (!el) return;
   let answered = 0, total = nonHostPlayers().length;
   if (game === 'imp') answered = gameState.imposter.voterIdx;
   else if (game === 'triv') answered = gameState.trivia.playerIdx;
   else if (game === 'ht') answered = gameState.hottake.playerIdx;
-  el.textContent = answered + '/' + total + ' answered';
+  // Styled vote count for imposter
+  const bigCount = $('#imp-vote-big-count');
+  if (game === 'imp' && bigCount) { bigCount.textContent = answered + '/' + total; return; }
+  const el = $('#host-waiting-count');
+  if (el) el.textContent = answered + '/' + total + ' answered';
 }
 
 function showToast(msg, type) {
@@ -1505,8 +1510,8 @@ let clueConfirmCount = 0;
 function handleClueConfirmed(payload) {
   clueConfirmCount++;
   const total = nonHostPlayers().length;
-  const el = $('#imp-clue-pass-label');
-  if (el) el.textContent = 'Clues sent! Waiting for players...\n' + clueConfirmCount + '/' + total + ' confirmed';
+  const el = $('#imp-clue-confirm-count') || $('#imp-clue-pass-label');
+  if (el) el.textContent = clueConfirmCount + '/' + total + ' ready';
 }
 $('#btn-imp-start').addEventListener('click', () => { preventDoubleClick($('#btn-imp-start'), async () => {
   const file = impGetFile(); if (!file) return;
@@ -1527,16 +1532,13 @@ const impScreen = $('#screen-imp-clue');
 
 function impShowPass() {
   if (isMultiDevice && socket) {
-    // Host screen shows waiting UI while players get clues on their devices
+    // In multiplayer mode, NEVER show the pass screen — clues go directly to player phones
     showScreen('screen-imp-clue');
-    $('#imp-clue-pass').classList.remove('hidden'); $('#imp-clue-show').classList.add('hidden'); $('#imp-clue-hidden').classList.add('hidden');
+    $('#imp-clue-pass').classList.add('hidden'); $('#imp-clue-show').classList.add('hidden'); $('#imp-clue-hidden').classList.add('hidden');
     impScreen.classList.remove('showing-clue', 'crew', 'imposter');
-    $('#imp-clue-name').textContent = '📱';
-    $('#btn-imp-show').style.display = 'none';
     // Send clues only to non-host players
     const players = nonHostPlayers(), imp = gameState.imposter, mode = gameState.session.settings.imposter.imposterMode;
     clueConfirmCount = 0;
-    $('#imp-clue-pass-label').textContent = 'Clues sent! Waiting for players...\n0/' + players.length + ' confirmed';
     players.forEach((player, idx) => {
       const isImp = imp.imposterIndices.includes(idx);
       let clueData;
@@ -1544,7 +1546,9 @@ function impShowPass() {
       else clueData = { role: 'crew', text: imp.word.toUpperCase(), sub: "Don't say it out loud!" };
       sendMsg('send_to_player', { playerId: player.id, event: 'your_clue', data: clueData });
     });
-    // Wait for all_clues_confirmed from server (no auto-advance)
+    // Show host waiting UI in the pass section
+    $('#imp-clue-pass').classList.remove('hidden');
+    $('#imp-clue-pass').innerHTML = '<div class="imp-host-vote-waiting"><div class="imp-vote-count-label">CLUES SENT</div><div class="imp-vote-count-display">📱</div><div class="subtitle">Waiting for all players to confirm...</div><div class="imp-vote-count-label" id="imp-clue-confirm-count">0/' + players.length + ' ready</div></div>';
     return;
   }
   showScreen('screen-imp-clue');
@@ -1628,7 +1632,7 @@ $('#btn-imp-vote').addEventListener('click', () => {
   showPhaseOverlay('🗳️ VOTING');
   if (typeof playLottie === 'function') playLottie('imp-vote-lottie', 'vote', false);
   gameState.imposter.voterIdx = 0;
-  if (isMultiDevice && socket) { const np = nonHostPlayers(); sendMsg('host_update', { event: 'voting_open', players: np.map(p => ({ id: p.id, name: p.name })) }); showScreen('screen-imp-vote'); $('#imp-vote-label').textContent = '🗳️ Players are voting...'; $('#imp-vote-name').textContent = ''; $('#imp-vote-grid').innerHTML = '<div id="host-waiting-count" class="host-waiting">0/' + np.length + ' voted</div>'; return; }
+  if (isMultiDevice && socket) { const np = nonHostPlayers(); sendMsg('host_update', { event: 'voting_open', players: np.map(p => ({ id: p.id, name: p.name })) }); showScreen('screen-imp-vote'); $('#imp-vote-label').textContent = ''; $('#imp-vote-name').textContent = ''; $('#imp-vote-grid').innerHTML = '<div class="imp-host-vote-waiting"><div class="imp-vote-count-label">VOTES CAST</div><div class="imp-vote-count-display" id="imp-vote-big-count">0/' + np.length + '</div><div class="imp-vote-count-label">waiting for all players...</div><div class="imp-vote-log" id="imp-vote-log"></div></div>'; return; }
   impShowVoter();
 });
 
