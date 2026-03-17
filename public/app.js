@@ -1057,11 +1057,16 @@ function handleServerMsg(data) {
       break;
     }
     case 'clue_confirm_count': {
-      const el = $('#imp-clue-confirm-count') || $('#imp-clue-pass-label');
+      const countEl = document.getElementById('imp-mp-confirm-count');
+      if (countEl) countEl.textContent = payload.confirmed + '/' + payload.total;
+      const el = $('#imp-clue-confirm-count');
       if (el) el.textContent = payload.confirmed + '/' + payload.total + ' ready';
       break;
     }
     case 'all_clues_confirmed': {
+      // Hide multiplayer waiting screen
+      const waitEl = document.getElementById('imp-mp-waiting');
+      if (waitEl) waitEl.style.display = 'none';
       // Auto-transition host to discussion
       const players = nonHostPlayers();
       $('#btn-imp-show').style.display = '';
@@ -1510,7 +1515,9 @@ let clueConfirmCount = 0;
 function handleClueConfirmed(payload) {
   clueConfirmCount++;
   const total = nonHostPlayers().length;
-  const el = $('#imp-clue-confirm-count') || $('#imp-clue-pass-label');
+  const countEl = document.getElementById('imp-mp-confirm-count');
+  if (countEl) countEl.textContent = clueConfirmCount + '/' + total;
+  const el = $('#imp-clue-confirm-count');
   if (el) el.textContent = clueConfirmCount + '/' + total + ' ready';
 }
 $('#btn-imp-start').addEventListener('click', () => { preventDoubleClick($('#btn-imp-start'), async () => {
@@ -1531,25 +1538,52 @@ $('#btn-imp-start').addEventListener('click', () => { preventDoubleClick($('#btn
 const impScreen = $('#screen-imp-clue');
 
 function impShowPass() {
+  // MULTIPLAYER: never show pass screen, send clues to phones directly
   if (isMultiDevice && socket) {
-    // In multiplayer mode, NEVER show the pass screen — clues go directly to player phones
-    showScreen('screen-imp-clue');
-    $('#imp-clue-pass').classList.add('hidden'); $('#imp-clue-show').classList.add('hidden'); $('#imp-clue-hidden').classList.add('hidden');
-    impScreen.classList.remove('showing-clue', 'crew', 'imposter');
-    // Send clues only to non-host players
-    const players = nonHostPlayers(), imp = gameState.imposter, mode = gameState.session.settings.imposter.imposterMode;
+    const players = nonHostPlayers();
+    const imp = gameState.imposter;
+    const mode = gameState.session.settings.imposter.imposterMode;
+
+    // Send clue to each player's phone
     clueConfirmCount = 0;
     players.forEach((player, idx) => {
       const isImp = imp.imposterIndices.includes(idx);
-      let clueData;
-      if (isImp) clueData = mode === 'told' ? { role: 'imposter', text: 'Blend in!', sub: 'You do NOT know the word' } : mode === 'none' ? { role: 'imposter', text: 'No hints!', sub: 'Figure it out on your own...' } : { role: 'imposter', text: imp.hint, sub: 'You might be the imposter...' };
-      else clueData = { role: 'crew', text: imp.word.toUpperCase(), sub: "Don't say it out loud!" };
+      const clueData = isImp
+        ? (mode === 'told'
+            ? { role: 'imposter', text: 'You are the IMPOSTER!', sub: 'Blend in with the crew' }
+            : mode === 'none'
+            ? { role: 'imposter', text: 'No hints!', sub: 'Figure it out on your own...' }
+            : { role: 'imposter', text: imp.hint, sub: 'You might be the imposter...' })
+        : { role: 'crew', text: imp.word.toUpperCase(), sub: "Don't say it out loud!" };
       sendMsg('send_to_player', { playerId: player.id, event: 'your_clue', data: clueData });
     });
-    // Show host waiting UI in the pass section
-    $('#imp-clue-pass').classList.remove('hidden');
-    $('#imp-clue-pass').innerHTML = '<div class="imp-host-vote-waiting"><div class="imp-vote-count-label">CLUES SENT</div><div class="imp-vote-count-display">📱</div><div class="subtitle">Waiting for all players to confirm...</div><div class="imp-vote-count-label" id="imp-clue-confirm-count">0/' + players.length + ' ready</div></div>';
-    return;
+
+    // Show host a clean waiting screen
+    showScreen('screen-imp-clue');
+    $('#imp-clue-pass').classList.add('hidden');
+    $('#imp-clue-show').classList.add('hidden');
+    $('#imp-clue-hidden').classList.add('hidden');
+    impScreen.classList.remove('showing-clue', 'crew', 'imposter');
+
+    // Create waiting message on the clue screen
+    let waitEl = document.getElementById('imp-mp-waiting');
+    if (!waitEl) {
+      const div = document.createElement('div');
+      div.id = 'imp-mp-waiting';
+      div.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:24px;text-align:center;padding:40px';
+      div.innerHTML =
+        '<div style="font-size:3rem">📱</div>' +
+        '<div style="font-family:var(--font-heading);font-size:2.5rem;color:white">Clues sent!</div>' +
+        '<div style="color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:2px;font-size:0.8rem;text-transform:uppercase">Players are reading their clues on their phones</div>' +
+        '<div id="imp-mp-confirm-count" style="font-family:var(--font-heading);font-size:4rem;color:#E8473F">0/' + players.length + '</div>' +
+        '<div style="color:rgba(255,255,255,0.3);font-size:0.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase">confirmed</div>';
+      impScreen.appendChild(div);
+    } else {
+      waitEl.style.display = 'flex';
+      const countEl = document.getElementById('imp-mp-confirm-count');
+      if (countEl) countEl.textContent = '0/' + players.length;
+    }
+    return; // EXIT - do not run pass screen logic
   }
   showScreen('screen-imp-clue');
   $('#imp-clue-pass').classList.remove('hidden'); $('#imp-clue-show').classList.add('hidden'); $('#imp-clue-hidden').classList.add('hidden');

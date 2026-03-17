@@ -2779,6 +2779,10 @@ input::placeholder, textarea::placeholder {
   opacity: 1 !important;
   border-radius: 50% !important;
 }
+#imp-mp-waiting {
+  position: relative;
+  z-index: 10;
+}
 @keyframes stampIn {
   0% { transform: scale(2.5) rotate(-15deg); opacity: 0; }
   60% { transform: scale(0.92) rotate(3deg); opacity: 1; }
